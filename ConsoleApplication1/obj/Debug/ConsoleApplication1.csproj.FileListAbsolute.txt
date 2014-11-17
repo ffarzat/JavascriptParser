@@ -1,0 +1,16 @@
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr3.Runtime.Debug.dll
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr3.Runtime.dll
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr3.StringTemplate.dll
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr4.StringTemplate.dll
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr4.StringTemplate.Visualizer.dll
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr3.Runtime.pdb
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr3.Runtime.Debug.pdb
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr3.StringTemplate.pdb
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr4.StringTemplate.pdb
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr4.StringTemplate.Visualizer.pdb
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\jquery-ui-1.8.24.js
