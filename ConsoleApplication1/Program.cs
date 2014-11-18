@@ -5,14 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
-using JavascriptParser;
+using Xebic.Parsers.ES3;
+
 
 namespace ConsoleApplication1
 {
     class Program
     {
         static int indent = 0;
-        private static string jsFile = @"jquery-ui-1.8.24.js";
+        private static string jsFile = @"jquery-ui-1.8.24.min.js";
 
         static void Main(string[] args)
         {
@@ -23,10 +24,10 @@ namespace ConsoleApplication1
                 string text = System.IO.File.ReadAllText(jsFile);
 
                 var stream = new ANTLRStringStream(text);
-                var lexer = new JavaScriptLexer(stream);
+                var lexer = new ES3Lexer(stream);
                 var tokenStream = new CommonTokenStream(lexer);
-                var parser = new JavaScriptParser(tokenStream);
-                JavaScriptParser.program_return programReturn = parser.program();
+                var parser = new ES3Parser(tokenStream);
+                ES3Parser.program_return programReturn = parser.program();
 
 
                 var tree = programReturn.Tree as CommonTree;

@@ -56,17 +56,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JavaScriptLexer.cs" />
-    <Compile Include="JavaScriptParser.cs" />
+    <Compile Include="ES3Lexer.Action.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ES3Lexer.cs" />
+    <Compile Include="ES3Parser.Action.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ES3Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="JavaScript.tokens" />
+    <None Include="ES3.tokens" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="jquery-ui-1.8.24.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="jquery-ui-1.8.24.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
