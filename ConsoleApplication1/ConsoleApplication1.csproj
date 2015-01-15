@@ -72,6 +72,9 @@
     <None Include="ES3.tokens" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="angular.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="jquery-ui-1.8.24.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

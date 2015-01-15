@@ -14,7 +14,7 @@ namespace ConsoleApplication1
     class Program
     {
         static int indent = 0;
-        private static string jsFile = @"jquery-ui-1.8.24.min.js";
+        private static string jsFile = @"angular.js";
 
         static List<string> _funcoes = new List<string>();
 

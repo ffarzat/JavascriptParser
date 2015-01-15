@@ -16,3 +16,4 @@ C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\C
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\jquery-ui-1.8.24.js
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\jquery-ui-1.8.24.min.js
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\angular.js
