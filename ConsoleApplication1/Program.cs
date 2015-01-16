@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,9 @@ namespace ConsoleApplication1
 {
     class Program
     {
-        static int indent = 0;
-        private static string jsFile = @"angular.js";
+        static int _indent = 0;
+        private const string jsFile = @"angular.js";
+        private static string _configFile = @"Template.params";
 
         static List<Funcao> _funcoes = new List<Funcao>();
 
@@ -26,40 +28,85 @@ namespace ConsoleApplication1
 
 
                 string text = System.IO.File.ReadAllText(jsFile);
+                string textoConfiguracao = System.IO.File.ReadAllText(_configFile);
 
+                #region processa o js alvo
                 var stream = new ANTLRStringStream(text);
                 var lexer = new ES3Lexer(stream);
                 var tokenStream = new CommonTokenStream(lexer);
                 var parser = new ES3Parser(tokenStream);
                 ES3Parser.program_return programReturn = parser.program();
-
-
                 var tree = programReturn.Tree as CommonTree;
+                #endregion
+
+                GerarArquivosParaExecucao(tree, textoConfiguracao);
                 
-                EscreverGramaticaSimplificada(tree);
-
-                //WriteTree(tree); 
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
 
-            Console.Write("Press any key to continue...");
-            Console.ReadKey(true); 
+            //Console.Write("Press any key to continue...");
+            //Console.ReadKey(true); 
         }
 
         /// <summary>
         /// Função Base para escrever as funções
         /// </summary>
         /// <param name="tree"></param>
-        private static void EscreverGramaticaSimplificada(CommonTree tree)
+        /// <param name="textoConfiguracao"></param>
+        private static void GerarArquivosParaExecucao(CommonTree tree, string textoConfiguracao)
         {
-            var sw = new StreamWriter(Environment.CurrentDirectory + @"\"+ jsFile+ ".grammar");
+            RecuperarFuncoesEParametros(tree);
+
+            var nomeArquivoGramatica = ProcessarGramatica();
+            var nomeArquivoConfiguracao = ProcessarConfiguracao(textoConfiguracao, nomeArquivoGramatica);
+
+        }
+
+        /// <summary>
+        /// Escreve o arquivo de configuracao
+        /// </summary>
+        /// <param name="textoConfiguracao"></param>
+        /// <param name="nomeArquivoGramatica"></param>
+        /// <remarks>
+        /// @NomeArquivoGramatica
+        /// @NumeroDeFuncoes
+        /// </remarks>
+        private static string ProcessarConfiguracao(string textoConfiguracao, string nomeArquivoGramatica)
+        {
+            var arquivo = Environment.CurrentDirectory + @"\" + jsFile + ".params";
+
+            var sw = new StreamWriter(arquivo, false, Encoding.UTF8);
+
+            //@NomeArquivoGramatica
+            textoConfiguracao = textoConfiguracao.Replace("@NomeArquivoGramatica", nomeArquivoGramatica);
+            //@NumeroDeFuncoes
+            textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", _funcoes.Count.ToString(CultureInfo.InvariantCulture));
+
+            sw.Write(textoConfiguracao);
+
+            for (int i = 0; i < _funcoes.Count; i++)
+            {
+                var f = _funcoes[i];
+                sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
+                sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));    
+            }
             
-            RecuperarFuncoesEParametros(" ", true, tree, sw);
-            
+            sw.Close();
+
+            return arquivo;
+        }
+
+        /// <summary>
+        /// Escreve o arquivo de gramatica
+        /// </summary>
+        private static string ProcessarGramatica()
+        {
+            var arquivo = Environment.CurrentDirectory + @"\" + jsFile + ".grammar";
+            var sw = new StreamWriter(arquivo, false, Encoding.UTF8);
+
             //Declara as funções na gramatica
             foreach (var funcao in _funcoes)
             {
@@ -73,31 +120,27 @@ namespace ConsoleApplication1
                 {
                     sw.Write(string.Format("<{0}> ::= ", funcao.Nome));
                     sw.Write(string.Format("({0} ", funcao.Nome));
-                    
+
                     foreach (var argumento in funcao.Argumentos)
                     {
-                        sw.Write(string.Format("({0}) ", argumento.Nome));    
+                        sw.Write(string.Format("({0}) ", argumento.Nome));
                     }
 
                     sw.Write(")");
                     sw.WriteLine("");
                 }
             }
-            
+
             sw.Close();
 
-            
-
+            return arquivo;
         }
 
         /// <summary>
         /// Itera a árvore e escreve no arquivo
         /// </summary>
-        /// <param name="prefix"></param>
-        /// <param name="isTail"></param>
         /// <param name="tree"></param>
-        /// <param name="sw"></param>
-        private static void RecuperarFuncoesEParametros(string prefix, bool isTail, CommonTree tree, StreamWriter sw) 
+        private static void RecuperarFuncoesEParametros(CommonTree tree) 
         {
 
             if (tree.Type == 17) //function
@@ -137,48 +180,30 @@ namespace ConsoleApplication1
             {
                 foreach (CommonTree child in tree.Children)
                 {
-                    RecuperarFuncoesEParametros(prefix + (isTail ? "    " : "│   "), false, child, sw);
+                    RecuperarFuncoesEParametros(child);
                 }
             }
 
         } 
 
-        /// <summary>
-        /// Escreve a Arvore no console
-        /// </summary>
-        /// <param name="tree"></param>
-        static void WriteTree(CommonTree tree) 
-        { 
-            WriteLine("Tree.Text: " + tree.Text);
-            WriteLine("Tree.Type: " + tree.Type); 
-            WriteLine("Tree.Line: " + tree.Line); 
-            WriteLine("Tree.CharPositionInLine: " + tree.CharPositionInLine); 
-            WriteLine("Tree.ChildCount: " + tree.ChildCount); 
-            WriteLine(""); 
-
-            if (tree.Children != null) { 
-                IncreaseIndent(); 
-                foreach (CommonTree child in tree.Children) { 
-                    WriteTree(child); 
-                } 
-                DecreaseIndent(); 
-            } 
-        } 
-
         static void WriteLine(string text) 
         { 
-            string indentText = String.Empty.PadRight(indent * 2); 
+            string indentText = String.Empty.PadRight(_indent * 2); 
             Console.WriteLine(indentText + text); 
         } 
 
         static void IncreaseIndent() 
         { 
-            indent++; 
+            _indent++; 
         } 
 
         static void DecreaseIndent() 
         { 
-            indent--; 
-        } 
+            _indent--; 
+        }
+
+
+        //
+
     } 
 }

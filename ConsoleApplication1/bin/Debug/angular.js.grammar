@@ -1,4 +1,4 @@
-<start> ::= <jsonFilter> 
+﻿<start> ::= <jsonFilter> 
 <start> ::= <limitToFilter> 
 <start> ::= <orderByFilter> 
 <start> ::= <comparator> 
