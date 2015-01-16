@@ -16,7 +16,7 @@ namespace ConsoleApplication1
         static int indent = 0;
         private static string jsFile = @"angular.js";
 
-        static List<string> _funcoes = new List<string>();
+        static List<Funcao> _funcoes = new List<Funcao>();
 
 
         static void Main(string[] args)
@@ -36,7 +36,7 @@ namespace ConsoleApplication1
 
                 var tree = programReturn.Tree as CommonTree;
                 
-                EscreverFuncoes(tree);
+                EscreverGramaticaSimplificada(tree);
 
                 //WriteTree(tree); 
 
@@ -54,12 +54,40 @@ namespace ConsoleApplication1
         /// Função Base para escrever as funções
         /// </summary>
         /// <param name="tree"></param>
-        private static void EscreverFuncoes(CommonTree tree)
+        private static void EscreverGramaticaSimplificada(CommonTree tree)
         {
-            var sw = new StreamWriter(Environment.CurrentDirectory + @"\Arvoreprocessada.txt");
-            sw.WriteLine(" │");
-            PrintTree(" ", true, tree, sw);
+            var sw = new StreamWriter(Environment.CurrentDirectory + @"\"+ jsFile+ ".grammar");
+            
+            RecuperarFuncoesEParametros(" ", true, tree, sw);
+            
+            //Declara as funções na gramatica
+            foreach (var funcao in _funcoes)
+            {
+                sw.WriteLine(string.Format("<start> ::= <{0}> ", funcao.Nome));
+            }
+
+            //Descreve as funções
+            foreach (var funcao in _funcoes)
+            {
+                if (funcao.Argumentos.Count > 0)
+                {
+                    sw.Write(string.Format("<{0}> ::= ", funcao.Nome));
+                    sw.Write(string.Format("({0} ", funcao.Nome));
+                    
+                    foreach (var argumento in funcao.Argumentos)
+                    {
+                        sw.Write(string.Format("({0}) ", argumento.Nome));    
+                    }
+
+                    sw.Write(")");
+                    sw.WriteLine("");
+                }
+            }
+            
             sw.Close();
+
+            
+
         }
 
         /// <summary>
@@ -69,32 +97,35 @@ namespace ConsoleApplication1
         /// <param name="isTail"></param>
         /// <param name="tree"></param>
         /// <param name="sw"></param>
-        private static void PrintTree(string prefix, bool isTail, CommonTree tree, StreamWriter sw) 
+        private static void RecuperarFuncoesEParametros(string prefix, bool isTail, CommonTree tree, StreamWriter sw) 
         {
 
             if (tree.Type == 17) //function
             {
-                sw.WriteLine(prefix + "└── " + tree.Text);
-
+                var f = new Funcao();
+                
                 if (tree.ChildCount > 0)
                 {
                     foreach (CommonTree child in tree.Children)
                     {
-                        if(child.Type != 113)
-                            sw.WriteLine(prefix + "    ├── " + child.Text);
+                        if (child.Type == 148) //Nome da função
+                            f.Nome = child.Text;
 
-                        if (child.Type == 111)//ARGS
+                        if (child.Type == 111)//ARGS da funcao
                         {
                             if (child.ChildCount > 0)
                             {
                                 foreach (CommonTree child2 in child.Children)
                                 {
-                                    sw.WriteLine(prefix + "        ├── " + child2.Text);
+                                    f.AddArgumento(child2.Text);
                                 }
                             }
                         }
                     }
                 }
+
+                if(!String.IsNullOrEmpty(f.Nome))
+                    _funcoes.Add(f);
 
             }
 
@@ -106,7 +137,7 @@ namespace ConsoleApplication1
             {
                 foreach (CommonTree child in tree.Children)
                 {
-                    PrintTree(prefix + (isTail ? "    " : "│   "), false, child, sw);
+                    RecuperarFuncoesEParametros(prefix + (isTail ? "    " : "│   "), false, child, sw);
                 }
             }
 
