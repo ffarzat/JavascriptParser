@@ -17,6 +17,7 @@ namespace ConsoleApplication1
         static int _indent = 0;
         private const string jsFile = @"angular.js";
         private static string _configFile = @"Template.params";
+        private static string _javaFile = @"Template.java";
 
         static List<Funcao> _funcoes = new List<Funcao>();
 
@@ -29,6 +30,8 @@ namespace ConsoleApplication1
 
                 string text = System.IO.File.ReadAllText(jsFile);
                 string textoConfiguracao = System.IO.File.ReadAllText(_configFile);
+                string textoJava = System.IO.File.ReadAllText(_javaFile);
+                
 
                 #region processa o js alvo
                 var stream = new ANTLRStringStream(text);
@@ -39,7 +42,7 @@ namespace ConsoleApplication1
                 var tree = programReturn.Tree as CommonTree;
                 #endregion
 
-                GerarArquivosParaExecucao(tree, textoConfiguracao);
+                GerarArquivosParaExecucao(tree, textoConfiguracao, textoJava);
                 
             }
             catch (Exception ex)
@@ -56,27 +59,69 @@ namespace ConsoleApplication1
         /// </summary>
         /// <param name="tree"></param>
         /// <param name="textoConfiguracao"></param>
-        private static void GerarArquivosParaExecucao(CommonTree tree, string textoConfiguracao)
+        /// <param name="textoJava"></param>
+        private static void GerarArquivosParaExecucao(CommonTree tree, string textoConfiguracao, string textoJava)
         {
             RecuperarFuncoesEParametros(tree);
 
-            var nomeArquivoGramatica = ProcessarGramatica();
-            var nomeArquivoConfiguracao = ProcessarConfiguracao(textoConfiguracao, nomeArquivoGramatica);
+            var dirinfo = Directory.CreateDirectory("output");
 
+            var nomeArquivoGramatica = ProcessarGramatica(dirinfo);
+            var nomeArquivoConfiguracao = ProcessarConfiguracao(dirinfo, textoConfiguracao, nomeArquivoGramatica);
+
+            ProcessarArquivosDeNo(dirinfo, textoJava);
+
+        }
+
+        /// <summary>
+        /// Escreve o arquivo java que representa a execução da Função no ECJ
+        /// </summary>
+        /// <param name="dirinfo"></param>
+        /// <param name="textoJava"></param>
+        private static void ProcessarArquivosDeNo(DirectoryInfo dirinfo, string textoJava)
+        {
+
+
+            for (int i = 0; i < _funcoes.Count; i++)
+            {
+                var f = _funcoes[i];
+
+                var arquivo = dirinfo.FullName + @"\" + f.Nome + ".java";
+
+                var sw = new StreamWriter(arquivo, false, Encoding.UTF8);
+
+                //@package
+                textoJava = textoJava.Replace("@package", jsFile);
+                //@NomeFuncao
+                textoJava = textoJava.Replace("@NomeFuncao", f.Nome);
+                
+
+                sw.Write(textoJava);
+
+                //sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
+                //sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));
+
+                sw.Close();
+            }
+
+            
+
+            
         }
 
         /// <summary>
         /// Escreve o arquivo de configuracao
         /// </summary>
+        /// <param name="configuracao"></param>
         /// <param name="textoConfiguracao"></param>
         /// <param name="nomeArquivoGramatica"></param>
         /// <remarks>
         /// @NomeArquivoGramatica
         /// @NumeroDeFuncoes
         /// </remarks>
-        private static string ProcessarConfiguracao(string textoConfiguracao, string nomeArquivoGramatica)
+        private static string ProcessarConfiguracao(DirectoryInfo configuracao, string textoConfiguracao, string nomeArquivoGramatica)
         {
-            var arquivo = Environment.CurrentDirectory + @"\" + jsFile + ".params";
+            var arquivo = configuracao.FullName + @"\" + jsFile + ".params";
 
             var sw = new StreamWriter(arquivo, false, Encoding.UTF8);
 
@@ -102,9 +147,10 @@ namespace ConsoleApplication1
         /// <summary>
         /// Escreve o arquivo de gramatica
         /// </summary>
-        private static string ProcessarGramatica()
+        /// <param name="dirinfo"></param>
+        private static string ProcessarGramatica(DirectoryInfo dirinfo)
         {
-            var arquivo = Environment.CurrentDirectory + @"\" + jsFile + ".grammar";
+            var arquivo = dirinfo.FullName + @"\" + jsFile + ".grammar";
             var sw = new StreamWriter(arquivo, false, Encoding.UTF8);
 
             //Declara as funções na gramatica
