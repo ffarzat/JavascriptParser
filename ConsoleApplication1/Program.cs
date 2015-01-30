@@ -200,7 +200,7 @@ namespace ConsoleApplication1
                 if (funcao.Argumentos.Count > 0)
                 {
                     sw.Write(string.Format("<{0}> ::= ", funcao.Nome));
-                    sw.Write(string.Format("({0}", funcao.Nome));
+                    sw.Write(string.Format("({0} ", funcao.Nome));
 
                     foreach (var argumento in funcao.Argumentos)
                     {

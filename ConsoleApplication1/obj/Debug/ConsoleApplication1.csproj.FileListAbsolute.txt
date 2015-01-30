@@ -18,3 +18,4 @@ C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\j
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\angular.js
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Template.params
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Template.java
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
