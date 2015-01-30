@@ -22,6 +22,7 @@ namespace ConsoleApplication1
 
         static List<Funcao> _funcoes = new List<Funcao>();
 
+        static List<String> _argumentos = new List<String>();
 
         static void Main(string[] args)
         {
@@ -101,11 +102,10 @@ namespace ConsoleApplication1
                 //@NomeFuncao
                 textoClasse = textoClasse.Replace("@NomeFuncao", f.Nome);
 
-
                 sw.Write(textoClasse);
 
                 //sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
-                //sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));
+                
 
                 sw.Close();
             }
@@ -213,6 +213,8 @@ namespace ConsoleApplication1
                                 foreach (CommonTree child2 in child.Children)
                                 {
                                     f.AddArgumento(child2.Text);
+                                    if(!_argumentos.Contains(child2.Text))
+                                        _argumentos.Add(child2.Text);
                                 }
                             }
                         }
