@@ -155,7 +155,8 @@ namespace ConsoleApplication1
             //@NomeArquivoGramatica
             textoConfiguracao = textoConfiguracao.Replace("@NomeArquivoGramatica", nomeArquivoGramatica);
             //@NumeroDeFuncoes
-            textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", _funcoes.Count.ToString(CultureInfo.InvariantCulture));
+            int total = _funcoes.Count + _argumentos.Count;
+            textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", total.ToString(CultureInfo.InvariantCulture));
 
             sw.Write(textoConfiguracao);
 
@@ -164,6 +165,13 @@ namespace ConsoleApplication1
                 var f = _funcoes[i];
                 sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, _package + "." + f.Nome));
                 sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));    
+            }
+
+            for (int i = 0; i < _argumentos.Count; i++)
+            {
+                var argumento = _argumentos[i];
+                sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento));
+                sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + i, 0));
             }
             
             sw.Close();
@@ -192,7 +200,7 @@ namespace ConsoleApplication1
                 if (funcao.Argumentos.Count > 0)
                 {
                     sw.Write(string.Format("<{0}> ::= ", funcao.Nome));
-                    sw.Write(string.Format("({0} ", funcao.Nome));
+                    sw.Write(string.Format("({0}", funcao.Nome));
 
                     foreach (var argumento in funcao.Argumentos)
                     {
@@ -208,7 +216,7 @@ namespace ConsoleApplication1
             foreach (var argumento in _argumentos)
             {
                 sw.Write(string.Format("<{0}> ::= ", argumento));
-                sw.Write(string.Format("({0} ", argumento));
+                sw.Write(string.Format("({0}", argumento));
                 sw.Write(")");
                 sw.WriteLine("");
             }
