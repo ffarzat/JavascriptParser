@@ -22,7 +22,7 @@ import ec.gp.GPIndividual;
 
 public class @NomeFuncao extends GPNode {
 
-	public String toString() { return " @NomeFuncao"; }
+	public String toString() { return "@NomeFuncao"; }
     
 
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack, final GPIndividual individual, final Problem problem)
@@ -32,7 +32,7 @@ public class @NomeFuncao extends GPNode {
     }
 
 
-    public void executarFuncao() throws IOException {
+    public void executarFuncao()  {
         Context context = Context.enter();
         context.setOptimizationLevel(-1); // disable bytecode generation because of large code
         try {

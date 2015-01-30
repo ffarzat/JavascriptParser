@@ -15,9 +15,10 @@ namespace ConsoleApplication1
     class Program
     {
         static int _indent = 0;
-        private const string jsFile = @"angular.js";
+        private static string jsFile = @"angular.js";
         private static string _configFile = @"Template.params";
         private static string _javaFile = @"Template.java";
+        private static string _package = "ec.app.@package";
 
         static List<Funcao> _funcoes = new List<Funcao>();
 
@@ -32,6 +33,9 @@ namespace ConsoleApplication1
                 string textoConfiguracao = System.IO.File.ReadAllText(_configFile);
                 string textoJava = System.IO.File.ReadAllText(_javaFile);
                 
+                //macetão
+                jsFile = jsFile.Replace(".", "");
+                _package = _package.Replace("@package", jsFile);
 
                 #region processa o js alvo
                 var stream = new ANTLRStringStream(text);
@@ -64,7 +68,7 @@ namespace ConsoleApplication1
         {
             RecuperarFuncoesEParametros(tree);
 
-            var dirinfo = Directory.CreateDirectory("output");
+            var dirinfo = Directory.CreateDirectory(jsFile);
 
             var nomeArquivoGramatica = ProcessarGramatica(dirinfo);
             var nomeArquivoConfiguracao = ProcessarConfiguracao(dirinfo, textoConfiguracao, nomeArquivoGramatica);
@@ -88,15 +92,17 @@ namespace ConsoleApplication1
 
                 var arquivo = dirinfo.FullName + @"\" + f.Nome + ".java";
 
-                var sw = new StreamWriter(arquivo, false, Encoding.UTF8);
+                var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+
+                string textoClasse = textoJava;
 
                 //@package
-                textoJava = textoJava.Replace("@package", jsFile);
+                textoClasse = textoClasse.Replace("@package", jsFile);
                 //@NomeFuncao
-                textoJava = textoJava.Replace("@NomeFuncao", f.Nome);
-                
+                textoClasse = textoClasse.Replace("@NomeFuncao", f.Nome);
 
-                sw.Write(textoJava);
+
+                sw.Write(textoClasse);
 
                 //sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
                 //sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));
@@ -123,7 +129,7 @@ namespace ConsoleApplication1
         {
             var arquivo = configuracao.FullName + @"\" + jsFile + ".params";
 
-            var sw = new StreamWriter(arquivo, false, Encoding.UTF8);
+            var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
 
             //@NomeArquivoGramatica
             textoConfiguracao = textoConfiguracao.Replace("@NomeArquivoGramatica", nomeArquivoGramatica);
@@ -135,7 +141,7 @@ namespace ConsoleApplication1
             for (int i = 0; i < _funcoes.Count; i++)
             {
                 var f = _funcoes[i];
-                sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
+                sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, _package + "." + f.Nome));
                 sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));    
             }
             
@@ -151,7 +157,7 @@ namespace ConsoleApplication1
         private static string ProcessarGramatica(DirectoryInfo dirinfo)
         {
             var arquivo = dirinfo.FullName + @"\" + jsFile + ".grammar";
-            var sw = new StreamWriter(arquivo, false, Encoding.UTF8);
+            var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
 
             //Declara as funções na gramatica
             foreach (var funcao in _funcoes)
@@ -179,7 +185,7 @@ namespace ConsoleApplication1
 
             sw.Close();
 
-            return arquivo;
+            return Path.GetFileName(arquivo);
         }
 
         /// <summary>
