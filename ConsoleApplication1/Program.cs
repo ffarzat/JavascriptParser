@@ -110,7 +110,28 @@ namespace ConsoleApplication1
                 sw.Close();
             }
 
-            
+            for (int i = 0; i < _argumentos.Count; i++)
+            {
+                var argumento = _argumentos[i];
+
+                var arquivo = dirinfo.FullName + @"\" + argumento + ".java";
+
+                var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+
+                string textoClasse = textoJava;
+
+                //@package
+                textoClasse = textoClasse.Replace("@package", jsFile);
+                //@NomeFuncao
+                textoClasse = textoClasse.Replace("@NomeFuncao", argumento);
+
+                sw.Write(textoClasse);
+
+                //sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
+
+
+                sw.Close();
+            }
 
             
         }
@@ -175,13 +196,23 @@ namespace ConsoleApplication1
 
                     foreach (var argumento in funcao.Argumentos)
                     {
-                        sw.Write(string.Format("({0}) ", argumento.Nome));
+                        sw.Write(string.Format("<{0}> ", argumento.Nome));
                     }
 
                     sw.Write(")");
                     sw.WriteLine("");
                 }
             }
+
+            //Descreve os argumentos
+            foreach (var argumento in _argumentos)
+            {
+                sw.Write(string.Format("<{0}> ::= ", argumento));
+                sw.Write(string.Format("({0} ", argumento));
+                sw.Write(")");
+                sw.WriteLine("");
+            }
+
 
             sw.Close();
 
