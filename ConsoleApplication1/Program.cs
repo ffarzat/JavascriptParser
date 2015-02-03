@@ -185,31 +185,45 @@ namespace ConsoleApplication1
         /// <param name="dirinfo"></param>
         private static string ProcessarGramatica(DirectoryInfo dirinfo)
         {
+
+            int i = 0;
+
             var arquivo = dirinfo.FullName + @"\" + jsFile + ".grammar";
             var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
 
             //Declara as funções na gramatica
             foreach (var funcao in _funcoes)
             {
-                sw.WriteLine(string.Format("<start> ::= <{0}> ", funcao.Nome));
+
+               // if (funcao.Argumentos.Count > 0)
+                //{
+                    sw.WriteLine(string.Format("<start> ::= <{0}> ", funcao.Nome));
+                    
+                //}
             }
 
             //Descreve as funções
             foreach (var funcao in _funcoes)
             {
-                if (funcao.Argumentos.Count > 0)
-                {
+                //if (funcao.Argumentos.Count > 0)
+                //{
                     sw.Write(string.Format("<{0}> ::= ", funcao.Nome));
                     sw.Write(string.Format("({0} ", funcao.Nome));
 
                     foreach (var argumento in funcao.Argumentos)
                     {
                         sw.Write(string.Format("<{0}> ", argumento.Nome));
+                        
+                        if (!_argumentos.Contains(argumento.Nome))
+                        {
+                            _argumentos.Add(argumento.Nome);
+                            
+                        }
                     }
 
                     sw.Write(")");
                     sw.WriteLine("");
-                }
+                //}
             }
 
             //Descreve os argumentos
@@ -219,10 +233,14 @@ namespace ConsoleApplication1
                 sw.Write(string.Format("({0}", argumento));
                 sw.Write(")");
                 sw.WriteLine("");
+                
             }
 
-
+            
             sw.Close();
+            //i++;
+            //Console.WriteLine(i);
+            //Console.Read();
 
             return Path.GetFileName(arquivo);
         }
@@ -252,8 +270,8 @@ namespace ConsoleApplication1
                                 foreach (CommonTree child2 in child.Children)
                                 {
                                     f.AddArgumento(child2.Text);
-                                    if(!_argumentos.Contains(child2.Text))
-                                        _argumentos.Add(child2.Text);
+                                    //if(!_argumentos.Contains(child2.Text))
+                                        //_argumentos.Add(child2.Text);
                                 }
                             }
                         }
