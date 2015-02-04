@@ -19,6 +19,7 @@ namespace ConsoleApplication1
         private static string _configFile = @"Template.params";
         private static string _javaFile = @"Template.java";
         private static string _package = "ec.app.@package";
+        private static string _javaProblemFile = @"Problem.java";
 
         static List<Funcao> _funcoes = new List<Funcao>();
 
@@ -33,6 +34,7 @@ namespace ConsoleApplication1
                 string text = System.IO.File.ReadAllText(jsFile);
                 string textoConfiguracao = System.IO.File.ReadAllText(_configFile);
                 string textoJava = System.IO.File.ReadAllText(_javaFile);
+                string textoProblema = System.IO.File.ReadAllText(_javaProblemFile);
                 
                 //macetão
                 jsFile = jsFile.Replace(".", "");
@@ -47,7 +49,7 @@ namespace ConsoleApplication1
                 var tree = programReturn.Tree as CommonTree;
                 #endregion
 
-                GerarArquivosParaExecucao(tree, textoConfiguracao, textoJava);
+                GerarArquivosParaExecucao(tree, textoConfiguracao, textoJava, textoProblema);
                 
             }
             catch (Exception ex)
@@ -65,7 +67,8 @@ namespace ConsoleApplication1
         /// <param name="tree"></param>
         /// <param name="textoConfiguracao"></param>
         /// <param name="textoJava"></param>
-        private static void GerarArquivosParaExecucao(CommonTree tree, string textoConfiguracao, string textoJava)
+        /// <param name="textoProblema"></param>
+        private static void GerarArquivosParaExecucao(CommonTree tree, string textoConfiguracao, string textoJava, string textoProblema)
         {
             RecuperarFuncoesEParametros(tree);
 
@@ -73,9 +76,31 @@ namespace ConsoleApplication1
 
             var nomeArquivoGramatica = ProcessarGramatica(dirinfo);
             var nomeArquivoConfiguracao = ProcessarConfiguracao(dirinfo, textoConfiguracao, nomeArquivoGramatica);
-
             ProcessarArquivosDeNo(dirinfo, textoJava);
+            var nomeArquivoProblema = ProcessarProblema(dirinfo, textoProblema);
 
+        }
+
+        /// <summary>
+        /// Gera o .Java do problema
+        /// </summary>
+        /// <param name="dirinfo"></param>
+        /// <param name="textoProblema"></param>
+        /// <returns></returns>
+        private static string ProcessarProblema(DirectoryInfo dirinfo, string textoProblema)
+        {
+            var arquivo = dirinfo.FullName + @"\" + jsFile + ".Problem.java";
+
+            string textoClasse = textoProblema;
+
+            //@package
+            textoClasse = textoClasse.Replace("@package", jsFile);
+
+            var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+            sw.Write(textoClasse);
+            sw.Close();
+
+            return arquivo;
         }
 
         /// <summary>
