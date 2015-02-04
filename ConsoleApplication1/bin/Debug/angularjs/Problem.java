@@ -9,7 +9,7 @@ import ec.simple.SimpleFitness;
 import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
 
-public class angularjsProblem extends GPProblem implements SimpleProblemForm
+public class Problem extends GPProblem implements SimpleProblemForm
 {
 	
 	public Integer currentX;
@@ -39,13 +39,13 @@ public class angularjsProblem extends GPProblem implements SimpleProblemForm
 
 		if (!ind.evaluated) 
 		{
-			GITesteData input = (GITesteData)(this.input);
+			//GITesteData input = (GITesteData)(this.input);
             
             Integer total = currentX +currentY;
 
             
 			double fitness = 100000.0;
-			input.inteiro = 0;
+			//input.inteiro = 0;
 			
 			long time = System.nanoTime();
             
@@ -54,8 +54,8 @@ public class angularjsProblem extends GPProblem implements SimpleProblemForm
 			long totalTime = (System.nanoTime() - time); 
 			
 			
-			if(input.inteiro == 10)
-			{	
+			//if(input.inteiro == 10)
+			//{	
 				//fitness = ((GPIndividual)ind).trees[0].child.children.length;
 				//fitness = 10000 - fitness;
 
@@ -69,7 +69,7 @@ public class angularjsProblem extends GPProblem implements SimpleProblemForm
 				//System.out.println("(total=" + total);
 				//System.out.println("X=" + currentX );
 				//System.out.println("Y=" + currentY );
-			}
+			//}
 			
 			// the fitness better be KozaFitness!
 	        KozaFitness f = ((KozaFitness)ind.fitness);

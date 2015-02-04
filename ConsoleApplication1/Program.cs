@@ -75,9 +75,10 @@ namespace ConsoleApplication1
             var dirinfo = Directory.CreateDirectory(jsFile);
 
             var nomeArquivoGramatica = ProcessarGramatica(dirinfo);
-            var nomeArquivoConfiguracao = ProcessarConfiguracao(dirinfo, textoConfiguracao, nomeArquivoGramatica);
+            var nomeProblema = ProcessarProblema(dirinfo, textoProblema);
+            var nomeArquivoConfiguracao = ProcessarConfiguracao(dirinfo, textoConfiguracao, nomeArquivoGramatica, nomeProblema);
             ProcessarArquivosDeNo(dirinfo, textoJava);
-            var nomeArquivoProblema = ProcessarProblema(dirinfo, textoProblema);
+            
 
         }
 
@@ -89,7 +90,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private static string ProcessarProblema(DirectoryInfo dirinfo, string textoProblema)
         {
-            var arquivo = dirinfo.FullName + @"\" + jsFile + ".Problem.java";
+            var arquivo = dirinfo.FullName + @"\Problem.java";
 
             string textoClasse = textoProblema;
 
@@ -100,7 +101,7 @@ namespace ConsoleApplication1
             sw.Write(textoClasse);
             sw.Close();
 
-            return arquivo;
+            return "ec.app." + jsFile + ".Problem";
         }
 
         /// <summary>
@@ -167,11 +168,12 @@ namespace ConsoleApplication1
         /// <param name="configuracao"></param>
         /// <param name="textoConfiguracao"></param>
         /// <param name="nomeArquivoGramatica"></param>
+        /// <param name="nomeProblema"></param>
         /// <remarks>
         /// @NomeArquivoGramatica
         /// @NumeroDeFuncoes
         /// </remarks>
-        private static string ProcessarConfiguracao(DirectoryInfo configuracao, string textoConfiguracao, string nomeArquivoGramatica)
+        private static string ProcessarConfiguracao(DirectoryInfo configuracao, string textoConfiguracao, string nomeArquivoGramatica, string nomeProblema)
         {
             var arquivo = configuracao.FullName + @"\" + jsFile + ".params";
 
@@ -182,6 +184,10 @@ namespace ConsoleApplication1
             //@NumeroDeFuncoes
             int total = _funcoes.Count + _argumentos.Count;
             textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", total.ToString(CultureInfo.InvariantCulture));
+            //@Problema
+            textoConfiguracao = textoConfiguracao.Replace("@Problema", nomeProblema);
+            
+
 
             sw.Write(textoConfiguracao);
 
