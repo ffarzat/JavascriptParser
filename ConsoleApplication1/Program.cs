@@ -186,20 +186,26 @@ namespace ConsoleApplication1
         private static string ProcessarGramatica(DirectoryInfo dirinfo)
         {
 
+            //ECJ com gramatica tem problema para processar sobrecarga... :-/
+
             int i = 0;
 
             var arquivo = dirinfo.FullName + @"\" + jsFile + ".grammar";
             var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
 
+            var funcoesPrimeiroNivel = new List<string>();
+
             //Declara as funções na gramatica
             foreach (var funcao in _funcoes)
             {
-
-               // if (funcao.Argumentos.Count > 0)
-                //{
-                    sw.WriteLine(string.Format("<start> ::= <{0}> ", funcao.Nome));
-                    
-                //}
+                if (!funcoesPrimeiroNivel.Contains(funcao.Nome))
+                {
+                    // if (funcao.Argumentos.Count > 0)
+                    //{
+                        sw.WriteLine(string.Format("<start> ::= <{0}> ", funcao.Nome));
+                        funcoesPrimeiroNivel.Add(funcao.Nome);
+                    //}
+                }
             }
 
             //Descreve as funções
@@ -263,6 +269,8 @@ namespace ConsoleApplication1
                         if (child.Type == 148) //Nome da função
                             f.Nome = child.Text;
 
+                        
+
                         if (child.Type == 111)//ARGS da funcao
                         {
                             if (child.ChildCount > 0)
@@ -279,7 +287,8 @@ namespace ConsoleApplication1
                 }
 
                 if(!String.IsNullOrEmpty(f.Nome))
-                    _funcoes.Add(f);
+                    if (!f.Nome.StartsWith("_"))
+                        _funcoes.Add(f);
 
             }
 

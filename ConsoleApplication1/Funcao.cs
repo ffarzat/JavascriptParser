@@ -14,7 +14,7 @@ namespace ConsoleApplication1
         /// <summary>
         /// Nome da Função
         /// </summary>
-        public string Nome;
+        private string _nome;
 
         /// <summary>
         /// Lista dos argumentos da Função
@@ -27,6 +27,15 @@ namespace ConsoleApplication1
         public List<Argumento> Argumentos
         {
             get { return _argumentos; }
+        }
+
+        /// <summary>
+        /// Nome da Função
+        /// </summary>
+        public string Nome
+        {
+            get { return Argumentos.Count == 0 ? _nome : _nome + "_" + Argumentos.Count; }
+            set { _nome = value; }
         }
 
 
