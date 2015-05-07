@@ -86,6 +86,9 @@
     <Content Include="jquery-ui-1.8.24.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="moment.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Problem.java">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -15,7 +15,7 @@ namespace ConsoleApplication1
     class Program
     {
         static int _indent = 0;
-        private static string jsFile = @"angular.js";
+        private static string jsFile = @"moment.js";
         private static string _configFile = @"Template.params";
         private static string _javaFile = @"Template.java";
         private static string _package = "ec.app.@package";
