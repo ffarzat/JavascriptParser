@@ -15,7 +15,8 @@ namespace ConsoleApplication1
     class Program
     {
         static int _indent = 0;
-        private static string jsFile = @"moment.js";
+        private static string jsFile = @"scriptData.js";
+        private static string jsFileTest = @"scriptDataTest.js";
         private static string _configFile = @"Template.params";
         private static string _javaFile = @"Template.java";
         private static string _package = "ec.app.@package";
@@ -35,7 +36,15 @@ namespace ConsoleApplication1
                 string textoConfiguracao = System.IO.File.ReadAllText(_configFile);
                 string textoJava = System.IO.File.ReadAllText(_javaFile);
                 string textoProblema = System.IO.File.ReadAllText(_javaProblemFile);
-                
+
+
+
+                var dirinfo = Directory.CreateDirectory(jsFile.Replace(".", ""));
+
+                //Copia o js principal e o Js de Testes
+                File.Copy(jsFile, Path.Combine(dirinfo.FullName, jsFile));
+                File.Copy(jsFileTest, Path.Combine(dirinfo.FullName, jsFileTest));
+
                 //macetão
                 jsFile = jsFile.Replace(".", "");
                 _package = _package.Replace("@package", jsFile);
@@ -72,7 +81,7 @@ namespace ConsoleApplication1
         {
             RecuperarFuncoesEParametros(tree);
 
-            var dirinfo = Directory.CreateDirectory(jsFile);
+            var dirinfo = new DirectoryInfo(jsFile);
 
             var nomeArquivoGramatica = ProcessarGramatica(dirinfo);
             var nomeProblema = ProcessarProblema(dirinfo, textoProblema);

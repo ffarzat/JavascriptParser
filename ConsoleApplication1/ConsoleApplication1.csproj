@@ -92,6 +92,12 @@
     <Content Include="Problem.java">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="scriptData.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="scriptDataTest.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Template.java">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

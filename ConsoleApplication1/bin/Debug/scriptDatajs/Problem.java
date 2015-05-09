@@ -1,12 +1,4 @@
-package ec.app.@package;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+package ec.app.scriptDatajs;
 
 import ec.EvolutionState;
 import ec.Individual;
@@ -19,8 +11,10 @@ import ec.util.Parameter;
 
 public class Problem extends GPProblem implements SimpleProblemForm
 {
-	public String scriptOrigem;
-	public String scriptTestes;
+	
+	public Integer currentX;
+    public Integer currentY;
+    public String texto;
 	
     public void setup(final EvolutionState state,
             final Parameter base)
@@ -29,14 +23,14 @@ public class Problem extends GPProblem implements SimpleProblemForm
 	        // very important, remember this
 	        super.setup(state,base);
 
-	        scriptOrigem = state.parameters.getStringWithDefault(base.push("scriptOrigem"), null, "");
-	        scriptTestes = state.parameters.getStringWithDefault(base.push("scriptTestes"),null,"");
+	        currentX = state.parameters.getInt(base.push("currentX"),null,0);
+	        currentY = state.parameters.getInt(base.push("currentY"),null,0);
 	        
-	        if (scriptOrigem=="")
-	            state.output.error("Não foi definido o script alvo da otimização");
+	        if (currentX==0)
+	            state.output.error("The value of currentX was not defined");
 	        
-	        if (scriptTestes=="")
-	            state.output.error("Não foi definido script de Testes");
+	        if (currentY==0)
+	            state.output.error("The value of currentY was not defined");
     }
 	
 	@Override
@@ -45,8 +39,13 @@ public class Problem extends GPProblem implements SimpleProblemForm
 
 		if (!ind.evaluated) 
 		{
+			//GITesteData input = (GITesteData)(this.input);
+            
+            Integer total = currentX +currentY;
+
+            
 			double fitness = 100000.0;
-			
+			//input.inteiro = 0;
 			
 			long time = System.nanoTime();
             
@@ -54,26 +53,7 @@ public class Problem extends GPProblem implements SimpleProblemForm
 			
 			long totalTime = (System.nanoTime() - time); 
 			
-			//Exec do testes. Corretude e tempo de execução
-			ScriptEngineManager engineManager = new ScriptEngineManager();
-			ScriptEngine engine = engineManager.getEngineByName("nashorn");
-			try {
-				
-			 //File file = new File(scriptTestes);
-			 //System.out.println(file.getAbsolutePath());
-
-			 engine.eval(new FileReader(scriptTestes));
-			 
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ScriptException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
-			
-						
 			//if(input.inteiro == 10)
 			//{	
 				//fitness = ((GPIndividual)ind).trees[0].child.children.length;
@@ -81,7 +61,7 @@ public class Problem extends GPProblem implements SimpleProblemForm
 
 				fitness = totalTime ;
 				
-				ind.printIndividualForHumans(state, threadnum);
+				//ind.printIndividualForHumans(state, threadnum);
 				//System.out.println("fitness=" + fitness );
 
 
