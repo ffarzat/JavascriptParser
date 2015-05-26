@@ -232,12 +232,18 @@ namespace ConsoleApplication1
             //cada function agora é uma instrução, uma linha de código
             var funcoesPrimeiroNivel = new List<string>();
 
-            var funcaoOtimizar = tree.GetChild(0).GetChild(2); //TODO: buscar pelo nome (e pegar o Block)
+            var funcaoOtimizar = RecuperarNoDaFuncao(tree, _nomeFuncaoOtimizar);
 
-            //Descreve as funções
+            if(funcaoOtimizar == null)
+                throw new ApplicationException(String.Format("Função não encontrada: {0}", _nomeFuncaoOtimizar));
+
+            //Descreve as funções. Todas as do raiz precisam ser visitadas. Cada instrução pode ter um tratamento adequado
             for (int j = 0; j < funcaoOtimizar.ChildCount; j++)
             {
                 var funcao = funcaoOtimizar.GetChild(j);
+
+                EscreverArvoreDaFuncao(funcaoOtimizar, sw);
+
 
                 sw.Write(string.Format("<{0}> ::= ", funcao.Text));
                 sw.Write(string.Format("({0} ", funcao.Text));
@@ -264,13 +270,140 @@ namespace ConsoleApplication1
                 
             //}
 
-            
             sw.Close();
             //i++;
             //Console.WriteLine(i);
             //Console.Read();
 
             return Path.GetFileName(arquivo);
+        }
+
+        /// <summary>
+        /// Visita todas as instruções da function e escreve a gramática correspondente
+        /// </summary>
+        /// <param name="funcaoOtimizar"></param>
+        /// <param name="sw"></param>
+        private static void EscreverArvoreDaFuncao(ITree funcaoOtimizar, StreamWriter sw)
+        {
+
+            var blocoDaFuncao = funcaoOtimizar.GetChild(2);
+
+            for (int i = 0; i < blocoDaFuncao.ChildCount; i++)
+            {
+
+                var instrucaoAtual = blocoDaFuncao.GetChild(i);
+
+                sw.Write(string.Format("<{0}> ::= ", "start"));
+                sw.Write(string.Format("({0} ", instrucaoAtual.Text));
+
+                EscreverNosFilhosPeloTipo(instrucaoAtual, sw);
+                
+                sw.Write(")");
+                sw.WriteLine("");
+            }
+
+            sw.FlushAsync();
+        }
+
+        /// <summary>
+        /// Decide pelo tipo de instrução como escrever a gramatica 
+        /// </summary>
+        /// <param name="instrucaoAtual"></param>
+        /// <param name="sw"></param>
+        private static void EscreverNosFilhosPeloTipo(ITree instrucaoAtual, StreamWriter sw)
+        {
+
+            for (int i = 0; i < instrucaoAtual.ChildCount; i++)
+            {
+                var instrucao = instrucaoAtual.GetChild(i);
+                EscreverNoPeloTipo(instrucao, sw);
+            }
+
+
+        }
+
+
+        private static void EscreverNoPeloTipo(ITree instrucao, StreamWriter sw)
+        {
+
+            switch (instrucao.Type)
+            {
+
+                case 18: //if
+                    
+                    for (int i = 0; i < instrucao.ChildCount; i++)
+                    {
+                        var instrucaoDoBloco = instrucao.GetChild(i);
+                        EscreverNoPeloTipo(instrucaoDoBloco, sw);
+                    }
+                    break;
+
+                case 74: //Atribuição de variável
+                    sw.Write(string.Format("({0} ", instrucao.Text));
+                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
+                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
+                    sw.Write(") ");
+                    break;
+
+                case 80: //Soma
+                    sw.Write(string.Format("({0} ", instrucao.Text));
+                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
+                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
+                    sw.Write(") ");
+                    break;
+
+                case 98: //Atribuição de variável
+                    sw.Write(string.Format("({0} ", instrucao.Text));
+                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
+                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
+                    sw.Write(") ");
+                    break;
+
+                case 113: //Block
+
+                    for (int i = 0; i < instrucao.ChildCount; i++)
+                    {
+                        var instrucaoDoBloco = instrucao.GetChild(i);
+                        EscreverNoPeloTipo(instrucaoDoBloco, sw);
+                    }
+                    break;
+
+                case 116: //CALL de Função
+                    sw.Write(string.Format("({0} ", instrucao.Text));
+                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
+                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
+                    sw.Write(") ");
+                    break;
+
+                case 126: //PAREXPR (algo dentro)
+                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
+
+                    break;
+
+                default:
+                    sw.Write(string.Format("<{0}> ", instrucao.Text));
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Descobre qual a função na Tree pelo nome
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <param name="nomeFuncaoOtimizar"></param>
+        /// <returns></returns>
+        private static ITree RecuperarNoDaFuncao(CommonTree tree, string nomeFuncaoOtimizar)
+        {
+
+            for (int i = 0; i < tree.ChildCount; i++)
+            {
+                var funcaoAtual = tree.GetChild(i);
+
+                if (funcaoAtual.GetChild(0).Text == nomeFuncaoOtimizar)
+                    return funcaoAtual;
+            }
+
+            return null;
         }
 
 

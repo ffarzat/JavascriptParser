@@ -1,11 +1,10 @@
-<start> ::= <AvancaDias_4> 
-<start> ::= <DeterminarQuantidadeDeDias_2> 
-<start> ::= <escreverNaTela_1> 
-<AvancaDias_4> ::= (AvancaDias_4 <lnDias> <ldDia> <ldMes> <ldAno> )
-<DeterminarQuantidadeDeDias_2> ::= (DeterminarQuantidadeDeDias_2 <ldMes> <ldAno> )
-<escreverNaTela_1> ::= (escreverNaTela_1 <texto> )
-<lnDias> ::= (lnDias)
-<ldDia> ::= (ldDia)
-<ldMes> ::= (ldMes)
-<ldAno> ::= (ldAno)
-<texto> ::= (texto)
+<start> ::= (var (= <ndiasmes> <""> ) )
+<start> ::= (var <ltDia> <ltMes> <ltAno> )
+<start> ::= (= <ltDia> <ldDia> )
+<start> ::= (= <ltMes> <ldMes> )
+<start> ::= (= <ltAno> <ldAno> )
+<start> ::= (= <ndiasmes> (CALL <DeterminarQuantidadeDeDias> <ARGS> ) )
+<start> ::= (if (<= (+ <ldDia> <lnDias> ) <ndiasmes> ) (= <ltDia> (+ <ldDia> <lnDias> ) ) (= <ltDia> (CALL <parseInt> <ARGS> ) ) (<= (CALL <parseInt> <ARGS> ) <12> ) (= <ltMes> (CALL <parseInt> <ARGS> ) ) (= <ltMes> (CALL <parseInt> <ARGS> ) ) (= <ltAno> (CALL <parseInt> <ARGS> ) ) )
+<start> ::= (var (= <resultado> (+ (+ (+ (+ <ltDia> <"/"> ) <ltMes> ) <"/"> ) <ltAno> ) ) )
+<start> ::= (CALL <escreverNaTela> <ARGS> )
+<start> ::= (return <resultado> )

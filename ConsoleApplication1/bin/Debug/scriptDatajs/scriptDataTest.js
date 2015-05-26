@@ -35,35 +35,12 @@ function AvancaDias(lnDias, ldDia, ldMes, ldAno)
 	return (resultado);
 }
 
-/* Determina quantos dias tem o mês */
-function DeterminarQuantidadeDeDias(ldMes, ldAno)
-{
-	if ((ldMes==01)||(ldMes==03)||(ldMes==05)||(ldMes==07)||(ldMes==08)||(ldMes==10)||(ldMes==12))
-	{
-		ndiasmes=31
-	}
-	else if ((ldMes==04)||(ldMes==06)||(ldMes==09)||(ldMes==11))	//30 dias
-	{
-		ndiasmes=30
-	}
-	else   //fevereiro
-	{
-		//Calcula ano bissexto
-		if (((ldAno % 4) == 0) && ((ldAno % 100) == 0))
-			ndiasmes=29
-		else if ((ldAno % 400) == 0)
-			ndiasmes=29
-		else
-			ndiasmes=28
-	}
-
-	return ndiasmes;
-}
-
 /*Escreve o resultado no console javascript*/
-function escreverNaTela(texto)
+function Teste()
 {
-	print(texto); //Risco de não funcionar e precisar o env.js
+	var stringData = AvancaDias(1, "02/02/2015");
+	
+	
 }
 
 
