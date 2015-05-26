@@ -34,8 +34,6 @@ namespace ConsoleApplication1
                 string textoJava = System.IO.File.ReadAllText(_javaFile);
                 string textoProblema = System.IO.File.ReadAllText(_javaProblemFile);
 
-
-
                 var dirinfo = Directory.CreateDirectory(jsFile.Replace(".", ""));
 
                 //Copia o js principal e o Js de Testes
@@ -221,59 +219,20 @@ namespace ConsoleApplication1
         /// <param name="tree"></param>
         private static string ProcessarGramatica(DirectoryInfo dirinfo, CommonTree tree)
         {
-
-            //ECJ com gramatica tem problema para processar sobrecarga de método... :-/
-
             int i = 0;
-
             var arquivo = dirinfo.FullName + @"\" + jsFile + ".grammar";
             var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-
-            //cada function agora é uma instrução, uma linha de código
-            var funcoesPrimeiroNivel = new List<string>();
 
             var funcaoOtimizar = RecuperarNoDaFuncao(tree, _nomeFuncaoOtimizar);
 
             if(funcaoOtimizar == null)
                 throw new ApplicationException(String.Format("Função não encontrada: {0}", _nomeFuncaoOtimizar));
-
-            //Descreve as funções. Todas as do raiz precisam ser visitadas. Cada instrução pode ter um tratamento adequado
             for (int j = 0; j < funcaoOtimizar.ChildCount; j++)
             {
-                var funcao = funcaoOtimizar.GetChild(j);
-
                 EscreverArvoreDaFuncao(funcaoOtimizar, sw);
-
-
-                sw.Write(string.Format("<{0}> ::= ", funcao.Text));
-                sw.Write(string.Format("({0} ", funcao.Text));
-
-                for (int k = 0; k < funcao.ChildCount; k++)
-                {
-                    var argumento = funcao.GetChild(k);
-
-                    sw.Write(string.Format("<{0}> ", argumento.Text));
-                }
-
-                sw.Write(")");
-                sw.WriteLine("");
-                //}
             }
 
-            ////Descreve os argumentos
-            //foreach (var argumento in _argumentos)
-            //{
-            //    sw.Write(string.Format("<{0}> ::= ", argumento));
-            //    sw.Write(string.Format("({0}", argumento));
-            //    sw.Write(")");
-            //    sw.WriteLine("");
-                
-            //}
-
             sw.Close();
-            //i++;
-            //Console.WriteLine(i);
-            //Console.Read();
 
             return Path.GetFileName(arquivo);
         }
