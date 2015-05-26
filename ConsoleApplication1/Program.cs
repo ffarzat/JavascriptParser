@@ -291,81 +291,45 @@ namespace ConsoleApplication1
             {
 
                 case 18: //if
-                    sw.Write(string.Format("({0} ", instrucao.Text));
-                    for (int i = 0; i < instrucao.ChildCount; i++)
-                    {
-                        var instrucaoDoBloco = instrucao.GetChild(i);
-                        EscreverNoPeloTipo(instrucaoDoBloco, sw);
-                    }
-                    sw.Write(") ");
+                    EscreverFuncaoComVariosParametros(instrucao, sw);
                     break;
 
                 case 22: //return
-                    sw.Write(string.Format("({0} ", instrucao.Text));
-                    for (int i = 0; i < instrucao.ChildCount; i++)
-                    {
-                        var instrucaoDoBloco = instrucao.GetChild(i);
-                        EscreverNoPeloTipo(instrucaoDoBloco, sw);
-                    }
-                    sw.Write(") ");
+                    EscreverFuncaoComVariosParametros(instrucao, sw);
                     break;
 
                 case 28: //Var
-                    sw.Write(string.Format("({0} ", instrucao.Text));
-                    for (int i = 0; i < instrucao.ChildCount; i++)
-                    {
-                        var instrucaoDoBloco = instrucao.GetChild(i);
-                        EscreverNoPeloTipo(instrucaoDoBloco, sw);
-                    }
-                    sw.Write(") ");
+                    EscreverFuncaoComVariosParametros(instrucao, sw);
 
                     break;
 
                 case 74: //Atribuição de variável
-                    sw.Write(string.Format("({0} ", instrucao.Text));
-                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
-                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
-                    sw.Write(") ");
+                    EscreverFuncaoComDoisParametros(instrucao, sw);                    
                     break;
 
                 case 80: //Soma
-                    sw.Write(string.Format("({0} ", instrucao.Text));
-                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
-                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
-                    sw.Write(") ");
+                    EscreverFuncaoComDoisParametros(instrucao, sw);
                     break;
 
                 case 83: // %
-                    sw.Write(string.Format("({0} ", instrucao.Text));
-                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
-                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
-                    sw.Write(") ");
+                    EscreverFuncaoComDoisParametros(instrucao, sw);
                     break;
 
                 case 98: //Atribuição de variável
-                    sw.Write(string.Format("({0} ", instrucao.Text));
-                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
-                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
-                    sw.Write(") ");
+                    EscreverFuncaoComDoisParametros(instrucao, sw);
                     break;
 
                 case 109: // divisão (/)
-                    sw.Write(string.Format("({0} ", instrucao.Text));
-                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
-                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
-                    sw.Write(") ");
+                    EscreverFuncaoComDoisParametros(instrucao, sw);
                     break;
 
                 case 111: //Args
-                    //sw.Write(string.Format("(ARGS_{0} ", instrucao.Parent.GetChild(0).Text));
 
                     for (int i = 0; i < instrucao.ChildCount; i++)
                     {
                         var instrucaoDoBloco = instrucao.GetChild(i);
                         EscreverNoPeloTipo(instrucaoDoBloco, sw);
                     }
-
-                    //sw.Write(") ");
 
                     break;
 
@@ -379,20 +343,65 @@ namespace ConsoleApplication1
                     break;
 
                 case 116: //CALL de Função
-                    sw.Write(string.Format("({0} ", instrucao.GetChild(0).Text)); //nome da função
+                    EscreverInicioDeFuncao(instrucao.GetChild(0), sw);
+                    
                     EscreverNoPeloTipo(instrucao.GetChild(1), sw); //Argumentos
-                    sw.Write(") ");
+
+                    EscreverFinalDeFuncao(sw);
+                    
                     break;
 
                 case 126: //PAREXPR (algo dentro)
                     EscreverNoPeloTipo(instrucao.GetChild(0), sw);
-
                     break;
 
                 default:
+                    //Escreve variáveis na gramática
                     sw.Write(string.Format("<{0}> ", instrucao.Text));
                     break;
             }
+        }
+
+        private static void EscreverFuncaoComDoisParametros(ITree instrucao, StreamWriter sw)
+        {
+            EscreverInicioDeFuncao(instrucao, sw);
+
+            EscreverNoPeloTipo(instrucao.GetChild(0), sw);
+            EscreverNoPeloTipo(instrucao.GetChild(1), sw);
+
+            EscreverFinalDeFuncao(sw);
+        }
+
+        private static void EscreverFuncaoComVariosParametros(ITree instrucao, StreamWriter sw)
+        {
+            EscreverInicioDeFuncao(instrucao, sw);
+
+            for (int i = 0; i < instrucao.ChildCount; i++)
+            {
+                var instrucaoDoBloco = instrucao.GetChild(i);
+                EscreverNoPeloTipo(instrucaoDoBloco, sw);
+            }
+
+            EscreverFinalDeFuncao(sw);
+        }
+
+        /// <summary>
+        /// Fecha um nó terminal na gramática
+        /// </summary>
+        /// <param name="sw"></param>
+        private static void EscreverFinalDeFuncao(StreamWriter sw)
+        {
+            sw.Write(") ");
+        }
+
+        /// <summary>
+        /// Abre nó terminal na gramática
+        /// </summary>
+        /// <param name="instrucao"></param>
+        /// <param name="sw"></param>
+        private static void EscreverInicioDeFuncao(ITree instrucao, StreamWriter sw)
+        {
+            sw.Write(string.Format("({0} ", instrucao.Text));
         }
 
         /// <summary>
