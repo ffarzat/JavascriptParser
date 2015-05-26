@@ -43,4 +43,3 @@ D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr4.StringTemplate.p
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr4.StringTemplate.Visualizer.pdb
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
-D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache

@@ -14,7 +14,6 @@ namespace ConsoleApplication1
 {
     class Program
     {
-        static int _indent = 0;
         private static string jsFile = @"scriptData.js";
         private static string jsFileTest = @"scriptDataTest.js";
         private static string _configFile = @"Template.params";
@@ -27,12 +26,10 @@ namespace ConsoleApplication1
         {
             try
             {
-
-
-                string text = System.IO.File.ReadAllText(jsFile);
-                string textoConfiguracao = System.IO.File.ReadAllText(_configFile);
-                string textoJava = System.IO.File.ReadAllText(_javaFile);
-                string textoProblema = System.IO.File.ReadAllText(_javaProblemFile);
+                var text = System.IO.File.ReadAllText(jsFile);
+                var textoConfiguracao = System.IO.File.ReadAllText(_configFile);
+                var textoJava = System.IO.File.ReadAllText(_javaFile);
+                var textoProblema = System.IO.File.ReadAllText(_javaProblemFile);
 
                 var dirinfo = Directory.CreateDirectory(jsFile.Replace(".", ""));
 
@@ -85,134 +82,6 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// Gera o .Java do problema
-        /// </summary>
-        /// <param name="dirinfo"></param>
-        /// <param name="textoProblema"></param>
-        /// <returns></returns>
-        //private static string ProcessarProblema(DirectoryInfo dirinfo, string textoProblema)
-        //{
-        //    var arquivo = dirinfo.FullName + @"\Problem.java";
-
-        //    string textoClasse = textoProblema;
-
-        //    //@package
-        //    textoClasse = textoClasse.Replace("@package", jsFile);
-
-        //    var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-        //    sw.Write(textoClasse);
-        //    sw.Close();
-
-        //    return "ec.app." + jsFile + ".Problem";
-        //}
-
-        /// <summary>
-        /// Escreve o arquivo java que representa a execução da Função no ECJ
-        /// </summary>
-        /// <param name="dirinfo"></param>
-        /// <param name="textoJava"></param>
-        //private static void ProcessarArquivosDeNo(DirectoryInfo dirinfo, string textoJava)
-        //{
-
-
-        //    for (int i = 0; i < _funcoes.Count; i++)
-        //    {
-        //        var f = _funcoes[i];
-
-        //        var arquivo = dirinfo.FullName + @"\" + f.Nome + ".java";
-
-        //        var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-
-        //        string textoClasse = textoJava;
-
-        //        //@package
-        //        textoClasse = textoClasse.Replace("@package", jsFile);
-        //        //@NomeFuncao
-        //        textoClasse = textoClasse.Replace("@NomeFuncao", f.Nome);
-
-        //        sw.Write(textoClasse);
-
-        //        //sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
-                
-
-        //        sw.Close();
-        //    }
-
-        //    for (int i = 0; i < _argumentos.Count; i++)
-        //    {
-        //        var argumento = _argumentos[i];
-
-        //        var arquivo = dirinfo.FullName + @"\" + argumento + ".java";
-
-        //        var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-
-        //        string textoClasse = textoJava;
-
-        //        //@package
-        //        textoClasse = textoClasse.Replace("@package", jsFile);
-        //        //@NomeFuncao
-        //        textoClasse = textoClasse.Replace("@NomeFuncao", argumento);
-
-        //        sw.Write(textoClasse);
-
-        //        //sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
-
-
-        //        sw.Close();
-        //    }
-
-            
-        //}
-
-        /// <summary>
-        /// Escreve o arquivo de configuracao
-        /// </summary>
-        /// <param name="configuracao"></param>
-        /// <param name="textoConfiguracao"></param>
-        /// <param name="nomeArquivoGramatica"></param>
-        /// <param name="nomeProblema"></param>
-        /// <remarks>
-        /// @NomeArquivoGramatica
-        /// @NumeroDeFuncoes
-        /// </remarks>
-        //private static string ProcessarConfiguracao(DirectoryInfo configuracao, string textoConfiguracao, string nomeArquivoGramatica, string nomeProblema)
-        //{
-        //    var arquivo = configuracao.FullName + @"\" + jsFile + ".params";
-
-        //    var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-
-        //    //@NomeArquivoGramatica
-        //    textoConfiguracao = textoConfiguracao.Replace("@NomeArquivoGramatica", nomeArquivoGramatica);
-        //    //@NumeroDeFuncoes
-        //    int total = _funcoes.Count + _argumentos.Count;
-        //    textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", total.ToString(CultureInfo.InvariantCulture));
-        //    //@Problema
-        //    textoConfiguracao = textoConfiguracao.Replace("@Problema", nomeProblema);
-            
-
-
-        //    sw.Write(textoConfiguracao);
-
-        //    for (int i = 0; i < _funcoes.Count; i++)
-        //    {
-        //        var f = _funcoes[i];
-        //        sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, _package + "." + f.Nome));
-        //        sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));    
-        //    }
-
-        //    for (int i = 0; i < _argumentos.Count; i++)
-        //    {
-        //        var argumento = _argumentos[i];
-        //        sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento));
-        //        sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + i, 0));
-        //    }
-            
-        //    sw.Close();
-
-        //    return arquivo;
-        //}
-
-        /// <summary>
         /// Escreve o arquivo de gramatica
         /// </summary>
         /// <param name="dirinfo"></param>
@@ -254,29 +123,10 @@ namespace ConsoleApplication1
                 
                 EscreverNoPeloTipo(instrucaoAtual, sw);
 
-                //EscreverNosFilhosPeloTipo(instrucaoAtual, sw);
-                
                 sw.WriteLine("");
             }
 
             sw.Flush();
-        }
-
-        /// <summary>
-        /// Decide pelo tipo de instrução como escrever a gramatica 
-        /// </summary>
-        /// <param name="instrucaoAtual"></param>
-        /// <param name="sw"></param>
-        private static void EscreverNosFilhosPeloTipo(ITree instrucaoAtual, StreamWriter sw)
-        {
-
-            for (int i = 0; i < instrucaoAtual.ChildCount; i++)
-            {
-                var instrucao = instrucaoAtual.GetChild(i);
-                EscreverNoPeloTipo(instrucao, sw);
-            }
-
-
         }
 
         /// <summary>
@@ -362,6 +212,11 @@ namespace ConsoleApplication1
             }
         }
 
+        /// <summary>
+        /// Escreve o nó de função na gramatica levando em conta dois nós filhos
+        /// </summary>
+        /// <param name="instrucao"></param>
+        /// <param name="sw"></param>
         private static void EscreverFuncaoComDoisParametros(ITree instrucao, StreamWriter sw)
         {
             EscreverInicioDeFuncao(instrucao, sw);
@@ -372,6 +227,11 @@ namespace ConsoleApplication1
             EscreverFinalDeFuncao(sw);
         }
 
+        /// <summary>
+        /// Escreve o nó de função na gramatica levando em todos os nós filhos
+        /// </summary>
+        /// <param name="instrucao"></param>
+        /// <param name="sw"></param>
         private static void EscreverFuncaoComVariosParametros(ITree instrucao, StreamWriter sw)
         {
             EscreverInicioDeFuncao(instrucao, sw);
@@ -425,7 +285,136 @@ namespace ConsoleApplication1
         }
 
 
-        //
+#pragma warning disable 1587
+        /// <summary>
+        /// Gera o .Java do problema
+        /// </summary>
+        /// <param name="dirinfo"></param>
+        /// <param name="textoProblema"></param>
+        /// <returns></returns>
+        //private static string ProcessarProblema(DirectoryInfo dirinfo, string textoProblema)
+        //{
+        //    var arquivo = dirinfo.FullName + @"\Problem.java";
+
+        //    string textoClasse = textoProblema;
+
+        //    //@package
+        //    textoClasse = textoClasse.Replace("@package", jsFile);
+
+        //    var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+        //    sw.Write(textoClasse);
+        //    sw.Close();
+
+        //    return "ec.app." + jsFile + ".Problem";
+        //}
+
+        /// <summary>
+        /// Escreve o arquivo java que representa a execução da Função no ECJ
+        /// </summary>
+        /// <param name="dirinfo"></param>
+        /// <param name="textoJava"></param>
+        //private static void ProcessarArquivosDeNo(DirectoryInfo dirinfo, string textoJava)
+        //{
+
+
+        //    for (int i = 0; i < _funcoes.Count; i++)
+        //    {
+        //        var f = _funcoes[i];
+
+        //        var arquivo = dirinfo.FullName + @"\" + f.Nome + ".java";
+
+        //        var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+
+        //        string textoClasse = textoJava;
+
+        //        //@package
+        //        textoClasse = textoClasse.Replace("@package", jsFile);
+        //        //@NomeFuncao
+        //        textoClasse = textoClasse.Replace("@NomeFuncao", f.Nome);
+
+        //        sw.Write(textoClasse);
+
+        //        //sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
+
+
+        //        sw.Close();
+        //    }
+
+        //    for (int i = 0; i < _argumentos.Count; i++)
+        //    {
+        //        var argumento = _argumentos[i];
+
+        //        var arquivo = dirinfo.FullName + @"\" + argumento + ".java";
+
+        //        var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+
+        //        string textoClasse = textoJava;
+
+        //        //@package
+        //        textoClasse = textoClasse.Replace("@package", jsFile);
+        //        //@NomeFuncao
+        //        textoClasse = textoClasse.Replace("@NomeFuncao", argumento);
+
+        //        sw.Write(textoClasse);
+
+        //        //sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
+
+
+        //        sw.Close();
+        //    }
+
+
+        //}
+
+        /// <summary>
+        /// Escreve o arquivo de configuracao
+        /// </summary>
+        /// <param name="configuracao"></param>
+        /// <param name="textoConfiguracao"></param>
+        /// <param name="nomeArquivoGramatica"></param>
+        /// <param name="nomeProblema"></param>
+        /// <remarks>
+        /// @NomeArquivoGramatica
+        /// @NumeroDeFuncoes
+        /// </remarks>
+#pragma warning restore 1587
+        //private static string ProcessarConfiguracao(DirectoryInfo configuracao, string textoConfiguracao, string nomeArquivoGramatica, string nomeProblema)
+        //{
+        //    var arquivo = configuracao.FullName + @"\" + jsFile + ".params";
+
+        //    var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+
+        //    //@NomeArquivoGramatica
+        //    textoConfiguracao = textoConfiguracao.Replace("@NomeArquivoGramatica", nomeArquivoGramatica);
+        //    //@NumeroDeFuncoes
+        //    int total = _funcoes.Count + _argumentos.Count;
+        //    textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", total.ToString(CultureInfo.InvariantCulture));
+        //    //@Problema
+        //    textoConfiguracao = textoConfiguracao.Replace("@Problema", nomeProblema);
+
+
+
+        //    sw.Write(textoConfiguracao);
+
+        //    for (int i = 0; i < _funcoes.Count; i++)
+        //    {
+        //        var f = _funcoes[i];
+        //        sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, _package + "." + f.Nome));
+        //        sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));    
+        //    }
+
+        //    for (int i = 0; i < _argumentos.Count; i++)
+        //    {
+        //        var argumento = _argumentos[i];
+        //        sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento));
+        //        sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + i, 0));
+        //    }
+
+        //    sw.Close();
+
+        //    return arquivo;
+        //}
+
 
     } 
 }
