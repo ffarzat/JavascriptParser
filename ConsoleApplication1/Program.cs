@@ -227,11 +227,9 @@ namespace ConsoleApplication1
 
             if(funcaoOtimizar == null)
                 throw new ApplicationException(String.Format("Função não encontrada: {0}", _nomeFuncaoOtimizar));
-            for (int j = 0; j < funcaoOtimizar.ChildCount; j++)
-            {
-                EscreverArvoreDaFuncao(funcaoOtimizar, sw);
-            }
 
+            EscreverArvoreDaFuncao(funcaoOtimizar, sw);
+            
             sw.Close();
 
             return Path.GetFileName(arquivo);
@@ -253,15 +251,15 @@ namespace ConsoleApplication1
                 var instrucaoAtual = blocoDaFuncao.GetChild(i);
 
                 sw.Write(string.Format("<{0}> ::= ", "start"));
-                sw.Write(string.Format("({0} ", instrucaoAtual.Text));
-
-                EscreverNosFilhosPeloTipo(instrucaoAtual, sw);
                 
-                sw.Write(")");
+                EscreverNoPeloTipo(instrucaoAtual, sw);
+
+                //EscreverNosFilhosPeloTipo(instrucaoAtual, sw);
+                
                 sw.WriteLine("");
             }
 
-            sw.FlushAsync();
+            sw.Flush();
         }
 
         /// <summary>
@@ -281,7 +279,11 @@ namespace ConsoleApplication1
 
         }
 
-
+        /// <summary>
+        /// Trata cada tipo de instrução para escrever sua gramatica
+        /// </summary>
+        /// <param name="instrucao"></param>
+        /// <param name="sw"></param>
         private static void EscreverNoPeloTipo(ITree instrucao, StreamWriter sw)
         {
 
@@ -289,12 +291,34 @@ namespace ConsoleApplication1
             {
 
                 case 18: //if
-                    
+                    sw.Write(string.Format("({0} ", instrucao.Text));
                     for (int i = 0; i < instrucao.ChildCount; i++)
                     {
                         var instrucaoDoBloco = instrucao.GetChild(i);
                         EscreverNoPeloTipo(instrucaoDoBloco, sw);
                     }
+                    sw.Write(") ");
+                    break;
+
+                case 22: //return
+                    sw.Write(string.Format("({0} ", instrucao.Text));
+                    for (int i = 0; i < instrucao.ChildCount; i++)
+                    {
+                        var instrucaoDoBloco = instrucao.GetChild(i);
+                        EscreverNoPeloTipo(instrucaoDoBloco, sw);
+                    }
+                    sw.Write(") ");
+                    break;
+
+                case 28: //Var
+                    sw.Write(string.Format("({0} ", instrucao.Text));
+                    for (int i = 0; i < instrucao.ChildCount; i++)
+                    {
+                        var instrucaoDoBloco = instrucao.GetChild(i);
+                        EscreverNoPeloTipo(instrucaoDoBloco, sw);
+                    }
+                    sw.Write(") ");
+
                     break;
 
                 case 74: //Atribuição de variável
@@ -311,11 +335,38 @@ namespace ConsoleApplication1
                     sw.Write(") ");
                     break;
 
+                case 83: // %
+                    sw.Write(string.Format("({0} ", instrucao.Text));
+                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
+                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
+                    sw.Write(") ");
+                    break;
+
                 case 98: //Atribuição de variável
                     sw.Write(string.Format("({0} ", instrucao.Text));
                     EscreverNoPeloTipo(instrucao.GetChild(0), sw);
                     EscreverNoPeloTipo(instrucao.GetChild(1), sw);
                     sw.Write(") ");
+                    break;
+
+                case 109: // divisão (/)
+                    sw.Write(string.Format("({0} ", instrucao.Text));
+                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
+                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
+                    sw.Write(") ");
+                    break;
+
+                case 111: //Args
+                    //sw.Write(string.Format("(ARGS_{0} ", instrucao.Parent.GetChild(0).Text));
+
+                    for (int i = 0; i < instrucao.ChildCount; i++)
+                    {
+                        var instrucaoDoBloco = instrucao.GetChild(i);
+                        EscreverNoPeloTipo(instrucaoDoBloco, sw);
+                    }
+
+                    //sw.Write(") ");
+
                     break;
 
                 case 113: //Block
@@ -328,9 +379,8 @@ namespace ConsoleApplication1
                     break;
 
                 case 116: //CALL de Função
-                    sw.Write(string.Format("({0} ", instrucao.Text));
-                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
-                    EscreverNoPeloTipo(instrucao.GetChild(1), sw);
+                    sw.Write(string.Format("({0} ", instrucao.GetChild(0).Text)); //nome da função
+                    EscreverNoPeloTipo(instrucao.GetChild(1), sw); //Argumentos
                     sw.Write(") ");
                     break;
 
