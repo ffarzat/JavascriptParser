@@ -203,11 +203,17 @@ namespace ConsoleApplication1
                     break;
 
                 case 116: //CALL de Função
+
+                    //Adicionar o nome da Função
+                    //Adicionar os Parametros dentro de Args.
+
                     EscreverInicioDeFuncao(instrucao.GetChild(0), sw);
                     
                     EscreverNoPeloTipo(instrucao.GetChild(1), sw); //Argumentos
 
                     EscreverFinalDeFuncao(sw);
+
+                    AdicionarCALLDeFuncao(instrucao);
                     
                     break;
 
@@ -261,12 +267,6 @@ namespace ConsoleApplication1
 
                     switch (argumento.Nome)
                     {
-                        case "CALL":
-                            //Desço para ler a função
-                            argumento = new Argumento() { Nome = instrucao.GetChild(i).GetChild(0).Text };
-                            _argumentos.Add(argumento);
-                            break;
-
                         case "PAREXPR":
                             //Faço nada
                             break;
@@ -279,6 +279,31 @@ namespace ConsoleApplication1
                             _argumentos.Add(argumento);
                             break;
                     }
+                }
+
+            }
+
+            if (!_funcoes.Exists(f => f.Nome == func.Nome))
+                _funcoes.Add(func);
+        }
+
+        /// <summary>
+        /// Adiciona um nó do tipo call na lista de funções globais
+        /// </summary>
+        /// <param name="instrucao"></param>
+        private static void AdicionarCALLDeFuncao(ITree instrucao)
+        {
+            var func = new Funcao() { Nome = instrucao.GetChild(0).Text };
+
+            for (int i = 0; i < instrucao.GetChild(1).ChildCount; i++)// ARGS
+            {
+                var argumentoDaInstrucao = instrucao.GetChild(1).GetChild(i);
+
+                var argumento = new Argumento() { Nome = argumentoDaInstrucao.Text };
+
+                if (!_argumentos.Exists(a => a.Nome == argumento.Nome))
+                {
+                    _argumentos.Add(argumento);
                 }
 
             }
