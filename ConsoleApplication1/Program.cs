@@ -251,7 +251,7 @@ namespace ConsoleApplication1
         /// <param name="sw"></param>
         private static void EscreverFinalDeFuncao(StreamWriter sw)
         {
-            sw.Write(") |");
+            sw.Write(") ");
         }
 
         /// <summary>
