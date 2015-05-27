@@ -22,6 +22,9 @@ namespace ConsoleApplication1
         private static string _javaProblemFile = @"Problem.java";
         private static string _nomeFuncaoOtimizar = "AvancaDias";
 
+        private static List<Funcao> _funcoes = new List<Funcao>(); 
+        private static List<Argumento> _argumentos = new List<Argumento>(); 
+
         static void Main(string[] args)
         {
             try
@@ -74,8 +77,8 @@ namespace ConsoleApplication1
             var dirinfo = new DirectoryInfo(jsFile);
             
             var nomeArquivoGramatica = ProcessarGramatica(dirinfo, tree);
-            //var nomeProblema = ProcessarProblema(dirinfo, textoProblema);
-            //var nomeArquivoConfiguracao = ProcessarConfiguracao(dirinfo, textoConfiguracao, nomeArquivoGramatica, nomeProblema);
+            var nomeProblema = ProcessarProblema(dirinfo, textoProblema);
+            var nomeArquivoConfiguracao = ProcessarConfiguracao(dirinfo, textoConfiguracao, nomeArquivoGramatica, nomeProblema);
             //ProcessarArquivosDeNo(dirinfo, textoJava);
             
 
@@ -294,28 +297,28 @@ namespace ConsoleApplication1
         }
 
 
-#pragma warning disable 1587
+
         /// <summary>
         /// Gera o .Java do problema
         /// </summary>
         /// <param name="dirinfo"></param>
         /// <param name="textoProblema"></param>
         /// <returns></returns>
-        //private static string ProcessarProblema(DirectoryInfo dirinfo, string textoProblema)
-        //{
-        //    var arquivo = dirinfo.FullName + @"\Problem.java";
+        private static string ProcessarProblema(DirectoryInfo dirinfo, string textoProblema)
+        {
+            var arquivo = dirinfo.FullName + @"\Problem.java";
 
-        //    string textoClasse = textoProblema;
+            string textoClasse = textoProblema;
 
-        //    //@package
-        //    textoClasse = textoClasse.Replace("@package", jsFile);
+            //@package
+            textoClasse = textoClasse.Replace("@package", jsFile);
 
-        //    var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-        //    sw.Write(textoClasse);
-        //    sw.Close();
+            var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+            sw.Write(textoClasse);
+            sw.Close();
 
-        //    return "ec.app." + jsFile + ".Problem";
-        //}
+            return "ec.app." + jsFile + ".Problem";
+        }
 
         /// <summary>
         /// Escreve o arquivo java que representa a execução da Função no ECJ
@@ -386,43 +389,40 @@ namespace ConsoleApplication1
         /// @NomeArquivoGramatica
         /// @NumeroDeFuncoes
         /// </remarks>
-#pragma warning restore 1587
-        //private static string ProcessarConfiguracao(DirectoryInfo configuracao, string textoConfiguracao, string nomeArquivoGramatica, string nomeProblema)
-        //{
-        //    var arquivo = configuracao.FullName + @"\" + jsFile + ".params";
+        private static string ProcessarConfiguracao(DirectoryInfo configuracao, string textoConfiguracao, string nomeArquivoGramatica, string nomeProblema)
+        {
+            var arquivo = configuracao.FullName + @"\" + jsFile + ".params";
 
-        //    var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+            var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
 
-        //    //@NomeArquivoGramatica
-        //    textoConfiguracao = textoConfiguracao.Replace("@NomeArquivoGramatica", nomeArquivoGramatica);
-        //    //@NumeroDeFuncoes
-        //    int total = _funcoes.Count + _argumentos.Count;
-        //    textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", total.ToString(CultureInfo.InvariantCulture));
-        //    //@Problema
-        //    textoConfiguracao = textoConfiguracao.Replace("@Problema", nomeProblema);
+            //@NomeArquivoGramatica
+            textoConfiguracao = textoConfiguracao.Replace("@NomeArquivoGramatica", nomeArquivoGramatica);
+            //@NumeroDeFuncoes
+            int total = _funcoes.Count + _argumentos.Count;
+            textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", total.ToString(CultureInfo.InvariantCulture));
+            //@Problema
+            textoConfiguracao = textoConfiguracao.Replace("@Problema", nomeProblema);
 
+            sw.Write(textoConfiguracao);
 
+            for (int i = 0; i < _funcoes.Count; i++)
+            {
+                var f = _funcoes[i];
+                sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, _package + "." + f.Nome));
+                sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));
+            }
 
-        //    sw.Write(textoConfiguracao);
+            for (int i = 0; i < _argumentos.Count; i++)
+            {
+                var argumento = _argumentos[i];
+                sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento));
+                sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + i, 0));
+            }
 
-        //    for (int i = 0; i < _funcoes.Count; i++)
-        //    {
-        //        var f = _funcoes[i];
-        //        sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, _package + "." + f.Nome));
-        //        sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));    
-        //    }
+            sw.Close();
 
-        //    for (int i = 0; i < _argumentos.Count; i++)
-        //    {
-        //        var argumento = _argumentos[i];
-        //        sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento));
-        //        sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + i, 0));
-        //    }
-
-        //    sw.Close();
-
-        //    return arquivo;
-        //}
+            return arquivo;
+        }
 
 
     } 
