@@ -150,15 +150,15 @@ namespace ConsoleApplication1
 
                 case 28: //Var
                     EscreverFuncaoComVariosParametros(instrucao, sw);
-
                     break;
 
                 case 74: //Atribuição de variável
-                    EscreverFuncaoComDoisParametros(instrucao, sw);                    
+                    EscreverFuncaoComDoisParametros(instrucao, sw);
                     break;
 
                 case 80: //Soma
                     EscreverFuncaoComDoisParametros(instrucao, sw);
+                    
                     break;
 
                 case 83: // %
@@ -167,10 +167,12 @@ namespace ConsoleApplication1
 
                 case 98: //Atribuição de variável
                     EscreverFuncaoComDoisParametros(instrucao, sw);
+                    
                     break;
 
                 case 109: // divisão (/)
                     EscreverFuncaoComDoisParametros(instrucao, sw);
+                    
                     break;
 
                 case 111: //Args
@@ -179,6 +181,7 @@ namespace ConsoleApplication1
                     {
                         var instrucaoDoBloco = instrucao.GetChild(i);
                         EscreverNoPeloTipo(instrucaoDoBloco, sw);
+                        
                     }
 
                     break;
@@ -188,7 +191,10 @@ namespace ConsoleApplication1
                     for (int i = 0; i < instrucao.ChildCount; i++)
                     {
                         var instrucaoDoBloco = instrucao.GetChild(i);
+                        sw.WriteLine("");
+                        sw.Write("<start> ::= ");
                         EscreverNoPeloTipo(instrucaoDoBloco, sw);
+                        
                     }
                     break;
 
@@ -199,17 +205,20 @@ namespace ConsoleApplication1
 
                     EscreverFinalDeFuncao(sw);
                     
+                    
                     break;
 
                 case 126: //PAREXPR (algo dentro)
                     EscreverNoPeloTipo(instrucao.GetChild(0), sw);
+                    
                     break;
 
                 default:
                     //Escreve variáveis na gramática
-                    sw.Write(string.Format("<{0}> ", instrucao.Text));
+                    sw.Write(string.Format("({0}) ", instrucao.Text));
                     break;
             }
+
         }
 
         /// <summary>
