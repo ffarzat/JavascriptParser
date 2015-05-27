@@ -237,6 +237,30 @@ namespace ConsoleApplication1
             EscreverNoPeloTipo(instrucao.GetChild(1), sw);
 
             EscreverFinalDeFuncao(sw);
+
+            AdicionarFuncao(instrucao);
+        }
+
+        /// <summary>
+        /// Adicona ou não uma função a Lista global
+        /// </summary>
+        /// <param name="instrucao"></param>
+        private static void AdicionarFuncao(ITree instrucao)
+        {
+            var func = new Funcao() {Nome = instrucao.Text};
+
+            for (int i = 0; i < instrucao.ChildCount; i++)
+            {
+                func.AddArgumento(instrucao.GetChild(i).Text);
+                
+                var argumento = new Argumento() {Nome = instrucao.GetChild(i).Text};
+                
+                if (!_argumentos.Exists(a => a.Nome == argumento.Nome))
+                    _argumentos.Add(argumento);
+            }
+
+            if (!_funcoes.Exists(f => f.Nome == func.Nome))
+                _funcoes.Add(func);
         }
 
         /// <summary>
@@ -255,6 +279,8 @@ namespace ConsoleApplication1
             }
 
             EscreverFinalDeFuncao(sw);
+
+            AdicionarFuncao(instrucao);
         }
 
         /// <summary>
@@ -274,9 +300,6 @@ namespace ConsoleApplication1
         private static void EscreverInicioDeFuncao(ITree instrucao, StreamWriter sw)
         {
             sw.Write(string.Format("({0} ", instrucao.Text));
-
-            if (!_funcoes.Exists(f => f.Nome == instrucao.Text))
-                _funcoes.Add(new Funcao() {Nome = instrucao.Text});
         }
 
         /// <summary>
@@ -418,7 +441,7 @@ namespace ConsoleApplication1
             for (int i = 0; i < _argumentos.Count; i++)
             {
                 var argumento = _argumentos[i];
-                sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento));
+                sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento.Nome));
                 sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + i, 0));
             }
 
