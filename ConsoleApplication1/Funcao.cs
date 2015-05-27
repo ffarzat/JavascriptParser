@@ -38,6 +38,17 @@ namespace ConsoleApplication1
             set { _nome = value; }
         }
 
+        /// <summary>
+        /// Retorna o nome sem considerar quantos argumentos a Funcao tem
+        /// </summary>
+        public string NomeSemArgumentos
+        {
+            get
+            {
+                return _nome;
+            }
+        }
+
 
         /// <summary>
         /// Adiciona um Argumento a função

@@ -194,6 +194,7 @@ namespace ConsoleApplication1
                     for (int i = 0; i < instrucao.ChildCount; i++)
                     {
                         var instrucaoDoBloco = instrucao.GetChild(i);
+                        //TODO: Rever se é assim mesmo quw vai ser tratado
                         sw.WriteLine("");
                         sw.Write("<start> ::= ");
                         EscreverNoPeloTipo(instrucaoDoBloco, sw);
@@ -208,7 +209,6 @@ namespace ConsoleApplication1
 
                     EscreverFinalDeFuncao(sw);
                     
-                    
                     break;
 
                 case 126: //PAREXPR (algo dentro)
@@ -218,7 +218,7 @@ namespace ConsoleApplication1
 
                 default:
                     //Escreve variáveis na gramática
-                    sw.Write(string.Format("({0}) ", instrucao.Text));
+                    sw.Write(string.Format("({0})", instrucao.Text));
                     break;
             }
 
@@ -254,9 +254,33 @@ namespace ConsoleApplication1
                 func.AddArgumento(instrucao.GetChild(i).Text);
                 
                 var argumento = new Argumento() {Nome = instrucao.GetChild(i).Text};
-                
+
                 if (!_argumentos.Exists(a => a.Nome == argumento.Nome))
-                    _argumentos.Add(argumento);
+                {
+                    
+
+                    switch (argumento.Nome)
+                    {
+                        case "CALL":
+                            //Desço para ler a função
+                            argumento = new Argumento() { Nome = instrucao.GetChild(i).GetChild(0).Text };
+                            _argumentos.Add(argumento);
+                            break;
+
+                        case "PAREXPR":
+                            //Faço nada
+                            break;
+
+                        case "BLOCK":
+                            //Faço nada
+                            break;
+
+                        default:
+                            _argumentos.Add(argumento);
+                            break;
+                    }
+                }
+
             }
 
             if (!_funcoes.Exists(f => f.Nome == func.Nome))
@@ -270,6 +294,8 @@ namespace ConsoleApplication1
         /// <param name="sw"></param>
         private static void EscreverFuncaoComVariosParametros(ITree instrucao, StreamWriter sw)
         {
+            AdicionarFuncao(instrucao);
+
             EscreverInicioDeFuncao(instrucao, sw);
 
             for (int i = 0; i < instrucao.ChildCount; i++)
@@ -280,7 +306,7 @@ namespace ConsoleApplication1
 
             EscreverFinalDeFuncao(sw);
 
-            AdicionarFuncao(instrucao);
+            
         }
 
         /// <summary>
@@ -289,7 +315,7 @@ namespace ConsoleApplication1
         /// <param name="sw"></param>
         private static void EscreverFinalDeFuncao(StreamWriter sw)
         {
-            sw.Write(") ");
+            sw.Write(")");
         }
 
         /// <summary>
@@ -441,8 +467,11 @@ namespace ConsoleApplication1
             for (int i = 0; i < _argumentos.Count; i++)
             {
                 var argumento = _argumentos[i];
-                sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento.Nome));
-                sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + i, 0));
+                if (!_funcoes.Exists(f => f.NomeSemArgumentos == argumento.Nome))
+                {
+                    sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento.Nome));
+                    sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + i, 0));
+                }
             }
 
             sw.Close();
