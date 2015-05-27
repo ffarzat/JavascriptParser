@@ -67,21 +67,27 @@ ge.species.file.0 = scriptDatajs.grammar
 #Defino o Function Set
 gp.fs.size=1
 gp.fs.0 = ec.gp.GPFunctionSet
-gp.fs.0.size = 8
+gp.fs.0.size = 11
 
-gp.fs.0.func.0 = ec.app.scriptDatajs.AvancaDias_4
-gp.fs.0.func.0.nc = nc4
-gp.fs.0.func.1 = ec.app.scriptDatajs.DeterminarQuantidadeDeDias_2
-gp.fs.0.func.1.nc = nc2
-gp.fs.0.func.2 = ec.app.scriptDatajs.escreverNaTela_1
-gp.fs.0.func.2.nc = nc1
-gp.fs.0.func.3 = ec.app.scriptDatajs.lnDias
+gp.fs.0.func.0 = ec.app.scriptDatajs.var
+gp.fs.0.func.0.nc = nc0
+gp.fs.0.func.1 = ec.app.scriptDatajs.=
+gp.fs.0.func.1.nc = nc0
+gp.fs.0.func.2 = ec.app.scriptDatajs.DeterminarQuantidadeDeDias
+gp.fs.0.func.2.nc = nc0
+gp.fs.0.func.3 = ec.app.scriptDatajs.if
 gp.fs.0.func.3.nc = nc0
-gp.fs.0.func.4 = ec.app.scriptDatajs.ldDia
+gp.fs.0.func.4 = ec.app.scriptDatajs.<=
 gp.fs.0.func.4.nc = nc0
-gp.fs.0.func.5 = ec.app.scriptDatajs.ldMes
+gp.fs.0.func.5 = ec.app.scriptDatajs.+
 gp.fs.0.func.5.nc = nc0
-gp.fs.0.func.6 = ec.app.scriptDatajs.ldAno
+gp.fs.0.func.6 = ec.app.scriptDatajs.parseInt
 gp.fs.0.func.6.nc = nc0
-gp.fs.0.func.7 = ec.app.scriptDatajs.texto
+gp.fs.0.func.7 = ec.app.scriptDatajs.%
 gp.fs.0.func.7.nc = nc0
+gp.fs.0.func.8 = ec.app.scriptDatajs./
+gp.fs.0.func.8.nc = nc0
+gp.fs.0.func.9 = ec.app.scriptDatajs.escreverNaTela
+gp.fs.0.func.9.nc = nc0
+gp.fs.0.func.10 = ec.app.scriptDatajs.return
+gp.fs.0.func.10.nc = nc0

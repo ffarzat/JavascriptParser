@@ -82,7 +82,7 @@ namespace ConsoleApplication1
             //ProcessarArquivosDeNo(dirinfo, textoJava);
             
 
-        }
+        } 
 
         /// <summary>
         /// Escreve o arquivo de gramatica
@@ -274,6 +274,9 @@ namespace ConsoleApplication1
         private static void EscreverInicioDeFuncao(ITree instrucao, StreamWriter sw)
         {
             sw.Write(string.Format("({0} ", instrucao.Text));
+
+            if (!_funcoes.Exists(f => f.Nome == instrucao.Text))
+                _funcoes.Add(new Funcao() {Nome = instrucao.Text});
         }
 
         /// <summary>
