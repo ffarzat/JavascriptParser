@@ -224,7 +224,7 @@ namespace ConsoleApplication1
 
                 default:
                     //Escreve variáveis na gramática
-                    sw.Write(string.Format("({0})", instrucao.Text));
+                    sw.Write(string.Format("({0})", Funcao.TraduzirNome(instrucao.Text)));
                     break;
             }
 
@@ -355,7 +355,7 @@ namespace ConsoleApplication1
         /// <param name="sw"></param>
         private static void EscreverInicioDeFuncao(ITree instrucao, StreamWriter sw)
         {
-            sw.Write(string.Format("({0} ", instrucao.Text));
+            sw.Write(string.Format("({0} ", Funcao.TraduzirNome(instrucao.Text)));
         }
 
         /// <summary>

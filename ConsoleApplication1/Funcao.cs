@@ -44,30 +44,8 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private string DeterminarNome()
         {
-            string nomeDaFuncao = _nome;
-
-
-            switch (_nome)
-            {
-                case "=":
-                    nomeDaFuncao = "equal";
-                    break;
-                case "+":
-                    nomeDaFuncao = "add";
-                    break;
-                case "<=":
-                    nomeDaFuncao = "lessOrEqualThan";
-                    break;
-                case "%":
-                    nomeDaFuncao = "module";
-                    break;
-                case "/":
-                    nomeDaFuncao = "divide";
-                    break;
-                
-            }
-
-
+            string nomeDaFuncao = TraduzirNome(_nome);
+            
             return Argumentos.Count == 0 ? nomeDaFuncao : nomeDaFuncao + "_" + Argumentos.Count;
         }
 
@@ -90,6 +68,52 @@ namespace ConsoleApplication1
         public void AddArgumento(string nome)
         {
             Argumentos.Add(new Argumento {Nome = nome});
+        }
+
+
+        /// <summary>
+        /// Traduz os nomes de função e argumentos
+        /// </summary>
+        /// <param name="nome"></param>
+        /// <returns></returns>
+        public static string TraduzirNome(string nome)
+        {
+            string nomeDaFuncao = nome;
+
+
+            switch (nome)
+            {
+                case "=":
+                    nomeDaFuncao = "equal";
+                    break;
+                case "+":
+                    nomeDaFuncao = "add";
+                    break;
+                case "<=":
+                    nomeDaFuncao = "lessOrEqualThan";
+                    break;
+                case "%":
+                    nomeDaFuncao = "module";
+                    break;
+                case "/":
+                    nomeDaFuncao = "divide";
+                    break;
+                case "\"\"":
+                    nomeDaFuncao = "empty";
+                    break;
+                case "12":
+                    nomeDaFuncao = "twelve";
+                    break;
+                case "\"/\"":
+                    nomeDaFuncao = "string_bar";
+                    break;
+                case "":
+                    nomeDaFuncao = "empty";
+                    break;
+
+            }
+            
+            return nomeDaFuncao;
         }
 
     }

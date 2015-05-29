@@ -27,22 +27,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private string DeterminarNome()
         {
-            string nomeDaFuncao = _nome;
-
-
-            switch (_nome)
-            {
-                case "\"\"":
-                    nomeDaFuncao = "empty";
-                    break;
-                case "12":
-                    nomeDaFuncao = "twelve";
-                    break;
-                case "\"/\"":
-                    nomeDaFuncao = "string_bar";
-                    break;
-            }
-
+            string nomeDaFuncao = Funcao.TraduzirNome(_nome);
 
             return nomeDaFuncao;
         }
