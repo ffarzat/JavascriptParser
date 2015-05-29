@@ -155,7 +155,7 @@ namespace ConsoleApplication1
                     EscreverFuncaoComVariosParametros(instrucao, sw);
                     break;
 
-                case 74: //Atribuição de variável
+                case 74: //Menor Igual
                     EscreverFuncaoComDoisParametros(instrucao, sw);
                     break;
 
@@ -213,7 +213,7 @@ namespace ConsoleApplication1
 
                     EscreverFinalDeFuncao(sw);
 
-                    AdicionarCALLDeFuncao(instrucao);
+                    AdicionarCallDeFuncao(instrucao);
                     
                     break;
 
@@ -274,6 +274,9 @@ namespace ConsoleApplication1
                         case "BLOCK":
                             //Faço nada
                             break;
+                        case "CALL":
+                            //Faço nada
+                            break;
 
                         default:
                             _argumentos.Add(argumento);
@@ -291,7 +294,7 @@ namespace ConsoleApplication1
         /// Adiciona um nó do tipo call na lista de funções globais
         /// </summary>
         /// <param name="instrucao"></param>
-        private static void AdicionarCALLDeFuncao(ITree instrucao)
+        private static void AdicionarCallDeFuncao(ITree instrucao)
         {
             var func = new Funcao() { Nome = instrucao.GetChild(0).Text };
 
@@ -471,36 +474,44 @@ namespace ConsoleApplication1
         private static string ProcessarConfiguracao(DirectoryInfo configuracao, string textoConfiguracao, string nomeArquivoGramatica, string nomeProblema)
         {
             var arquivo = configuracao.FullName + @"\" + jsFile + ".params";
-
+            StringBuilder sb = new StringBuilder();
             var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
 
             //@NomeArquivoGramatica
             textoConfiguracao = textoConfiguracao.Replace("@NomeArquivoGramatica", nomeArquivoGramatica);
-            //@NumeroDeFuncoes
-            int total = _funcoes.Count + _argumentos.Count;
-            textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", total.ToString(CultureInfo.InvariantCulture));
             //@Problema
             textoConfiguracao = textoConfiguracao.Replace("@Problema", nomeProblema);
-
-            sw.Write(textoConfiguracao);
 
             for (int i = 0; i < _funcoes.Count; i++)
             {
                 var f = _funcoes[i];
-                sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, _package + "." + f.Nome));
-                sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));
+                sb.AppendLine(string.Format("gp.fs.0.func.{0} = {1}", i, _package + "." + f.Nome));
+                sb.AppendLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));
             }
 
+            var j = 0;
+            
             for (int i = 0; i < _argumentos.Count; i++)
             {
+
                 var argumento = _argumentos[i];
                 if (!_funcoes.Exists(f => f.NomeSemArgumentos == argumento.Nome))
                 {
                     //TODO: retirar os argumentos repeditos e inválidos da lista ANTES de iterar
-                    sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento.Nome));
-                    sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + i, 0));
+                    sb.AppendLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + j, _package + "." + argumento.Nome));
+                    sb.AppendLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + j, 0));
+                    j++;
                 }
             }
+
+
+            //@NumeroDeFuncoes
+            int total = _funcoes.Count + j;
+            textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", total.ToString(CultureInfo.InvariantCulture));
+
+
+            sw.Write(textoConfiguracao);
+            sw.Write(sb.ToString());
 
             sw.Close();
 

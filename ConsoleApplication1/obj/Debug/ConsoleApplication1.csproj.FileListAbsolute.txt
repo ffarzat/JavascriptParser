@@ -44,3 +44,7 @@ D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr4.StringTemplate.V
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\moment.js
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Problem.java
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\scriptData.js
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\scriptDataTest.js

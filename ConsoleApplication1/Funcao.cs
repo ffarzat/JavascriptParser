@@ -34,8 +34,41 @@ namespace ConsoleApplication1
         /// </summary>
         public string Nome
         {
-            get { return Argumentos.Count == 0 ? _nome : _nome + "_" + Argumentos.Count; }
+            get { return DeterminarNome(); }
             set { _nome = value; }
+        }
+
+        /// <summary>
+        /// Determina o nome da função
+        /// </summary>
+        /// <returns></returns>
+        private string DeterminarNome()
+        {
+            string nomeDaFuncao = _nome;
+
+
+            switch (_nome)
+            {
+                case "=":
+                    nomeDaFuncao = "equal";
+                    break;
+                case "+":
+                    nomeDaFuncao = "add";
+                    break;
+                case "<=":
+                    nomeDaFuncao = "lessOrEqualThan";
+                    break;
+                case "%":
+                    nomeDaFuncao = "module";
+                    break;
+                case "/":
+                    nomeDaFuncao = "divide";
+                    break;
+                
+            }
+
+
+            return Argumentos.Count == 0 ? nomeDaFuncao : nomeDaFuncao + "_" + Argumentos.Count;
         }
 
         /// <summary>
