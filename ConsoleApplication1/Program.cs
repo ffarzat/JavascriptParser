@@ -195,8 +195,8 @@ namespace ConsoleApplication1
                     {
                         var instrucaoDoBloco = instrucao.GetChild(i);
                         //TODO: Rever se é assim mesmo quw vai ser tratado
-                        sw.WriteLine("");
-                        sw.Write("<start> ::= ");
+                        //sw.WriteLine("");
+                        //sw.Write("<start> ::= ");
                         EscreverNoPeloTipo(instrucaoDoBloco, sw);
                         
                     }
@@ -301,9 +301,11 @@ namespace ConsoleApplication1
 
                 var argumento = new Argumento() { Nome = argumentoDaInstrucao.Text };
 
-                if (!_argumentos.Exists(a => a.Nome == argumento.Nome))
+                func.Argumentos.Add(argumento);
+
+                if (!_funcoes.Exists(a => a.NomeSemArgumentos == argumento.Nome))
                 {
-                    _argumentos.Add(argumento);
+                    _funcoes.Add(new Funcao() {Nome = argumento.Nome});
                 }
 
             }
@@ -494,6 +496,7 @@ namespace ConsoleApplication1
                 var argumento = _argumentos[i];
                 if (!_funcoes.Exists(f => f.NomeSemArgumentos == argumento.Nome))
                 {
+                    //TODO: retirar os argumentos repeditos e inválidos da lista ANTES de iterar
                     sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + i, _package + "." + argumento.Nome));
                     sw.WriteLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + i, 0));
                 }
