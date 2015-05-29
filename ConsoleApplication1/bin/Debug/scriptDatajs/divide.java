@@ -20,9 +20,9 @@ import ec.gp.ADFStack;
 import ec.gp.GPData;
 import ec.gp.GPIndividual;
 
-public class escreverNaTela_1 extends GPNode {
+public class divide extends GPNode {
 
-	public String toString() { return "escreverNaTela_1"; }
+	public String toString() { return "divide"; }
     
 
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack, final GPIndividual individual, final Problem problem)

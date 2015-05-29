@@ -20,9 +20,9 @@ import ec.gp.ADFStack;
 import ec.gp.GPData;
 import ec.gp.GPIndividual;
 
-public class equal extends GPNode {
+public class var extends GPNode {
 
-	public String toString() { return "equal"; }
+	public String toString() { return "var"; }
     
 
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack, final GPIndividual individual, final Problem problem)

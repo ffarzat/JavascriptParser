@@ -45,8 +45,10 @@ namespace ConsoleApplication1
         private string DeterminarNome()
         {
             string nomeDaFuncao = TraduzirNome(_nome);
-            
-            return Argumentos.Count == 0 ? nomeDaFuncao : nomeDaFuncao + "_" + Argumentos.Count;
+
+            return nomeDaFuncao;
+
+            //return Argumentos.Count == 0 ? nomeDaFuncao : nomeDaFuncao + "_" + Argumentos.Count;
         }
 
         /// <summary>
@@ -83,6 +85,12 @@ namespace ConsoleApplication1
 
             switch (nome)
             {
+                case "if":
+                    nomeDaFuncao = "se";
+                    break;
+                case "return":
+                    nomeDaFuncao = "retornar";
+                    break;
                 case "=":
                     nomeDaFuncao = "equal";
                     break;

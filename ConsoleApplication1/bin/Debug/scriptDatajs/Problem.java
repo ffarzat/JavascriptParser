@@ -32,11 +32,13 @@ public class Problem extends GPProblem implements SimpleProblemForm
 	        scriptOrigem = state.parameters.getStringWithDefault(base.push("scriptOrigem"), null, "");
 	        scriptTestes = state.parameters.getStringWithDefault(base.push("scriptTestes"),null,"");
 	        
-	        if (scriptOrigem=="")
+	        /*
+			if (scriptOrigem=="")
 	            state.output.error("N�o foi definido o script alvo da otimiza��o");
 	        
 	        if (scriptTestes=="")
 	            state.output.error("N�o foi definido script de Testes");
+				*/
     }
 	
 	@Override

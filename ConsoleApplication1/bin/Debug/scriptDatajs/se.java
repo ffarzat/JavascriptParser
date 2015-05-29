@@ -20,9 +20,9 @@ import ec.gp.ADFStack;
 import ec.gp.GPData;
 import ec.gp.GPIndividual;
 
-public class module_2 extends GPNode {
+public class se extends GPNode {
 
-	public String toString() { return "module_2"; }
+	public String toString() { return "se"; }
     
 
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack, final GPIndividual individual, final Problem problem)

@@ -20,9 +20,9 @@ import ec.gp.ADFStack;
 import ec.gp.GPData;
 import ec.gp.GPIndividual;
 
-public class var_3 extends GPNode {
+public class DeterminarQuantidadeDeDias extends GPNode {
 
-	public String toString() { return "var_3"; }
+	public String toString() { return "DeterminarQuantidadeDeDias"; }
     
 
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack, final GPIndividual individual, final Problem problem)
