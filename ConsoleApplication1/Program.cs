@@ -106,60 +106,40 @@ namespace ConsoleApplication1
              {
 
                  var instrucaoAtual = blocoDaFuncao.GetChild(i);
+                 var funcao = AdicionarFuncao(instrucaoAtual, true);
 
-
-                 //Tornar Recursiva
-                 //TRatar os argumentos
-
-                 switch (instrucaoAtual.Type)
-                 {
-                     case 116: //Call de função
-                         //Console.WriteLine(instrucaoAtual.Text);
-                         AdicionarFuncao(instrucaoAtual);
-                         break;
-                     default:
-                         if (instrucaoAtual.Type >= 7)
-                         {
-                             if (instrucaoAtual.Type <= 110)
-                             {
-                                 AdicionarFuncao(instrucaoAtual);
-                             }
-                         }
-                         break;
-
-                 }
-
-
-
-                 
              }
 
-        } 
-
-
-        /// <summary>
-        /// Escreve o arquivo de gramatica
-        /// </summary>
-        /// <param name="dirinfo"></param>
-        /// <param name="tree"></param>
-        private static string ProcessarGramatica(DirectoryInfo dirinfo, CommonTree tree)
-        {
-            int i = 0;
-            var arquivo = dirinfo.FullName + @"\" + jsFile + ".grammar";
-            var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-
-            var funcaoOtimizar = RecuperarNoDaFuncao(tree, _nomeFuncaoOtimizar);
-
-            if(funcaoOtimizar == null)
-                throw new ApplicationException(String.Format("Função não encontrada: {0}", _nomeFuncaoOtimizar));
-
-            EscreverArvoreDaFuncao(funcaoOtimizar, sw);
-            
-            sw.Close();
-
-            return Path.GetFileName(arquivo);
         }
 
+        /// <summary>
+        /// Determina se um nó é 'função' ou não
+        /// </summary>
+        /// <param name="no"></param>
+        /// <returns></returns>
+        private static bool DeterminarFuncao(ITree no)
+        {
+            switch (no.Type)
+            {
+                case 113: //Block
+                    return true;
+                    break;
+                case 116: //Call de função
+                    return true;
+                    break;
+                default: // todo o restante
+                    if (no.Type >= 7)
+                    {
+                        if (no.Type <= 110)
+                        {
+                            return true;
+                        }
+                    }
+                    break;
+
+            }
+            return false;
+        }
 
         /// <summary>
         /// Escreve o arquivo de gramatica
@@ -175,28 +155,18 @@ namespace ConsoleApplication1
             var arquivo = dirinfo.FullName + @"\" + jsFile + ".grammar";
             var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
 
-            var funcoesPrimeiroNivel = new List<string>();
-
             //Declara as funções na gramatica
             foreach (var funcao in _funcoes)
             {
-                if (!funcoesPrimeiroNivel.Contains(funcao.Nome))
-                {
-                    // if (funcao.Argumentos.Count > 0)
-                    //{
-                    sw.WriteLine(string.Format("<start> ::= <{0}> ", funcao.Nome));
-                    funcoesPrimeiroNivel.Add(funcao.Nome);
-                    //}
-                }
+                if(funcao.Principal)
+                    sw.WriteLine("<start> ::= <{0}> ", funcao.Nome);
             }
 
             //Descreve as funções
             foreach (var funcao in _funcoes)
             {
-                //if (funcao.Argumentos.Count > 0)
-                //{
                 sw.Write(string.Format("<{0}> ::= ", funcao.Nome));
-                sw.Write(string.Format("({0} ", funcao.Nome));
+                sw.Write(string.Format("({0} ", funcao.NomeSemArgumentos));
 
                 foreach (var argumento in funcao.Argumentos)
                 {
@@ -211,7 +181,6 @@ namespace ConsoleApplication1
 
                 sw.Write(")");
                 sw.WriteLine("");
-                //}
             }
 
             //Descreve os argumentos
@@ -234,260 +203,33 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// Visita todas as instruções da function e escreve a gramática correspondente
-        /// </summary>
-        /// <param name="funcaoOtimizar"></param>
-        /// <param name="sw"></param>
-        private static void EscreverArvoreDaFuncao(ITree funcaoOtimizar, StreamWriter sw)
-        {
-
-            var blocoDaFuncao = funcaoOtimizar.GetChild(2);
-
-            for (int i = 0; i < blocoDaFuncao.ChildCount; i++)
-            {
-
-                var instrucaoAtual = blocoDaFuncao.GetChild(i);
-
-                sw.Write(string.Format("<{0}> ::= ", "start"));
-                
-                EscreverNoPeloTipo(instrucaoAtual, sw);
-
-                sw.WriteLine("");
-            }
-
-            sw.Flush();
-        }
-
-        /// <summary>
-        /// Trata cada tipo de instrução para escrever sua gramatica
-        /// </summary>
-        /// <param name="instrucao"></param>
-        /// <param name="sw"></param>
-        private static void EscreverNoPeloTipo(ITree instrucao, StreamWriter sw)
-        {
-
-            switch (instrucao.Type)
-            {
-
-                case 18: //if
-                    EscreverFuncaoComVariosParametros(instrucao, sw);
-                    break;
-
-                case 22: //return
-                    EscreverFuncaoComVariosParametros(instrucao, sw);
-                    break;
-
-                case 28: //Var
-                    EscreverFuncaoComVariosParametros(instrucao, sw);
-                    break;
-
-                case 74: //Menor Igual
-                    EscreverFuncaoComDoisParametros(instrucao, sw);
-                    break;
-
-                case 80: //Soma
-                    EscreverFuncaoComDoisParametros(instrucao, sw);
-                    
-                    break;
-
-                case 83: // %
-                    EscreverFuncaoComDoisParametros(instrucao, sw);
-                    break;
-
-                case 98: //Atribuição de variável
-                    EscreverFuncaoComDoisParametros(instrucao, sw);
-                    
-                    break;
-
-                case 109: // divisão (/)
-                    EscreverFuncaoComDoisParametros(instrucao, sw);
-                    
-                    break;
-
-                case 111: //Args
-
-                    for (int i = 0; i < instrucao.ChildCount; i++)
-                    {
-                        var instrucaoDoBloco = instrucao.GetChild(i);
-                        EscreverNoPeloTipo(instrucaoDoBloco, sw);
-                        
-                    }
-
-                    break;
-
-                case 113: //Block
-
-                    for (int i = 0; i < instrucao.ChildCount; i++)
-                    {
-                        var instrucaoDoBloco = instrucao.GetChild(i);
-                        //TODO: Rever se é assim mesmo quw vai ser tratado
-                        //sw.WriteLine("");
-                        //sw.Write("<start> ::= ");
-                        EscreverNoPeloTipo(instrucaoDoBloco, sw);
-                        
-                    }
-                    break;
-
-                case 116: //CALL de Função
-
-                    //Adicionar o nome da Função
-                    //Adicionar os Parametros dentro de Args.
-
-                    EscreverInicioDeFuncao(instrucao.GetChild(0), sw);
-                    
-                    EscreverNoPeloTipo(instrucao.GetChild(1), sw); //Argumentos
-
-                    EscreverFinalDeFuncao(sw);
-
-                    AdicionarCallDeFuncao(instrucao);
-                    
-                    break;
-
-                case 126: //PAREXPR (algo dentro)
-                    EscreverNoPeloTipo(instrucao.GetChild(0), sw);
-                    
-                    break;
-
-                default:
-                    //Escreve variáveis na gramática
-                    sw.Write(string.Format("({0})", Funcao.TraduzirNome(instrucao.Text)));
-                    break;
-            }
-
-        }
-
-        /// <summary>
-        /// Escreve o nó de função na gramatica levando em conta dois nós filhos
-        /// </summary>
-        /// <param name="instrucao"></param>
-        /// <param name="sw"></param>
-        private static void EscreverFuncaoComDoisParametros(ITree instrucao, StreamWriter sw)
-        {
-            EscreverInicioDeFuncao(instrucao, sw);
-
-            EscreverNoPeloTipo(instrucao.GetChild(0), sw);
-            EscreverNoPeloTipo(instrucao.GetChild(1), sw);
-
-            EscreverFinalDeFuncao(sw);
-
-            AdicionarFuncao(instrucao);
-        }
-
-        /// <summary>
         /// Adicona ou não uma função a Lista global
         /// </summary>
         /// <param name="instrucao"></param>
-        private static void AdicionarFuncao(ITree instrucao)
+        /// <param name="principal">Determina se a funcao é para escrever na linha principal da gramatica</param>
+        private static Funcao AdicionarFuncao(ITree instrucao, bool principal)
         {
-            var func = new Funcao() {Nome = instrucao.Text};
+            var total = _funcoes.Count(funcao => funcao.NomeSemArgumentos == Funcao.TraduzirNome(instrucao.Text));
+
+            var func = new Funcao() {Nome = instrucao.Text, Instancia = total, Principal = principal};
+
 
             for (int i = 0; i < instrucao.ChildCount; i++)
             {
-                func.AddArgumento(Funcao.TraduzirNome(instrucao.GetChild(i).Text));
-                
-                var argumento = new Argumento() {Nome = Funcao.TraduzirNome(instrucao.GetChild(i).Text)};
 
-                if (!_argumentos.Exists(a => a.Nome == argumento.Nome))
+                if (DeterminarFuncao(instrucao.GetChild(i)))
                 {
-                    _argumentos.Add(argumento);
-
-                    //switch (argumento.Nome)
-                    //{
-                    //    case "PAREXPR":
-                    //        //Faço nada
-                    //        break;
-
-                    //    case "BLOCK":
-                    //        //Faço nada
-                    //        break;
-                    //    case "CALL":
-                    //        //Faço nada
-                    //        break;
-
-                    //    default:
-                    //        _argumentos.Add(argumento);
-                    //        break;
-                    //}
+                    var argumento = AdicionarFuncao(instrucao.GetChild(i), false);
+                    //após o add a função tem o nome correto
+                    func.AddArgumento(argumento.Nome);
                 }
+                else
+                    func.AddArgumento(Funcao.TraduzirNome(instrucao.GetChild(i).Text));
 
             }
 
-            if (!_funcoes.Exists(f => f.Nome == func.Nome))
-                _funcoes.Add(func);
-            else
-            {
-                var totalRepeticoes = _funcoes.Count(f => f.Nome == func.Nome);
-                func.Nome = func.Nome + "_" + totalRepeticoes;
-                _funcoes.Add(func);
-            }
-        }
-
-        /// <summary>
-        /// Adiciona um nó do tipo call na lista de funções globais
-        /// </summary>
-        /// <param name="instrucao"></param>
-        private static void AdicionarCallDeFuncao(ITree instrucao)
-        {
-            var func = new Funcao() { Nome = instrucao.GetChild(0).Text };
-
-            for (int i = 0; i < instrucao.GetChild(1).ChildCount; i++)// ARGS
-            {
-                var argumentoDaInstrucao = instrucao.GetChild(1).GetChild(i);
-
-                var argumento = new Argumento() { Nome = argumentoDaInstrucao.Text };
-
-                func.Argumentos.Add(argumento);
-
-                if (!_funcoes.Exists(a => a.NomeSemArgumentos == argumento.Nome))
-                {
-                    _funcoes.Add(new Funcao() {Nome = argumento.Nome});
-                }
-
-            }
-
-            if (!_funcoes.Exists(f => f.Nome == func.Nome))
-                _funcoes.Add(func);
-        }
-
-        /// <summary>
-        /// Escreve o nó de função na gramatica levando em todos os nós filhos
-        /// </summary>
-        /// <param name="instrucao"></param>
-        /// <param name="sw"></param>
-        private static void EscreverFuncaoComVariosParametros(ITree instrucao, StreamWriter sw)
-        {
-            AdicionarFuncao(instrucao);
-
-            EscreverInicioDeFuncao(instrucao, sw);
-
-            for (int i = 0; i < instrucao.ChildCount; i++)
-            {
-                var instrucaoDoBloco = instrucao.GetChild(i);
-                EscreverNoPeloTipo(instrucaoDoBloco, sw);
-            }
-
-            EscreverFinalDeFuncao(sw);
-
-            
-        }
-
-        /// <summary>
-        /// Fecha um nó terminal na gramática
-        /// </summary>
-        /// <param name="sw"></param>
-        private static void EscreverFinalDeFuncao(StreamWriter sw)
-        {
-            sw.Write(")");
-        }
-
-        /// <summary>
-        /// Abre nó terminal na gramática
-        /// </summary>
-        /// <param name="instrucao"></param>
-        /// <param name="sw"></param>
-        private static void EscreverInicioDeFuncao(ITree instrucao, StreamWriter sw)
-        {
-            sw.Write(string.Format("({0} ", Funcao.TraduzirNome(instrucao.Text)));
+            _funcoes.Add(func);
+            return func;            
         }
 
         /// <summary>

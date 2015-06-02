@@ -17,6 +17,11 @@ namespace ConsoleApplication1
         private string _nome;
 
         /// <summary>
+        /// Numero da instancia dessa funcao
+        /// </summary>
+        private int _instancia;
+
+        /// <summary>
         /// Lista dos argumentos da Função
         /// </summary>
         private readonly List<Argumento> _argumentos = new List<Argumento>();
@@ -30,12 +35,26 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
+        /// Determina se a função é para ser descrita como principal na gramática
+        /// </summary>
+        public bool Principal { get; set; }
+
+        /// <summary>
         /// Nome da Função
         /// </summary>
         public string Nome
         {
             get { return DeterminarNome(); }
             set { _nome = value; }
+        }
+
+        /// <summary>
+        /// Número da instancia
+        /// </summary>
+        public int Instancia
+        {
+            get { return _instancia; }
+            set { _instancia = value; }
         }
 
         /// <summary>
@@ -46,9 +65,9 @@ namespace ConsoleApplication1
         {
             string nomeDaFuncao = TraduzirNome(_nome);
 
-            return nomeDaFuncao;
+            //return nomeDaFuncao;
 
-            //return Argumentos.Count == 0 ? nomeDaFuncao : nomeDaFuncao + "_" + Argumentos.Count;
+            return nomeDaFuncao + "_" + Instancia;
         }
 
         /// <summary>
@@ -58,7 +77,7 @@ namespace ConsoleApplication1
         {
             get
             {
-                return _nome;
+                return Funcao.TraduzirNome(_nome);
             }
         }
 
@@ -92,7 +111,7 @@ namespace ConsoleApplication1
                     nomeDaFuncao = "retornar";
                     break;
                 case "=":
-                    nomeDaFuncao = "equal";
+                    nomeDaFuncao = "set";
                     break;
                 case "+":
                     nomeDaFuncao = "add";
