@@ -19,6 +19,10 @@ C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\a
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Template.params
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Template.java
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\moment.js
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Problem.java
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\scriptData.js
+C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\scriptDataTest.js
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\angular.js
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\jquery-ui-1.8.24.js
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\jquery-ui-1.8.24.min.js
@@ -43,8 +47,3 @@ D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr4.StringTemplate.p
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr4.StringTemplate.Visualizer.pdb
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
-D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
-C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\moment.js
-C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Problem.java
-C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\scriptData.js
-C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\scriptDataTest.js

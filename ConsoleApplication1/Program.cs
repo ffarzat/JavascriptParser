@@ -74,15 +74,68 @@ namespace ConsoleApplication1
         /// <param name="textoProblema"></param>
         private static void GerarArquivosParaExecucao(CommonTree tree, string textoConfiguracao, string textoJava, string textoProblema)
         {
+            RecuperarFuncoesEParametros(tree);
+
             var dirinfo = new DirectoryInfo(jsFile);
             
-            var nomeArquivoGramatica = ProcessarGramatica(dirinfo, tree);
+            var nomeArquivoGramatica = ProcessarGramatica(dirinfo);
             var nomeProblema = ProcessarProblema(dirinfo, textoProblema);
             var nomeArquivoConfiguracao = ProcessarConfiguracao(dirinfo, textoConfiguracao, nomeArquivoGramatica, nomeProblema);
             ProcessarArquivosDeNo(dirinfo, textoJava);
             
 
         } 
+
+
+         /// <summary>
+        /// Itera a árvore e escreve no arquivo
+        /// </summary>
+        /// <param name="tree"></param>
+        private static void RecuperarFuncoesEParametros(CommonTree tree) 
+        {
+
+            var funcaoOtimizar = RecuperarNoDaFuncao(tree, _nomeFuncaoOtimizar);
+
+            if (funcaoOtimizar == null)
+                throw new ApplicationException(String.Format("Função não encontrada: {0}", _nomeFuncaoOtimizar));
+
+
+            var blocoDaFuncao = funcaoOtimizar.GetChild(2);
+
+             for (int i = 0; i < blocoDaFuncao.ChildCount; i++)
+             {
+
+                 var instrucaoAtual = blocoDaFuncao.GetChild(i);
+
+
+                 //Tornar Recursiva
+                 //TRatar os argumentos
+
+                 switch (instrucaoAtual.Type)
+                 {
+                     case 116: //Call de função
+                         //Console.WriteLine(instrucaoAtual.Text);
+                         AdicionarFuncao(instrucaoAtual);
+                         break;
+                     default:
+                         if (instrucaoAtual.Type >= 7)
+                         {
+                             if (instrucaoAtual.Type <= 110)
+                             {
+                                 AdicionarFuncao(instrucaoAtual);
+                             }
+                         }
+                         break;
+
+                 }
+
+
+
+                 
+             }
+
+        } 
+
 
         /// <summary>
         /// Escreve o arquivo de gramatica
@@ -103,6 +156,79 @@ namespace ConsoleApplication1
             EscreverArvoreDaFuncao(funcaoOtimizar, sw);
             
             sw.Close();
+
+            return Path.GetFileName(arquivo);
+        }
+
+
+        /// <summary>
+        /// Escreve o arquivo de gramatica
+        /// </summary>
+        /// <param name="dirinfo"></param>
+        private static string ProcessarGramatica(DirectoryInfo dirinfo)
+        {
+
+            //ECJ com gramatica tem problema para processar sobrecarga... :-/
+
+            int i = 0;
+
+            var arquivo = dirinfo.FullName + @"\" + jsFile + ".grammar";
+            var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+
+            var funcoesPrimeiroNivel = new List<string>();
+
+            //Declara as funções na gramatica
+            foreach (var funcao in _funcoes)
+            {
+                if (!funcoesPrimeiroNivel.Contains(funcao.Nome))
+                {
+                    // if (funcao.Argumentos.Count > 0)
+                    //{
+                    sw.WriteLine(string.Format("<start> ::= <{0}> ", funcao.Nome));
+                    funcoesPrimeiroNivel.Add(funcao.Nome);
+                    //}
+                }
+            }
+
+            //Descreve as funções
+            foreach (var funcao in _funcoes)
+            {
+                //if (funcao.Argumentos.Count > 0)
+                //{
+                sw.Write(string.Format("<{0}> ::= ", funcao.Nome));
+                sw.Write(string.Format("({0} ", funcao.Nome));
+
+                foreach (var argumento in funcao.Argumentos)
+                {
+                    sw.Write(string.Format("<{0}> ", argumento.Nome));
+
+                    if (!_argumentos.Contains(argumento))
+                    {
+                        _argumentos.Add(argumento);
+
+                    }
+                }
+
+                sw.Write(")");
+                sw.WriteLine("");
+                //}
+            }
+
+            //Descreve os argumentos
+            foreach (var argumento in _argumentos)
+            {
+                sw.Write(string.Format("<{0}> ::= ", argumento.Nome));
+                sw.Write(string.Format("({0}", argumento.Nome));
+                sw.Write(")");
+                sw.WriteLine("");
+
+            }
+
+
+            sw.Close();
+            //i++;
+            //Console.WriteLine(i);
+            //Console.Read();
 
             return Path.GetFileName(arquivo);
         }
@@ -257,37 +383,43 @@ namespace ConsoleApplication1
 
             for (int i = 0; i < instrucao.ChildCount; i++)
             {
-                func.AddArgumento(instrucao.GetChild(i).Text);
+                func.AddArgumento(Funcao.TraduzirNome(instrucao.GetChild(i).Text));
                 
-                var argumento = new Argumento() {Nome = instrucao.GetChild(i).Text};
+                var argumento = new Argumento() {Nome = Funcao.TraduzirNome(instrucao.GetChild(i).Text)};
 
                 if (!_argumentos.Exists(a => a.Nome == argumento.Nome))
                 {
-                    
+                    _argumentos.Add(argumento);
 
-                    switch (argumento.Nome)
-                    {
-                        case "PAREXPR":
-                            //Faço nada
-                            break;
+                    //switch (argumento.Nome)
+                    //{
+                    //    case "PAREXPR":
+                    //        //Faço nada
+                    //        break;
 
-                        case "BLOCK":
-                            //Faço nada
-                            break;
-                        case "CALL":
-                            //Faço nada
-                            break;
+                    //    case "BLOCK":
+                    //        //Faço nada
+                    //        break;
+                    //    case "CALL":
+                    //        //Faço nada
+                    //        break;
 
-                        default:
-                            _argumentos.Add(argumento);
-                            break;
-                    }
+                    //    default:
+                    //        _argumentos.Add(argumento);
+                    //        break;
+                    //}
                 }
 
             }
 
             if (!_funcoes.Exists(f => f.Nome == func.Nome))
                 _funcoes.Add(func);
+            else
+            {
+                var totalRepeticoes = _funcoes.Count(f => f.Nome == func.Nome);
+                func.Nome = func.Nome + "_" + totalRepeticoes;
+                _funcoes.Add(func);
+            }
         }
 
         /// <summary>
