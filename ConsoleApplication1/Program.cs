@@ -124,7 +124,7 @@ namespace ConsoleApplication1
                 case 113: //Block
                     return true;
                     break;
-                case 116: //Call de função
+                case 116: //Call
                     return true;
                     break;
                 default: // todo o restante
@@ -184,14 +184,14 @@ namespace ConsoleApplication1
             }
 
             //Descreve os argumentos
-            foreach (var argumento in _argumentos)
-            {
-                sw.Write(string.Format("<{0}> ::= ", argumento.Nome));
-                sw.Write(string.Format("({0}", argumento.Nome));
-                sw.Write(")");
-                sw.WriteLine("");
+            //foreach (var argumento in _argumentos)
+            //{
+            //    sw.Write(string.Format("<{0}> ::= ", argumento.Nome));
+            //    sw.Write(string.Format("({0}", argumento.Nome));
+            //    sw.Write(")");
+            //    sw.WriteLine("");
 
-            }
+            //}
 
 
             sw.Close();
@@ -214,46 +214,81 @@ namespace ConsoleApplication1
             var func = new Funcao() {Nome = instrucao.Text, Instancia = total, Principal = principal};
 
 
-            for (int i = 0; i < instrucao.ChildCount; i++)
+            #region Determina os argumentos da função. Se for outra função faz a recursão
+
+            // Tipos especiais que precisam de tratamento especifico devido a ATS do ANTLR
+            switch (instrucao.Type)
             {
+                case 116: // CALL
+                    #region Tratamendo de nó tipo CALL
+                    TratarNoCall(instrucao, func);
+                    break;
 
-                if (DeterminarFuncao(instrucao.GetChild(i)))
-                {
-                    var argumento = AdicionarFuncao(instrucao.GetChild(i), false);
-                    //após o add a função tem o nome correto
-                    func.AddArgumento(argumento.Nome);
-                }
-                else
-                {
-                    var argumento = instrucao.GetChild(i);
-                    switch (argumento.Type)
+                    #endregion
+                default:
+                    #region roda os filhos e adiciona como argumentos da função.
+                    for (int i = 0; i < instrucao.ChildCount; i++)
                     {
-                        case 111: // ARGS
-                            for (int j = 0; j < argumento.ChildCount; j++)
-                            {
-                                var arg = argumento.GetChild(j);
 
-                                if (DeterminarFuncao(arg))
-                                {
-                                    var argumentoInstanciado = AdicionarFuncao(arg, false);
-                                    func.AddArgumento(argumentoInstanciado.Nome);
-                                }
-                                else
-                                    func.AddArgumento(Funcao.TraduzirNome(arg.Text));
-                            }
-
-                            
-                            break;
-                        default:
-                            func.AddArgumento(Funcao.TraduzirNome(instrucao.GetChild(i).Text));
-                            break;
+                        if (DeterminarFuncao(instrucao.GetChild(i)))
+                        {
+                            var argumento = AdicionarFuncao(instrucao.GetChild(i), false);
+                            //após o add a função tem o nome correto
+                            func.AddArgumento(argumento.Nome);
+                        }
+                        else
+                        {
+                            var argumento = instrucao.GetChild(i);
+                            func.AddArgumento(Funcao.TraduzirNome(argumento.Text));
+                        }
                     }
-                    
-                }
+
+                    #endregion
+                    break;
             }
 
+
+            
+
+            #endregion
+
             _funcoes.Add(func);
+            
             return func;            
+        }
+
+        /// <summary>
+        /// Trata um nó do tipo
+        /// </summary>
+        /// <param name="argumento"></param>
+        /// <param name="func"></param>
+        private static void TratarNoCall(ITree argumento, Funcao func)
+        {
+            //(call <funcao> <args>)
+            //<call_0> ::= (call <determinar> <ldias> <lmes>)
+
+            var nomeFuncaoAlvo = argumento.GetChild(0).Text;
+            var total = _funcoes.Count(funcao => funcao.NomeSemArgumentos == Funcao.TraduzirNome(nomeFuncaoAlvo));
+            var funcaoAlvo = new Funcao() {Nome = nomeFuncaoAlvo, Instancia = total, Principal = false};
+
+            //Itera os argumentos de fato. Se for funcao faz um recursao disfarçada
+            for (int j = 0; j < argumento.GetChild(1).ChildCount; j++)
+            {
+                var arg = argumento.GetChild(1).GetChild(j);
+
+                if (DeterminarFuncao(arg))
+                {
+                    var argumentoInstanciado = AdicionarFuncao(arg, false);
+                    funcaoAlvo.AddArgumento(argumentoInstanciado.Nome);
+                }
+                else
+                    funcaoAlvo.AddArgumento(Funcao.TraduzirNome(arg.Text));
+            }
+
+            _funcoes.Add(funcaoAlvo);
+
+            //Adicona a funcao CALL_N a instancia da função
+            func.AddArgumento(funcaoAlvo.Nome);
         }
 
         /// <summary>
