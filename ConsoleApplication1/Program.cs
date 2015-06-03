@@ -127,6 +127,9 @@ namespace ConsoleApplication1
                 case 116: //Call
                     return true;
                     break;
+                case 126: //PAREXPR = {}
+                    return true;
+                    break;
                 default: // todo o restante
                     if (no.Type >= 7)
                     {
@@ -184,14 +187,14 @@ namespace ConsoleApplication1
             }
 
             //Descreve os argumentos
-            //foreach (var argumento in _argumentos)
-            //{
-            //    sw.Write(string.Format("<{0}> ::= ", argumento.Nome));
-            //    sw.Write(string.Format("({0}", argumento.Nome));
-            //    sw.Write(")");
-            //    sw.WriteLine("");
+            foreach (var argumento in _argumentos)
+            {
+                sw.Write(string.Format("<{0}> ::= ", argumento.Nome));
+                sw.Write(string.Format("({0}", argumento.Nome));
+                sw.Write(")");
+                sw.WriteLine("");
 
-            //}
+            }
 
 
             sw.Close();
@@ -212,7 +215,7 @@ namespace ConsoleApplication1
             var total = _funcoes.Count(funcao => funcao.NomeSemArgumentos == Funcao.TraduzirNome(instrucao.Text));
 
             var func = new Funcao() {Nome = instrucao.Text, Instancia = total, Principal = principal};
-
+            _funcoes.Add(func);
 
             #region Determina os argumentos da função. Se for outra função faz a recursão
 
@@ -252,7 +255,7 @@ namespace ConsoleApplication1
 
             #endregion
 
-            _funcoes.Add(func);
+            
             
             return func;            
         }
