@@ -224,8 +224,32 @@ namespace ConsoleApplication1
                     func.AddArgumento(argumento.Nome);
                 }
                 else
-                    func.AddArgumento(Funcao.TraduzirNome(instrucao.GetChild(i).Text));
+                {
+                    var argumento = instrucao.GetChild(i);
+                    switch (argumento.Type)
+                    {
+                        case 111: // ARGS
+                            for (int j = 0; j < argumento.ChildCount; j++)
+                            {
+                                var arg = argumento.GetChild(j);
 
+                                if (DeterminarFuncao(arg))
+                                {
+                                    var argumentoInstanciado = AdicionarFuncao(arg, false);
+                                    func.AddArgumento(argumentoInstanciado.Nome);
+                                }
+                                else
+                                    func.AddArgumento(Funcao.TraduzirNome(arg.Text));
+                            }
+
+                            
+                            break;
+                        default:
+                            func.AddArgumento(Funcao.TraduzirNome(instrucao.GetChild(i).Text));
+                            break;
+                    }
+                    
+                }
             }
 
             _funcoes.Add(func);
