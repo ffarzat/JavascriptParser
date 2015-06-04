@@ -431,17 +431,19 @@ namespace ConsoleApplication1
             }
 
             var j = 0;
-            
+            var itensJaProcessados = new List<string>();
+
             for (int i = 0; i < _argumentos.Count; i++)
             {
 
                 var argumento = _argumentos[i];
-                if (!_funcoes.Exists(f => f.NomeSemArgumentos == argumento.Nome))
+                if (!itensJaProcessados.Contains(argumento.Nome))
                 {
                     //TODO: retirar os argumentos repeditos e inválidos da lista ANTES de iterar
                     sb.AppendLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + j, _package + "." + argumento.Nome));
                     sb.AppendLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + j, 0));
                     j++;
+                    itensJaProcessados.Add(argumento.Nome);
                 }
             }
 
