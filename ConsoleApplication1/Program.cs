@@ -187,12 +187,17 @@ namespace ConsoleApplication1
             }
 
             //Descreve os argumentos
+            var itensJaDescritos = new List<string>();
             foreach (var argumento in _argumentos)
             {
-                sw.Write(string.Format("<{0}> ::= ", argumento.Nome));
-                sw.Write(string.Format("({0}", argumento.Nome));
-                sw.Write(")");
-                sw.WriteLine("");
+                if (!itensJaDescritos.Contains(argumento.Nome))
+                {
+                    sw.Write(string.Format("<{0}> ::= ", argumento.Nome));
+                    sw.Write(string.Format("({0}", argumento.Nome));
+                    sw.Write(")");
+                    sw.WriteLine("");
+                    itensJaDescritos.Add(argumento.Nome);
+                }
 
             }
 
