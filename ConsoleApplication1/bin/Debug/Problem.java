@@ -64,7 +64,7 @@ public class Problem extends GPProblem implements SimpleProblemForm
 			 //File file = new File(scriptTestes);
 			 //System.out.println(file.getAbsolutePath());
 
-			 engine.eval(new FileReader(scriptTestes));
+			 //engine.eval(new FileReader(scriptTestes));
 			 
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
