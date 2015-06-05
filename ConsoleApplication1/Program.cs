@@ -171,7 +171,7 @@ namespace ConsoleApplication1
             foreach (var funcao in _funcoes)
             {
                 sw.Write(string.Format("<{0}> ::= ", funcao.Nome));
-                sw.Write(string.Format("({0} ", funcao.NomeSemArgumentos));
+                sw.Write(string.Format("({0} ", funcao.Nome));
 
                 itensJaDescritos.Add(funcao.Nome);
 
@@ -353,7 +353,7 @@ namespace ConsoleApplication1
         /// <param name="textoJava"></param>
         private static void ProcessarArquivosDeNo(DirectoryInfo dirinfo, string textoJava)
         {
-
+            var itensJaProcessados = new List<string>();
 
             for (int i = 0; i < _funcoes.Count; i++)
             {
@@ -376,29 +376,34 @@ namespace ConsoleApplication1
 
 
                 sw.Close();
+                itensJaProcessados.Add(f.Nome);
             }
 
             for (int i = 0; i < _argumentos.Count; i++)
             {
                 var argumento = _argumentos[i];
 
-                var arquivo = dirinfo.FullName + @"\" + argumento.Nome + ".java";
 
-                var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+                if (!itensJaProcessados.Contains(argumento.Nome))
+                {
 
-                string textoClasse = textoJava;
+                    var arquivo = dirinfo.FullName + @"\" + argumento.Nome + ".java";
 
-                //@package
-                textoClasse = textoClasse.Replace("@package", jsFile);
-                //@NomeFuncao
-                textoClasse = textoClasse.Replace("@NomeFuncao", argumento.Nome);
+                    var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
 
-                sw.Write(textoClasse);
+                    string textoClasse = textoJava;
 
-                //sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
+                    //@package
+                    textoClasse = textoClasse.Replace("@package", jsFile);
+                    //@NomeFuncao
+                    textoClasse = textoClasse.Replace("@NomeFuncao", argumento.Nome);
+
+                    sw.Write(textoClasse);
 
 
-                sw.Close();
+                    sw.Close();
+                    itensJaProcessados.Add(argumento.Nome);
+                }
             }
 
 
