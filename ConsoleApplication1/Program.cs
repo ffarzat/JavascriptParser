@@ -165,11 +165,15 @@ namespace ConsoleApplication1
                     sw.WriteLine("<start> ::= <{0}> ", funcao.Nome);
             }
 
+            var itensJaDescritos = new List<string>();
+
             //Descreve as funções
             foreach (var funcao in _funcoes)
             {
                 sw.Write(string.Format("<{0}> ::= ", funcao.Nome));
                 sw.Write(string.Format("({0} ", funcao.NomeSemArgumentos));
+
+                itensJaDescritos.Add(funcao.Nome);
 
                 foreach (var argumento in funcao.Argumentos)
                 {
@@ -187,7 +191,7 @@ namespace ConsoleApplication1
             }
 
             //Descreve os argumentos
-            var itensJaDescritos = new List<string>();
+
             foreach (var argumento in _argumentos)
             {
                 if (!itensJaDescritos.Contains(argumento.Nome))
@@ -198,7 +202,6 @@ namespace ConsoleApplication1
                     sw.WriteLine("");
                     itensJaDescritos.Add(argumento.Nome);
                 }
-
             }
 
 

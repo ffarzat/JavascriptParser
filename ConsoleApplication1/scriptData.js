@@ -32,7 +32,7 @@ function AvancaDias(lnDias, ldDia, ldMes, ldAno)
 	var resultado = ltDia + "/" + ltMes + "/" + ltAno;
 	escreverNaTela(resultado);
 	
-	return (resultado);
+	return resultado;
 }
 
 /* Determina quantos dias tem o mês */
