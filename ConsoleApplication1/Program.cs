@@ -420,6 +420,7 @@ namespace ConsoleApplication1
             var arquivo = configuracao.FullName + @"\" + jsFile + ".params";
             StringBuilder sb = new StringBuilder();
             var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
+            var itensJaProcessados = new List<string>();
 
             //@NomeArquivoGramatica
             textoConfiguracao = textoConfiguracao.Replace("@NomeArquivoGramatica", nomeArquivoGramatica);
@@ -431,10 +432,11 @@ namespace ConsoleApplication1
                 var f = _funcoes[i];
                 sb.AppendLine(string.Format("gp.fs.0.func.{0} = {1}", i, _package + "." + f.Nome));
                 sb.AppendLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));
+                itensJaProcessados.Add(f.Nome);
             }
 
             var j = 0;
-            var itensJaProcessados = new List<string>();
+            
 
             for (int i = 0; i < _argumentos.Count; i++)
             {
