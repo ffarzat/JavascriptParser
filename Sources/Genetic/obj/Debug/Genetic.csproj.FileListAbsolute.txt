@@ -1,0 +1,14 @@
+C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Genetic\bin\Debug\AForge.Genetic.dll
+C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Genetic\bin\Debug\AForge.Genetic.pdb
+C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Genetic\bin\Debug\AForge.dll
+C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Genetic\bin\Debug\AForge.pdb
+C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Genetic\obj\Debug\Genetic.csprojResolveAssemblyReference.cache
+C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Genetic\obj\Debug\AForge.Genetic.dll
+C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Genetic\obj\Debug\AForge.Genetic.pdb
+D:\GitHub\JavascriptParser\Sources\Genetic\bin\Debug\AForge.Genetic.dll
+D:\GitHub\JavascriptParser\Sources\Genetic\bin\Debug\AForge.Genetic.pdb
+D:\GitHub\JavascriptParser\Sources\Genetic\bin\Debug\AForge.dll
+D:\GitHub\JavascriptParser\Sources\Genetic\bin\Debug\AForge.pdb
+D:\GitHub\JavascriptParser\Sources\Genetic\obj\Debug\Genetic.csprojResolveAssemblyReference.cache
+D:\GitHub\JavascriptParser\Sources\Genetic\obj\Debug\AForge.Genetic.dll
+D:\GitHub\JavascriptParser\Sources\Genetic\obj\Debug\AForge.Genetic.pdb
