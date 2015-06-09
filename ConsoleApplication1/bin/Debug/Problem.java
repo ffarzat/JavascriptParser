@@ -56,6 +56,8 @@ public class Problem extends GPProblem implements SimpleProblemForm
 			
 			long totalTime = (System.nanoTime() - time); 
 			
+			/*
+
 			//Exec do testes. Corretude e tempo de execução
 			ScriptEngineManager engineManager = new ScriptEngineManager();
 			ScriptEngine engine = engineManager.getEngineByName("nashorn");
@@ -64,7 +66,7 @@ public class Problem extends GPProblem implements SimpleProblemForm
 			 //File file = new File(scriptTestes);
 			 //System.out.println(file.getAbsolutePath());
 
-			 //engine.eval(new FileReader(scriptTestes));
+			 engine.eval(new FileReader(scriptTestes));
 			 
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -74,7 +76,7 @@ public class Problem extends GPProblem implements SimpleProblemForm
 				e.printStackTrace();
 			}
 			
-			
+			*/
 						
 			//if(input.inteiro == 10)
 			//{	
@@ -83,7 +85,7 @@ public class Problem extends GPProblem implements SimpleProblemForm
 
 				fitness = totalTime ;
 				
-				ind.printIndividualForHumans(state, threadnum);
+				//ind.printIndividualForHumans(state, threadnum);
 				//System.out.println("fitness=" + fitness );
 
 
