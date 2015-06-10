@@ -66,15 +66,14 @@
     </Compile>
     <Compile Include="ES3Parser.cs" />
     <Compile Include="Funcao.cs" />
+    <Compile Include="JavascriptFitness.cs" />
+    <Compile Include="JavascriptGene.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="ES3.tokens" />
-    <None Include="Template.params">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="angular.js">
@@ -89,18 +88,22 @@
     <Content Include="moment.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Problem.java">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="scriptData.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="scriptDataTest.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Template.java">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sources\Core\Core.csproj">
+      <Project>{bfaf50dc-4942-46b8-8615-2a0b4cf08ad2}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sources\Genetic\Genetic.csproj">
+      <Project>{dd4f9c19-9f1c-44a8-81f3-6ca157dca1c2}</Project>
+      <Name>Genetic</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -27,11 +27,8 @@ D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\angular.js
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\jquery-ui-1.8.24.js
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\jquery-ui-1.8.24.min.js
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\moment.js
-D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Problem.java
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\scriptData.js
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\scriptDataTest.js
-D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Template.java
-D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Template.params
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
@@ -48,3 +45,7 @@ D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr4.StringTemplate.V
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
+D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.dll
+D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.Genetic.dll
+D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.pdb
+D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.Genetic.pdb

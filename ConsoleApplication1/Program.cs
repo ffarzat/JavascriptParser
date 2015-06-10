@@ -16,10 +16,6 @@ namespace ConsoleApplication1
     {
         private static string jsFile = @"scriptData.js";
         private static string jsFileTest = @"scriptDataTest.js";
-        private static string _configFile = @"Template.params";
-        private static string _javaFile = @"Template.java";
-        private static string _package = "ec.app.@package";
-        private static string _javaProblemFile = @"Problem.java";
         private static string _nomeFuncaoOtimizar = "AvancaDias";
 
         private static List<Funcao> _funcoes = new List<Funcao>(); 
@@ -30,21 +26,16 @@ namespace ConsoleApplication1
             try
             {
                 var text = System.IO.File.ReadAllText(jsFile);
-                var textoConfiguracao = System.IO.File.ReadAllText(_configFile);
-                var textoJava = System.IO.File.ReadAllText(_javaFile);
-                var textoProblema = System.IO.File.ReadAllText(_javaProblemFile);
-
-                var dirinfo = Directory.CreateDirectory(jsFile.Replace(".", ""));
+                var dirinfo = Directory.CreateDirectory(jsFile.Replace(".js", ""));
 
                 //Copia o js principal e o Js de Testes
                 File.Copy(jsFile, Path.Combine(dirinfo.FullName, jsFile), true);
                 File.Copy(jsFileTest, Path.Combine(dirinfo.FullName, jsFileTest), true);
 
                 //macetão
-                jsFile = jsFile.Replace(".", "");
-                _package = _package.Replace("@package", jsFile);
+                jsFile = jsFile.Replace(".js", "");
 
-                #region processa o js alvo
+                #region Gera a AST do javascript origem
                 var stream = new ANTLRStringStream(text);
                 var lexer = new ES3Lexer(stream);
                 var tokenStream = new CommonTokenStream(lexer);
@@ -53,7 +44,7 @@ namespace ConsoleApplication1
                 var tree = programReturn.Tree as CommonTree;
                 #endregion
 
-                GerarArquivosParaExecucao(tree, textoConfiguracao, textoJava, textoProblema);
+                GerarArquivosParaExecucao(tree, dirinfo);
                 
             }
             catch (Exception ex)
@@ -66,34 +57,13 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// Função Base para escrever as funções
+        /// Gera a pasta de saída e inicia o processo de otimização
         /// </summary>
         /// <param name="tree"></param>
-        /// <param name="textoConfiguracao"></param>
-        /// <param name="textoJava"></param>
-        /// <param name="textoProblema"></param>
-        private static void GerarArquivosParaExecucao(CommonTree tree, string textoConfiguracao, string textoJava, string textoProblema)
+        /// <param name="directoryInfo"></param>
+        private static void GerarArquivosParaExecucao(CommonTree tree, DirectoryInfo directoryInfo)
         {
-            RecuperarFuncoesEParametros(tree);
-
-            var dirinfo = new DirectoryInfo(jsFile);
-            
-            var nomeArquivoGramatica = ProcessarGramatica(dirinfo);
-            var nomeProblema = ProcessarProblema(dirinfo, textoProblema);
-            var nomeArquivoConfiguracao = ProcessarConfiguracao(dirinfo, textoConfiguracao, nomeArquivoGramatica, nomeProblema);
-            ProcessarArquivosDeNo(dirinfo, textoJava);
-            
-
-        } 
-
-
-         /// <summary>
-        /// Itera a árvore e escreve no arquivo
-        /// </summary>
-        /// <param name="tree"></param>
-        private static void RecuperarFuncoesEParametros(CommonTree tree) 
-        {
-
+            #region Encontra a função alvo da otimização, recupera o bloco de instruções
             var funcaoOtimizar = RecuperarNoDaFuncao(tree, _nomeFuncaoOtimizar);
 
             if (funcaoOtimizar == null)
@@ -101,16 +71,17 @@ namespace ConsoleApplication1
 
 
             var blocoDaFuncao = funcaoOtimizar.GetChild(2);
+            #endregion
 
-             for (int i = 0; i < blocoDaFuncao.ChildCount; i++)
-             {
+            for (int i = 0; i < blocoDaFuncao.ChildCount; i++)
+            {
+                var instrucaoAtual = blocoDaFuncao.GetChild(i);
+                
 
-                 var instrucaoAtual = blocoDaFuncao.GetChild(i);
-                 var funcao = AdicionarFuncao(instrucaoAtual, true);
+            }
+            
 
-             }
-
-        }
+        } 
 
         /// <summary>
         /// Determina se um nó é 'função' ou não
@@ -144,163 +115,6 @@ namespace ConsoleApplication1
             return false;
         }
 
-        /// <summary>
-        /// Escreve o arquivo de gramatica
-        /// </summary>
-        /// <param name="dirinfo"></param>
-        private static string ProcessarGramatica(DirectoryInfo dirinfo)
-        {
-
-            //ECJ com gramatica tem problema para processar sobrecarga... :-/
-
-            int i = 0;
-
-            var arquivo = dirinfo.FullName + @"\" + jsFile + ".grammar";
-            var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-
-            //Declara as funções na gramatica
-            foreach (var funcao in _funcoes)
-            {
-                if(funcao.Principal)
-                    sw.WriteLine("<start> ::= <{0}> ", funcao.Nome);
-            }
-
-            var itensJaDescritos = new List<string>();
-
-            //Descreve as funções
-            foreach (var funcao in _funcoes)
-            {
-                sw.Write(string.Format("<{0}> ::= ", funcao.Nome));
-                sw.Write(string.Format("({0} ", funcao.Nome));
-
-                itensJaDescritos.Add(funcao.Nome);
-
-                foreach (var argumento in funcao.Argumentos)
-                {
-                    sw.Write(string.Format("<{0}> ", argumento.Nome));
-
-                    if (!_argumentos.Contains(argumento))
-                    {
-                        _argumentos.Add(argumento);
-
-                    }
-                }
-
-                sw.Write(")");
-                sw.WriteLine("");
-            }
-
-            //Descreve os argumentos
-
-            foreach (var argumento in _argumentos)
-            {
-                if (!itensJaDescritos.Contains(argumento.Nome))
-                {
-                    sw.Write(string.Format("<{0}> ::= ", argumento.Nome));
-                    sw.Write(string.Format("({0}", argumento.Nome));
-                    sw.Write(")");
-                    sw.WriteLine("");
-                    itensJaDescritos.Add(argumento.Nome);
-                }
-            }
-
-
-            sw.Close();
-            //i++;
-            //Console.WriteLine(i);
-            //Console.Read();
-
-            return Path.GetFileName(arquivo);
-        }
-
-        /// <summary>
-        /// Adicona ou não uma função a Lista global
-        /// </summary>
-        /// <param name="instrucao"></param>
-        /// <param name="principal">Determina se a funcao é para escrever na linha principal da gramatica</param>
-        private static Funcao AdicionarFuncao(ITree instrucao, bool principal)
-        {
-            var total = _funcoes.Count(funcao => funcao.NomeSemArgumentos == Funcao.TraduzirNome(instrucao.Text));
-
-            var func = new Funcao() {Nome = instrucao.Text, Instancia = total, Principal = principal};
-            _funcoes.Add(func);
-
-            #region Determina os argumentos da função. Se for outra função faz a recursão
-
-            // Tipos especiais que precisam de tratamento especifico devido a ATS do ANTLR
-            switch (instrucao.Type)
-            {
-                case 116: // CALL
-                    #region Tratamendo de nó tipo CALL
-                    TratarNoCall(instrucao, func);
-                    break;
-
-                    #endregion
-                default:
-                    #region roda os filhos e adiciona como argumentos da função.
-                    for (int i = 0; i < instrucao.ChildCount; i++)
-                    {
-
-                        if (DeterminarFuncao(instrucao.GetChild(i)))
-                        {
-                            var argumento = AdicionarFuncao(instrucao.GetChild(i), false);
-                            //após o add a função tem o nome correto
-                            func.AddArgumento(argumento.Nome);
-                        }
-                        else
-                        {
-                            var argumento = instrucao.GetChild(i);
-                            func.AddArgumento(Funcao.TraduzirNome(argumento.Text));
-                        }
-                    }
-
-                    #endregion
-                    break;
-            }
-
-
-            
-
-            #endregion
-
-            
-            
-            return func;            
-        }
-
-        /// <summary>
-        /// Trata um nó do tipo
-        /// </summary>
-        /// <param name="argumento"></param>
-        /// <param name="func"></param>
-        private static void TratarNoCall(ITree argumento, Funcao func)
-        {
-            //(call <funcao> <args>)
-            //<call_0> ::= (call <determinar> <ldias> <lmes>)
-
-            var nomeFuncaoAlvo = argumento.GetChild(0).Text;
-            var total = _funcoes.Count(funcao => funcao.NomeSemArgumentos == Funcao.TraduzirNome(nomeFuncaoAlvo));
-            var funcaoAlvo = new Funcao() {Nome = nomeFuncaoAlvo, Instancia = total, Principal = false};
-
-            //Itera os argumentos de fato. Se for funcao faz um recursao disfarçada
-            for (int j = 0; j < argumento.GetChild(1).ChildCount; j++)
-            {
-                var arg = argumento.GetChild(1).GetChild(j);
-
-                if (DeterminarFuncao(arg))
-                {
-                    var argumentoInstanciado = AdicionarFuncao(arg, false);
-                    funcaoAlvo.AddArgumento(argumentoInstanciado.Nome);
-                }
-                else
-                    funcaoAlvo.AddArgumento(Funcao.TraduzirNome(arg.Text));
-            }
-
-            _funcoes.Add(funcaoAlvo);
-
-            //Adicona a funcao CALL_N a instancia da função
-            func.AddArgumento(funcaoAlvo.Nome);
-        }
 
         /// <summary>
         /// Descobre qual a função na Tree pelo nome
@@ -321,156 +135,6 @@ namespace ConsoleApplication1
 
             return null;
         }
-
-
-
-        /// <summary>
-        /// Gera o .Java do problema
-        /// </summary>
-        /// <param name="dirinfo"></param>
-        /// <param name="textoProblema"></param>
-        /// <returns></returns>
-        private static string ProcessarProblema(DirectoryInfo dirinfo, string textoProblema)
-        {
-            var arquivo = dirinfo.FullName + @"\Problem.java";
-
-            string textoClasse = textoProblema;
-
-            //@package
-            textoClasse = textoClasse.Replace("@package", jsFile);
-
-            var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-            sw.Write(textoClasse);
-            sw.Close();
-
-            return "ec.app." + jsFile + ".Problem";
-        }
-
-        /// <summary>
-        /// Escreve o arquivo java que representa a execução da Função no ECJ
-        /// </summary>
-        /// <param name="dirinfo"></param>
-        /// <param name="textoJava"></param>
-        private static void ProcessarArquivosDeNo(DirectoryInfo dirinfo, string textoJava)
-        {
-            var itensJaProcessados = new List<string>();
-
-            for (int i = 0; i < _funcoes.Count; i++)
-            {
-                var f = _funcoes[i];
-
-                var arquivo = dirinfo.FullName + @"\" + f.Nome + ".java";
-
-                var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-
-                string textoClasse = textoJava;
-
-                //@package
-                textoClasse = textoClasse.Replace("@package", jsFile);
-                //@NomeFuncao
-                textoClasse = textoClasse.Replace("@NomeFuncao", f.Nome);
-
-                sw.Write(textoClasse);
-
-                //sw.WriteLine(string.Format("gp.fs.0.func.{0} = {1}", i, f.Nome));
-
-
-                sw.Close();
-                itensJaProcessados.Add(f.Nome);
-            }
-
-            for (int i = 0; i < _argumentos.Count; i++)
-            {
-                var argumento = _argumentos[i];
-
-
-                if (!itensJaProcessados.Contains(argumento.Nome))
-                {
-
-                    var arquivo = dirinfo.FullName + @"\" + argumento.Nome + ".java";
-
-                    var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-
-                    string textoClasse = textoJava;
-
-                    //@package
-                    textoClasse = textoClasse.Replace("@package", jsFile);
-                    //@NomeFuncao
-                    textoClasse = textoClasse.Replace("@NomeFuncao", argumento.Nome);
-
-                    sw.Write(textoClasse);
-
-
-                    sw.Close();
-                    itensJaProcessados.Add(argumento.Nome);
-                }
-            }
-
-
-        }
-
-        /// <summary>
-        /// Escreve o arquivo de configuracao
-        /// </summary>
-        /// <param name="configuracao"></param>
-        /// <param name="textoConfiguracao"></param>
-        /// <param name="nomeArquivoGramatica"></param>
-        /// <param name="nomeProblema"></param>
-        /// <remarks>
-        /// @NomeArquivoGramatica
-        /// @NumeroDeFuncoes
-        /// </remarks>
-        private static string ProcessarConfiguracao(DirectoryInfo configuracao, string textoConfiguracao, string nomeArquivoGramatica, string nomeProblema)
-        {
-            var arquivo = configuracao.FullName + @"\" + jsFile + ".params";
-            StringBuilder sb = new StringBuilder();
-            var sw = new StreamWriter(arquivo, false, new UTF8Encoding(false));
-            var itensJaProcessados = new List<string>();
-
-            //@NomeArquivoGramatica
-            textoConfiguracao = textoConfiguracao.Replace("@NomeArquivoGramatica", nomeArquivoGramatica);
-            //@Problema
-            textoConfiguracao = textoConfiguracao.Replace("@Problema", nomeProblema);
-
-            for (int i = 0; i < _funcoes.Count; i++)
-            {
-                var f = _funcoes[i];
-                sb.AppendLine(string.Format("gp.fs.0.func.{0} = {1}", i, _package + "." + f.Nome));
-                sb.AppendLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", i, f.Argumentos.Count));
-                itensJaProcessados.Add(f.Nome);
-            }
-
-            var j = 0;
-            
-
-            for (int i = 0; i < _argumentos.Count; i++)
-            {
-
-                var argumento = _argumentos[i];
-                if (!itensJaProcessados.Contains(argumento.Nome))
-                {
-                    //TODO: retirar os argumentos repeditos e inválidos da lista ANTES de iterar
-                    sb.AppendLine(string.Format("gp.fs.0.func.{0} = {1}", _funcoes.Count + j, _package + "." + argumento.Nome));
-                    sb.AppendLine(string.Format("gp.fs.0.func.{0}.nc = nc{1}", _funcoes.Count + j, 0));
-                    j++;
-                    itensJaProcessados.Add(argumento.Nome);
-                }
-            }
-
-
-            //@NumeroDeFuncoes
-            int total = _funcoes.Count + j;
-            textoConfiguracao = textoConfiguracao.Replace("@NumeroDeFuncoes", total.ToString(CultureInfo.InvariantCulture));
-
-
-            sw.Write(textoConfiguracao);
-            sw.Write(sb.ToString());
-
-            sw.Close();
-
-            return arquivo;
-        }
-
 
     } 
 }
