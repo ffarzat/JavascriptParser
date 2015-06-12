@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AForge.Genetic;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using Xebic.Parsers.ES3;
@@ -73,13 +74,45 @@ namespace ConsoleApplication1
             var blocoDaFuncao = funcaoOtimizar.GetChild(2);
             #endregion
 
+            #region Monta o primeiro individuo
+            
+            IChromosome ancestral = new JavascriptChromosome(new JavascriptGene()); //TODO: Montar o ancestral de fato
+
+            
+            
             for (int i = 0; i < blocoDaFuncao.ChildCount; i++)
             {
                 var instrucaoAtual = blocoDaFuncao.GetChild(i);
-                
+
 
             }
+            #endregion
+
+            #region Faz o setup da população inicial
+            int populationSize = 40;
+            int generations = 50;
             
+            IFitnessFunction fitness = new JavascriptFitness();
+
+            ISelectionMethod metodoSelecao = new EliteSelection();
+
+            Population population = new Population(populationSize, ancestral, fitness, metodoSelecao);
+
+            #endregion
+
+            #region Executa a otimização
+
+            for (int i = 0; i < generations; i++)
+            {
+                population.RunEpoch(); //executa uma iteração??
+                Console.WriteLine(population.BestChromosome.ToString());
+            }
+            
+            #endregion
+
+            #region Exporta os resultados
+
+            #endregion
 
         } 
 
@@ -101,7 +134,7 @@ namespace ConsoleApplication1
                 case 126: //PAREXPR = {}
                     return true;
                     break;
-                default: // todo o restante
+                default: // Restante
                     if (no.Type >= 7)
                     {
                         if (no.Type <= 110)

@@ -68,6 +68,13 @@ namespace ConsoleApplication1
             this.GeneType = (Rand.Next(4) == 3) ? GPGeneType.Argument : GPGeneType.Function;
 
             //TODO: se for função definir alguma da gramática?
+            //TODO: Definir nós?
+
+            //TODO: Esse método é chamado pela classe população para criar novos individuos a cada iteração
+
+
+
+
         }
 
         /// <summary>
@@ -93,5 +100,15 @@ namespace ConsoleApplication1
         {
             return new JavascriptGene(){GeneType = type};
         }
+
+        /// <summary>
+        /// Escrever a árvore do individuo
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Name + "_" + InstanceNumber;
+        }
+
     }
 }

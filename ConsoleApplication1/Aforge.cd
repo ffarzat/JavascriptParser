@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AForge.Genetic.BinaryChromosome" BaseTypeListCollapsed="true">
+    <Position X="3.75" Y="4" Width="3" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.ExtendedGeneFunction" BaseTypeListCollapsed="true">
+    <Position X="11" Y="12.25" Width="2.75" />
+    <NestedTypes>
+      <Enum Name="AForge.Genetic.ExtendedGeneFunction.Functions" Collapsed="true">
+        <TypeIdentifier />
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.GEPChromosome" BaseTypeListCollapsed="true">
+    <Position X="7" Y="4" Width="2.75" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.GPTreeChromosome" BaseTypeListCollapsed="true">
+    <Position X="10" Y="4" Width="3.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.GPTreeNode" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="5" Width="3" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.SimpleGeneFunction" BaseTypeListCollapsed="true">
+    <Position X="14" Y="12.25" Width="2.5" />
+    <NestedTypes>
+      <Enum Name="AForge.Genetic.SimpleGeneFunction.Functions" Collapsed="true">
+        <TypeIdentifier />
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.PermutationChromosome">
+    <Position X="0.5" Y="9.5" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="AForge.Genetic.ShortArrayChromosome">
+    <Position X="0.5" Y="4" Width="3" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.OptimizationFunction1D" BaseTypeListCollapsed="true">
+    <Position X="9" Y="16.75" Width="2.25" />
+    <NestedTypes>
+      <Enum Name="AForge.Genetic.OptimizationFunction1D.Modes" Collapsed="true">
+        <TypeIdentifier />
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.OptimizationFunction2D" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="16.5" Width="2.25" />
+    <NestedTypes>
+      <Enum Name="AForge.Genetic.OptimizationFunction2D.Modes" Collapsed="true">
+        <TypeIdentifier />
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.SymbolicRegressionFitness" BaseTypeListCollapsed="true">
+    <Position X="6.25" Y="16.75" Width="2.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.TimeSeriesPredictionFitness" BaseTypeListCollapsed="true">
+    <Position X="3" Y="16.75" Width="3" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.Population">
+    <Position X="20" Y="0.75" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="AForge.Genetic.EliteSelection" BaseTypeListCollapsed="true">
+    <Position X="18.75" Y="11.5" Width="2.75" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.RankSelection" BaseTypeListCollapsed="true">
+    <Position X="21.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AForge.Genetic.RouletteWheelSelection" BaseTypeListCollapsed="true">
+    <Position X="23.5" Y="11.5" Width="2.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ConsoleApplication1.JavascriptChromosome" BaseTypeListCollapsed="true">
+    <Position X="27.5" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEgAAAAAAAAAAQAAAAAAoAAAAAAAAAACAAAAEAAABA=</HashCode>
+      <FileName>JavascriptChromosome.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ConsoleApplication1.JavascriptFitness" BaseTypeListCollapsed="true">
+    <Position X="29.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>JavascriptFitness.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ConsoleApplication1.JavascriptGene" BaseTypeListCollapsed="true">
+    <Position X="25" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>gAAAACAAAAAAAAAEAAAAAgQAACAAAAAAAAAACEAQABA=</HashCode>
+      <FileName>JavascriptGene.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="AForge.Genetic.IGPGene">
+    <Position X="12.75" Y="9.5" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="AForge.Genetic.IChromosome">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="AForge.Genetic.IFitnessFunction">
+    <Position X="3.75" Y="14.5" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="AForge.Genetic.ISelectionMethod">
+    <Position X="21.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Enum Name="AForge.Genetic.GPGeneType">
+    <Position X="15.25" Y="10.25" Width="1.5" />
+    <TypeIdentifier />
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

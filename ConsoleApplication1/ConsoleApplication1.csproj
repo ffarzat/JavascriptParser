@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="ES3Parser.cs" />
     <Compile Include="Funcao.cs" />
+    <Compile Include="JavascriptChromosome.cs" />
     <Compile Include="JavascriptFitness.cs" />
     <Compile Include="JavascriptGene.cs" />
     <Compile Include="Program.cs" />
