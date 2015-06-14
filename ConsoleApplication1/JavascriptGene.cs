@@ -17,11 +17,6 @@ namespace ConsoleApplication1
         public string Name { get; set; }
 
         /// <summary>
-        /// Numero dessa instancia
-        /// </summary>
-        public int InstanceNumber { get; set; }
-
-        /// <summary>
         /// Gene type
         /// </summary>
         public GPGeneType GeneType { get;  set; }
@@ -55,7 +50,6 @@ namespace ConsoleApplication1
             clone.ArgumentsCount = this.ArgumentsCount;
             clone.MaxArgumentsCount = this.MaxArgumentsCount;
             clone.Name = this.Name;
-            clone.InstanceNumber = this.InstanceNumber;
 
             return clone;
         }
@@ -107,7 +101,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         public override string ToString()
         {
-            return Name + "_" + InstanceNumber;
+            return Name;
         }
 
     }

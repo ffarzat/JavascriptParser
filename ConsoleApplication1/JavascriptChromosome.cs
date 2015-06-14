@@ -8,6 +8,10 @@ using Antlr.Runtime.Tree;
 
 namespace ConsoleApplication1
 {
+
+    /// <summary>
+    /// Represents a Javascript Chromosome 
+    /// </summary>
     public class JavascriptChromosome : IChromosome
     {
         /// <summary>
@@ -50,7 +54,7 @@ namespace ConsoleApplication1
         {
             var functionBlock = function.GetChild(2);
 
-            SetupRoot(functionBlock);
+            SetupRoot(function);
 
             for (int i = 0; i < functionBlock.ChildCount; i++)
             {
@@ -90,7 +94,8 @@ namespace ConsoleApplication1
             _root.Gene = new JavascriptGene()
                 {
                     Name = functionBlock.Text,
-                    GeneType = GPGeneType.Function
+                    GeneType = GPGeneType.Function,
+                    MaxArgumentsCount = int.MaxValue
                 };
         }
 

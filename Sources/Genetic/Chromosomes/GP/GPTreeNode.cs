@@ -18,7 +18,7 @@ namespace AForge.Genetic
 		// node's gene
 		public IGPGene		Gene;
 		//
-		public ArrayList	Children;
+		public ArrayList	Children = new ArrayList();
 
 		/// <summary>
 		/// Constructor

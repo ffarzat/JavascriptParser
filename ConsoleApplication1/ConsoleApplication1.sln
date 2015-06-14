@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\Sources\Core\Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Genetic", "..\Sources\Genetic\Genetic.csproj", "{DD4F9C19-9F1C-44A8-81F3-6CA157DCA1C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "..\Tests\Tests.csproj", "{7CD26060-D31B-435A-9EC0-29A339BE4CCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{DD4F9C19-9F1C-44A8-81F3-6CA157DCA1C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD4F9C19-9F1C-44A8-81F3-6CA157DCA1C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD4F9C19-9F1C-44A8-81F3-6CA157DCA1C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CD26060-D31B-435A-9EC0-29A339BE4CCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CD26060-D31B-435A-9EC0-29A339BE4CCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CD26060-D31B-435A-9EC0-29A339BE4CCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CD26060-D31B-435A-9EC0-29A339BE4CCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

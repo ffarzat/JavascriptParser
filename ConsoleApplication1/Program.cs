@@ -107,39 +107,6 @@ namespace ConsoleApplication1
         } 
 
         /// <summary>
-        /// Determina se um nó é 'função' ou não
-        /// </summary>
-        /// <param name="no"></param>
-        /// <returns></returns>
-        private static bool DeterminarFuncao(ITree no)
-        {
-            switch (no.Type)
-            {
-                case 113: //Block
-                    return true;
-                    break;
-                case 116: //Call
-                    return true;
-                    break;
-                case 126: //PAREXPR = {}
-                    return true;
-                    break;
-                default: // Restante
-                    if (no.Type >= 7)
-                    {
-                        if (no.Type <= 110)
-                        {
-                            return true;
-                        }
-                    }
-                    break;
-
-            }
-            return false;
-        }
-
-
-        /// <summary>
         /// Descobre qual a função na Tree pelo nome
         /// </summary>
         /// <param name="tree"></param>
