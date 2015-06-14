@@ -216,7 +216,9 @@ namespace ConsoleApplication1
         /// </summary>
         public int CompareTo(object obj)
         {
-            throw new NotImplementedException();
+            double f = ((JavascriptChromosome)obj).Fitness;
+
+            return (Fitness == f) ? 0 : (Fitness < f) ? 1 : -1;
         }
 
         /// <summary>
@@ -242,7 +244,7 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome Clone()
         {
-            throw new NotImplementedException();
+            return new JavascriptChromosome(this._function){ Fitness = this.Fitness};
         }
 
         /// <summary>

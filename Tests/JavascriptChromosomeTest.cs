@@ -57,6 +57,17 @@ namespace Tests
             Assert.AreNotEqual(newJavaChromosome, javaChromosome);
 
         }
+
+        //Covers mutation too
+        [Test]
+        public void Clone()
+        {
+            var javaChromosome = new JavascriptChromosome(_functionBody);
+            var newJavaChromosome = javaChromosome.Clone();
+
+            Assert.AreEqual(newJavaChromosome.Fitness, javaChromosome.Fitness);
+
+        }
         
 
         /// <summary>
