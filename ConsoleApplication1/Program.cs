@@ -30,7 +30,7 @@ namespace ConsoleApplication1
                 var dirinfo = Directory.CreateDirectory(jsFile.Replace(".js", ""));
 
                 //Copia o js principal e o Js de Testes
-                File.Copy(jsFile, Path.Combine(dirinfo.FullName, jsFile), true);
+                //File.Copy(jsFile, Path.Combine(dirinfo.FullName, jsFile), true);
                 File.Copy(jsFileTest, Path.Combine(dirinfo.FullName, jsFileTest), true);
 
                 //macetão
