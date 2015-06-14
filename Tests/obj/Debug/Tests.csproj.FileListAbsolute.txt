@@ -4,6 +4,7 @@ D:\GitHub\JavascriptParser\Tests\bin\Debug\jquery-ui-1.8.24.min.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\moment.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\scriptData.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\scriptDataTest.js
+D:\GitHub\JavascriptParser\Tests\bin\Debug\ES3.tokens
 D:\GitHub\JavascriptParser\Tests\bin\Debug\Tests.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\Tests.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.dll

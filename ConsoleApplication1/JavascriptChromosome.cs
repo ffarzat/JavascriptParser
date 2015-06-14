@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,9 +22,14 @@ namespace ConsoleApplication1
         private ITree _function;
 
         /// <summary>
-        /// 
+        /// Parser generated file
         /// </summary>
-        private static List<string> _possibleFunctions = BuildFunctionList();
+        private string _instructionsFile = "ES3.tokens";
+
+        /// <summary>
+        /// List of javascript instructions
+        /// </summary>
+        private List<string> _possibleFunctions;
 
         /// <summary>
         /// Total size of the tree
@@ -47,6 +53,7 @@ namespace ConsoleApplication1
         /// <param name="function">Function AST</param>
         public JavascriptChromosome(ITree function)
         {
+            _possibleFunctions = BuildFunctionList();
             _function = function;
             BuildGenesFrom(function);
         }
@@ -55,9 +62,11 @@ namespace ConsoleApplication1
         /// Reads the Tokens file and process a lista of possible functions
         /// </summary>
         /// <returns></returns>
-        private static List<string> BuildFunctionList()
+        private List<string> BuildFunctionList()
         {
-            throw new NotImplementedException();
+            var text = System.IO.File.ReadAllText(_instructionsFile, Encoding.ASCII);
+            var pair = text.Split(" = ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            return pair.Select(s => s[0].ToString(CultureInfo.InvariantCulture)).ToList();
         }
 
         /// <summary>
@@ -153,38 +162,6 @@ namespace ConsoleApplication1
             return false;
         }
 
-        /// <summary>
-        /// Generate chromosome's subtree of specified level
-        /// </summary>
-        private void Generate(GPTreeNode node, int level)
-        {
-            // create gene for the node
-            if (level == 0)
-            {
-                // the gene should be an argument
-                node.Gene = _root.Gene.CreateNew(GPGeneType.Argument);
-            }
-            else
-            {
-                // the gene can be function or argument
-                node.Gene = _root.Gene.CreateNew();
-            }
-
-            // add children
-            if (node.Gene.ArgumentsCount != 0)
-            {
-                node.Children = new ArrayList();
-                for (int i = 0; i < node.Gene.ArgumentsCount; i++)
-                {
-                    // create new child
-                    GPTreeNode child = new GPTreeNode();
-                    Generate(child, level - 1);
-                    // add the new child
-                    node.Children.Add(child);
-                }
-            }
-        }
-
         #region IChromosome implementation
 
         /// <summary>
@@ -208,7 +185,6 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome CreateOffspring()
         {
-            //TODO: randomicamente criar um novo individuo a partir do original (aqui agora é basicamente um clone!)
             var newChromosome = new JavascriptChromosome(this._function);
             newChromosome.Mutate();
             return newChromosome;

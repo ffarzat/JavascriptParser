@@ -38,6 +38,7 @@ namespace Tests
             _functionBody = FindFunctionNode(_tree, _functionName);
         }
 
+        //Cover the cenario for creates a ancestor Chromosome from AST (ANTLR)
         [Test]
         public void BuildJavascriptChromosomeFromAst()
         {
@@ -46,6 +47,7 @@ namespace Tests
 
         }
 
+        //Covers mutation too
         [Test]
         public void CreateOffspring()
         {
