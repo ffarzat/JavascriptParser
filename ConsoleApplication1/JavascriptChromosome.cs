@@ -216,6 +216,15 @@ namespace ConsoleApplication1
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return _root.ToString();
+        }
+
         #region IChromosome implementation
 
         /// <summary>
