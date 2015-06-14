@@ -217,7 +217,7 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// 
+        /// Overrides ToString 
         /// </summary>
         /// <returns></returns>
         public override string ToString()

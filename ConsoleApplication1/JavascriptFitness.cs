@@ -13,6 +13,14 @@ namespace ConsoleApplication1
         /// </summary>
         public double Evaluate(IChromosome chromosome)
         {
+
+            //TODO: gerar o código em um diretório temporário
+            //TODO: copiar os testes para lá
+            //TODO: Executar os testes no novo Js
+            //TODO: Medir o tempo de execução
+
+            //Penalizar o tempo x Qtd de Testes passando
+
             return 0.5;
         }
 
