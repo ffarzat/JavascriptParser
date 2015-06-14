@@ -40,7 +40,7 @@ namespace ConsoleApplication1
         private GPTreeNode _root = new GPTreeNode();
 
         // random number generator for chromosoms generation
-        protected static Random rand = new Random((int)DateTime.Now.Ticks);
+        protected static Random Rand = new Random((int)DateTime.Now.Ticks);
 
         /// <summary>
         /// Chromosome's fintess value
@@ -64,9 +64,24 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private List<string> BuildFunctionList()
         {
-            var text = System.IO.File.ReadAllText(_instructionsFile, Encoding.ASCII);
-            var pair = text.Split(" = ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            return pair.Select(s => s[0].ToString(CultureInfo.InvariantCulture)).ToList();
+            var sr = System.IO.File.OpenText(_instructionsFile);
+            string line = "";
+            var list = new List<string>();
+            int lineCount = 0;
+
+            while ((line = sr.ReadLine()) != null && lineCount <=168)
+            {
+                lineCount++;
+                var functionName = line.Split(" = ".ToCharArray())[0];
+                var functionNumber = line.Split(" = ".ToCharArray())[1];
+                if (IsFunction(int.Parse(functionNumber)))
+                    list.Add(functionName);
+
+            }
+
+            sr.Close();
+
+            return list;
         }
 
         /// <summary>
@@ -162,6 +177,38 @@ namespace ConsoleApplication1
             return false;
         }
 
+        /// <summary>
+        /// Determine if the instruction is a function node
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        private bool IsFunction(int number)
+        {
+            switch (number)
+            {
+                case 113: //Block
+                    return true;
+                    break;
+                case 116: //Call
+                    return true;
+                    break;
+                case 126: //PAREXPR = {}
+                    return true;
+                    break;
+                default: // Restante
+                    if (number >= 7)
+                    {
+                        if (number <= 110)
+                        {
+                            return true;
+                        }
+                    }
+                    break;
+
+            }
+            return false;
+        }
+
         #region IChromosome implementation
 
         /// <summary>
@@ -203,15 +250,17 @@ namespace ConsoleApplication1
         /// </summary>
         public void Mutate()
         {
-            int instructionLevelToMutate = rand.Next(0, _root.Children.Count); //at line instruction
+            int instructionLevelToMutate = Rand.Next(0, _root.Children.Count); //at line instruction
             var functionNode = _root.Children[instructionLevelToMutate] as GPTreeNode;
-            int levelToMutate = rand.Next(0, functionNode.Children.Count); //at level 
+            int levelToMutate = Rand.Next(0, functionNode.Children.Count); //at level 
+            int indexTargetFunction = Rand.Next(0, _possibleFunctions.Count);
+            var targetFunction = _possibleFunctions.ElementAt(indexTargetFunction);
 
             var functionToMutate = functionNode.Children[levelToMutate] as GPTreeNode;
             functionToMutate.Gene = new JavascriptGene()
                 {
                     GeneType = GPGeneType.Function,
-                    Name = "MUTANT"
+                    Name = targetFunction
                 };
 
         }
