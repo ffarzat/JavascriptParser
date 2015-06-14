@@ -39,6 +39,13 @@ namespace ConsoleApplication1
         // tree root
         private GPTreeNode _root = new GPTreeNode();
 
+        /// <summary>
+        /// Read Only Tree nodes
+        /// </summary>
+        public GPTreeNode Root {
+            get { return _root; }
+        }
+
         // random number generator for chromosoms generation
         protected static Random Rand = new Random((int)DateTime.Now.Ticks);
 
@@ -272,7 +279,22 @@ namespace ConsoleApplication1
         /// </summary>
         public  void Crossover(IChromosome pair)
         {
-            throw new NotImplementedException();
+            var javascriptChromosomePair = (JavascriptChromosome)pair;
+            int cutPointInstructionDad = Rand.Next(0, javascriptChromosomePair.Root.Children.Count); //at line instruction
+            int cutPointInstructionMom = Rand.Next(0, _root.Children.Count); //at line instruction
+
+            var functionNodeDad = javascriptChromosomePair.Root.Children[cutPointInstructionDad] as GPTreeNode;
+            var functionNodeMom = javascriptChromosomePair.Root.Children[cutPointInstructionMom] as GPTreeNode;
+
+            int cutPointDad = Rand.Next(0, functionNodeDad.Children.Count); //at instruction
+            int cutPointMom = Rand.Next(0, functionNodeMom.Children.Count); //at instruction
+
+            var functionToCrossDad = functionNodeDad.Children[cutPointDad] as GPTreeNode;
+            var functionToCrossMom = functionNodeMom.Children[cutPointMom] as GPTreeNode;
+
+            //Change one per another one
+            functionNodeDad.Children[cutPointDad] = functionToCrossMom;
+            functionNodeMom.Children[cutPointMom] = functionToCrossDad;
         }
 
         /// <summary>
