@@ -40,17 +40,20 @@ namespace AForge.Genetic
 		{
 			StringBuilder sb = new StringBuilder( );
 
+            // add gene value
+            sb.Append(Gene.ToString() + " ");
+
 			if ( Children != null )
 			{
 				// walk through all nodes
 				foreach ( GPTreeNode node in Children )
 				{
-					sb.Append( node.ToString( ) );
+					sb.Append(node.ToString( ));
 				}
 			}
 
-			// add gene value
-			sb.Append( Gene.ToString( ) );
+
+            
 			sb.Append( " " );
 
 			return sb.ToString( );
