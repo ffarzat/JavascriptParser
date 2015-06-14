@@ -68,19 +68,25 @@ namespace ConsoleApplication1
         /// Build a single gene (recursive)
         /// </summary>
         /// <param name="instructionLine"></param>
-        private JavascriptGene BuildGene(ITree instructionLine)
+        private GPTreeNode BuildGene(ITree instructionLine)
         {
-            var gene = new JavascriptGene
+            var jsGene = new JavascriptGene
                 {
                     GeneType = IsFunction(instructionLine) ? GPGeneType.Function : GPGeneType.Argument,
                     Name = instructionLine.Text
                 };
 
-            if (gene.GeneType == GPGeneType.Function)
-            {
-                //Do recursive way
-            }
+            var gene = new GPTreeNode {Gene = jsGene};
 
+            if (jsGene.GeneType == GPGeneType.Function)
+            {
+                for (int i = 0; i < instructionLine.ChildCount; i++)
+                {
+                    var childInstruction = instructionLine.GetChild(i);
+                    var childGene = BuildGene(childInstruction);
+                    gene.Children.Add(childGene);
+                }
+            }
 
             return gene;
         }
