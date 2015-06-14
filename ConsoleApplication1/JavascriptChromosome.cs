@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,14 +20,18 @@ namespace ConsoleApplication1
         /// </summary>
         private ITree _function;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private static List<string> _possibleFunctions = BuildFunctionList();
+
+        /// <summary>
+        /// Total size of the tree
+        /// </summary>
+        private int _totalLevel = 0;
+
         // tree root
         private GPTreeNode _root = new GPTreeNode();
-
-        // maximum initial level of the tree
-        private int _maxInitialLevel = 10;
-        
-        // maximum level of the tree
-        private int _maxLevel = 5000;
 
         // random number generator for chromosoms generation
         protected static Random rand = new Random((int)DateTime.Now.Ticks);
@@ -47,14 +52,24 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
+        /// Reads the Tokens file and process a lista of possible functions
+        /// </summary>
+        /// <returns></returns>
+        private static List<string> BuildFunctionList()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Creates a Tree 
         /// </summary>
         /// <param name="function"></param>
         private void BuildGenesFrom(ITree function)
         {
             var functionBlock = function.GetChild(2);
-
             SetupRoot(function);
+            
+            _totalLevel = 1;
 
             for (int i = 0; i < functionBlock.ChildCount; i++)
             {
@@ -86,6 +101,7 @@ namespace ConsoleApplication1
                     var childGene = BuildGene(childInstruction);
                     gene.Children.Add(childGene);
                 }
+                _totalLevel += 1;
             }
 
             return gene;
@@ -99,7 +115,7 @@ namespace ConsoleApplication1
         {
             _root.Gene = new JavascriptGene()
                 {
-                    Name = functionBlock.Text,
+                    Name = "" /*functionBlock.Text*/,
                     GeneType = GPGeneType.Function,
                     MaxArgumentsCount = int.MaxValue
                 };
@@ -137,14 +153,39 @@ namespace ConsoleApplication1
             return false;
         }
 
-        #region IChromosome implementation
         /// <summary>
-        /// Constructor
+        /// Generate chromosome's subtree of specified level
         /// </summary>
-        public JavascriptChromosome()
+        private void Generate(GPTreeNode node, int level)
         {
-            
+            // create gene for the node
+            if (level == 0)
+            {
+                // the gene should be an argument
+                node.Gene = _root.Gene.CreateNew(GPGeneType.Argument);
+            }
+            else
+            {
+                // the gene can be function or argument
+                node.Gene = _root.Gene.CreateNew();
+            }
+
+            // add children
+            if (node.Gene.ArgumentsCount != 0)
+            {
+                node.Children = new ArrayList();
+                for (int i = 0; i < node.Gene.ArgumentsCount; i++)
+                {
+                    // create new child
+                    GPTreeNode child = new GPTreeNode();
+                    Generate(child, level - 1);
+                    // add the new child
+                    node.Children.Add(child);
+                }
+            }
         }
+
+        #region IChromosome implementation
 
         /// <summary>
         /// Generate random chromosome value
@@ -167,7 +208,10 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome CreateOffspring()
         {
-            throw new NotImplementedException();
+            //TODO: randomicamente criar um novo individuo a partir do original (aqui agora é basicamente um clone!)
+            var newChromosome = new JavascriptChromosome(this._function);
+            newChromosome.Mutate();
+            return newChromosome;
         }
 
         /// <summary>
@@ -179,17 +223,27 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// Mutation operator
+        /// Mutation operator (replaces a function node by another one)
         /// </summary>
         public void Mutate()
         {
-            throw new NotImplementedException();
+            int instructionLevelToMutate = rand.Next(0, _root.Children.Count); //at line instruction
+            var functionNode = _root.Children[instructionLevelToMutate] as GPTreeNode;
+            int levelToMutate = rand.Next(0, functionNode.Children.Count); //at level 
+
+            var functionToMutate = functionNode.Children[levelToMutate] as GPTreeNode;
+            functionToMutate.Gene = new JavascriptGene()
+                {
+                    GeneType = GPGeneType.Function,
+                    Name = "MUTANT"
+                };
+
         }
 
         /// <summary>
         /// Crossover operator
         /// </summary>
-        public void Crossover(IChromosome pair)
+        public  void Crossover(IChromosome pair)
         {
             throw new NotImplementedException();
         }

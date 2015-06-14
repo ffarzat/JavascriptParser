@@ -46,6 +46,17 @@ namespace Tests
 
         }
 
+        [Test]
+        public void CreateOffspring()
+        {
+            var javaChromosome = new JavascriptChromosome(_functionBody);
+            var newJavaChromosome = javaChromosome.CreateOffspring();
+            
+            Assert.AreNotEqual(newJavaChromosome, javaChromosome);
+
+        }
+        
+
         /// <summary>
         /// Descobre qual a função na Tree pelo nome
         /// </summary>
