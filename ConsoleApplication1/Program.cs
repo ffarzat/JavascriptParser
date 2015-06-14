@@ -70,22 +70,12 @@ namespace ConsoleApplication1
             if (funcaoOtimizar == null)
                 throw new ApplicationException(String.Format("Função não encontrada: {0}", _nomeFuncaoOtimizar));
 
-
-            var blocoDaFuncao = funcaoOtimizar.GetChild(2);
             #endregion
 
             #region Monta o primeiro individuo
-            
-            IChromosome ancestral = new JavascriptChromosome(new JavascriptGene()); //TODO: Montar o ancestral de fato
 
+            var ancestral = new JavascriptChromosome(funcaoOtimizar);
             
-            
-            for (int i = 0; i < blocoDaFuncao.ChildCount; i++)
-            {
-                var instrucaoAtual = blocoDaFuncao.GetChild(i);
-
-
-            }
             #endregion
 
             #region Faz o setup da população inicial
