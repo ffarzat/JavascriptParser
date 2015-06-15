@@ -41,11 +41,12 @@ namespace ConsoleApplication1
                 var parser = new ES3Parser(tokenStream);
                 ES3Parser.program_return programReturn = parser.program();
                 var tree = programReturn.Tree as CommonTree;
+                
 
                 //var gen = new DotTreeGenerator();
                 //Console.Write(gen.ToDot(tree));
+                Console.Write(tree.GetChild(1).ToStringTree()); //TODO: traduzir o Tostring em código...
                 
-
                 #endregion
 
                 GerarArquivosParaExecucao(tree, dirinfo);

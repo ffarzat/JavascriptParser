@@ -6,7 +6,7 @@ function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
   ltMes = ldMes;
   ltAno = ldAno;
   //31, 30, 28 ou 29 dias?
-  ndiasmes = new DeterminarQuantidadeDeDias(ldMes, ldAno);
+  ndiasmes = DeterminarQuantidadeDeDias(ldMes, ldAno);
   //incrementa dias
   if (ldDia + lnDias <= ndiasmes) {
     ltDia = ldDia + lnDias;
