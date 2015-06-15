@@ -288,13 +288,29 @@ namespace ConsoleApplication1
         /// </summary>
         public void Delete()
         {
-            int instructionLevelToDelete = Rand.Next(0, _root.Children.Count); //at line instruction
-            var functionNode = _root.Children[instructionLevelToDelete] as GPTreeNode;
-            int levelToDelete = Rand.Next(0, functionNode.Children.Count); //at level 
+            bool sinal = true;
 
-            var functionToDelete = functionNode.Children[levelToDelete] as GPTreeNode;
-            functionNode.Children.Remove(functionToDelete);
+            while (sinal)
+            {
+                int instructionLevelToDelete = Rand.Next(0, _root.Children.Count); //at line instruction
+                var functionNode = _root.Children[instructionLevelToDelete] as GPTreeNode;
+                int levelToDelete = Rand.Next(0, functionNode.Children.Count); //at level 
+
+                var functionToDelete = functionNode.Children[levelToDelete] as GPTreeNode;
+
+                if (functionToDelete.Gene.GeneType == GPGeneType.Function)
+                {
+                    functionNode.Children.Remove(functionToDelete);
+                    sinal = false;
+
+                }
+                    
+            }
+
+            
         }
+
+        
 
         /// <summary>
         /// Crossover operator

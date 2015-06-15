@@ -73,7 +73,6 @@ namespace Tests
             javaChromosome.Delete();
             var totalLinesAfter = javaChromosome.Root.Children.Count;
 
-
             Assert.AreEqual(totalLines, totalLinesAfter);
 
         }
