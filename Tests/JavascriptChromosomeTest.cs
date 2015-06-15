@@ -76,7 +76,17 @@ namespace Tests
             Assert.AreEqual(totalLines, totalLinesAfter);
 
         }
-        
+
+
+        //Covers ToString Behavior
+        [Test]
+        public void ToStringTest()
+        {
+            var javaChromosome = new JavascriptChromosome(_functionBody);
+            Assert.AreEqual(_javascriptText, javaChromosome.ToString());
+
+        }
+
 
         /// <summary>
         /// Descobre qual a função na Tree pelo nome
