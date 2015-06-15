@@ -53,7 +53,7 @@ namespace Tests
 
         }
 
-        //Covers mutation too
+        //Covers Clone
         [Test]
         public void Clone()
         {
@@ -61,6 +61,20 @@ namespace Tests
             var newJavaChromosome = javaChromosome.Clone();
 
             Assert.AreEqual(newJavaChromosome.Fitness, javaChromosome.Fitness);
+
+        }
+
+        //Covers Delete operator
+        [Test]
+        public void Delete()
+        {
+            var javaChromosome = new JavascriptChromosome(_functionBody);
+            var totalLines = javaChromosome.Root.Children.Count;
+            javaChromosome.Delete();
+            var totalLinesAfter = javaChromosome.Root.Children.Count;
+
+
+            Assert.AreEqual(totalLines, totalLinesAfter);
 
         }
         
