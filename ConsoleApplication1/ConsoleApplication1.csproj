@@ -56,7 +56,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Argumento.cs" />
     <Compile Include="ES3Lexer.Action.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -65,7 +64,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ES3Parser.cs" />
-    <Compile Include="Funcao.cs" />
     <Compile Include="JavascriptChromosome.cs" />
     <Compile Include="JavascriptFitness.cs" />
     <Compile Include="JavascriptGene.cs" />

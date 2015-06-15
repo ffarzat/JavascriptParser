@@ -19,9 +19,6 @@ namespace ConsoleApplication1
         private static string jsFileTest = @"scriptDataTest.js";
         private static string _nomeFuncaoOtimizar = "AvancaDias";
 
-        private static List<Funcao> _funcoes = new List<Funcao>(); 
-        private static List<Argumento> _argumentos = new List<Argumento>(); 
-
         static void Main(string[] args)
         {
             try
