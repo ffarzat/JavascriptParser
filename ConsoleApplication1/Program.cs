@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AForge.Genetic;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
+using Antlr3.ST;
 using Xebic.Parsers.ES3;
 
 
@@ -40,6 +41,11 @@ namespace ConsoleApplication1
                 var parser = new ES3Parser(tokenStream);
                 ES3Parser.program_return programReturn = parser.program();
                 var tree = programReturn.Tree as CommonTree;
+
+                //var gen = new DotTreeGenerator();
+                //Console.Write(gen.ToDot(tree));
+                
+
                 #endregion
 
                 GerarArquivosParaExecucao(tree, dirinfo);
