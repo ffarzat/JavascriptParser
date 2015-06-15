@@ -283,6 +283,11 @@ namespace ConsoleApplication1
 
         }
 
+        public void Delete()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Crossover operator
         /// </summary>

@@ -38,6 +38,11 @@ namespace AForge.Genetic
 		/// </summary>
 		void Mutate( );
 
+        /// <summary>
+        /// Delete operator
+        /// </summary>
+        void Delete();
+
 		/// <summary>
 		/// Crossover operator
 		/// </summary>

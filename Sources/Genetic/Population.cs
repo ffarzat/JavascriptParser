@@ -23,6 +23,7 @@ namespace AForge.Genetic
 		// population parameters
 		private double		crossOverRate	= 0.75;
 		private double		mutationRate	= 0.10;
+        private double      deleteRate      = 0.10;
 
 		// random number generator
 		private static Random rand = new Random( (int) DateTime.Now.Ticks );
@@ -194,6 +195,29 @@ namespace AForge.Genetic
 			}
 		}
 
+        /// <summary>
+        /// Do Delete in the population
+        /// </summary>
+        public virtual void Delete()
+        {
+            // Delte
+            for (int i = 0; i < size; i++)
+            {
+                // generate next random number and check if we need to do the delete operator
+                if (rand.NextDouble() <= deleteRate)
+                {
+                    // clone the chromosome
+                    IChromosome c = ((IChromosome)population[i]).Clone();
+                    // mutate it
+                    c.Delete();
+                    // calculate fitness of the mutant
+                    c.Evaluate(fitnessFunction);
+                    // add mutant to the population
+                    population.Add(c);
+                }
+            }
+        }
+
 		/// <summary>
 		/// Do selection
 		/// </summary>
@@ -249,6 +273,7 @@ namespace AForge.Genetic
 		{
 			Crossover( );
 			Mutate( );
+		    Delete();
 			Selection( );
 		}
 		

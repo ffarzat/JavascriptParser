@@ -244,7 +244,12 @@ namespace AForge.Genetic
 			}
 		}
 
-		/// <summary>
+	    public void Delete()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		/// Crossover operator
 		/// </summary>
 		public virtual void Crossover( IChromosome pair )

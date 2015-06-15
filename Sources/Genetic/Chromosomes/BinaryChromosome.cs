@@ -142,7 +142,12 @@ namespace AForge.Genetic
 			val ^= ( (ulong) 1 << rand.Next( length ) );
 		}
 
-		/// <summary>
+	    public void Delete()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		/// Crossover operator
 		/// </summary>
 		public virtual void Crossover( IChromosome pair )

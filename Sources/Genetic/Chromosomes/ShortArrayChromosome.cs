@@ -165,7 +165,12 @@ namespace AForge.Genetic
 			val[i] = (ushort) rand.Next( maxValue + 1 );
 		}
 
-		/// <summary>
+	    public void Delete()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		/// Crossover operator
 		/// </summary>
 		public virtual void Crossover( IChromosome pair )

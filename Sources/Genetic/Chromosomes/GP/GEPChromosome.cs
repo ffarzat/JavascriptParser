@@ -221,8 +221,13 @@ namespace AForge.Genetic
 			}
 		}
 
+	    public void Delete()
+	    {
+	        throw new NotImplementedException();
+	    }
 
-		/// <summary>
+
+	    /// <summary>
 		/// Usual gene mutation
 		/// </summary>
 		public void MutateGene( )
