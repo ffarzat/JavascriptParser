@@ -283,9 +283,17 @@ namespace ConsoleApplication1
 
         }
 
+        /// <summary>
+        /// Delete operator
+        /// </summary>
         public void Delete()
         {
-            throw new NotImplementedException();
+            int instructionLevelToDelete = Rand.Next(0, _root.Children.Count); //at line instruction
+            var functionNode = _root.Children[instructionLevelToDelete] as GPTreeNode;
+            int levelToDelete = Rand.Next(0, functionNode.Children.Count); //at level 
+
+            var functionToDelete = functionNode.Children[levelToDelete] as GPTreeNode;
+            functionNode.Children.Remove(functionToDelete);
         }
 
         /// <summary>
