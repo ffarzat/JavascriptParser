@@ -64,6 +64,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ES3Parser.cs" />
+    <Compile Include="JavascriptASTCodeGenerator.cs" />
     <Compile Include="JavascriptChromosome.cs" />
     <Compile Include="JavascriptFitness.cs" />
     <Compile Include="JavascriptGene.cs" />

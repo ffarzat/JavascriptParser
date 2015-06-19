@@ -80,11 +80,11 @@ namespace Tests
 
         //Covers ToString Behavior
         [Test]
-        public void ToStringTest()
+        public void ToCodeTest()
         {
-            var javaChromosome = new JavascriptChromosome(_functionBody);
-            Assert.AreEqual(_javascriptText, javaChromosome.ToString());
-
+            var newTree = _tree;
+            var codeGenerator = new JavascriptAstCodeGenerator(newTree);
+            Assert.AreEqual(_javascriptText, codeGenerator.DoCodeTransformation());
         }
 
 
