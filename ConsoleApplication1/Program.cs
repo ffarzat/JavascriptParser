@@ -69,7 +69,7 @@ namespace ConsoleApplication1
         private static void GerarArquivosParaExecucao(CommonTree tree, DirectoryInfo directoryInfo)
         {
             #region Encontra a função alvo da otimização, recupera o bloco de instruções
-            var funcaoOtimizar = RecuperarNoDaFuncao(tree, _nomeFuncaoOtimizar);
+            var funcaoOtimizar = JavascriptAstCodeGenerator.FindFunctionTree(tree, _nomeFuncaoOtimizar);
 
             if (funcaoOtimizar == null)
                 throw new ApplicationException(String.Format("Função não encontrada: {0}", _nomeFuncaoOtimizar));
@@ -78,7 +78,7 @@ namespace ConsoleApplication1
 
             #region Monta o primeiro individuo
 
-            var ancestral = new JavascriptChromosome(funcaoOtimizar);
+            var ancestral = new JavascriptChromosome(tree, _nomeFuncaoOtimizar);
             
             #endregion
 
@@ -108,28 +108,6 @@ namespace ConsoleApplication1
 
             #endregion
 
-        } 
-
-        /// <summary>
-        /// Descobre qual a função na Tree pelo nome
-        /// </summary>
-        /// <param name="tree"></param>
-        /// <param name="nomeFuncaoOtimizar"></param>
-        /// <returns></returns>
-        public static ITree RecuperarNoDaFuncao(CommonTree tree, string nomeFuncaoOtimizar)
-        {
-
-            for (int i = 0; i < tree.ChildCount; i++)
-            {
-                var funcaoAtual = tree.GetChild(i);
-                var nome = funcaoAtual.GetChild(0) == null ? "" : funcaoAtual.GetChild(0).Text;
-
-                if (nome == nomeFuncaoOtimizar)
-                    return funcaoAtual;
-            }
-
-            return null;
         }
-
     } 
 }

@@ -34,25 +34,25 @@ namespace Tests
             _tree = programReturn.Tree as CommonTree;
             #endregion
 
-            _functionBody = Program.RecuperarNoDaFuncao(_tree, _functionName);
+            _functionBody = JavascriptAstCodeGenerator.FindFunctionTree(_tree, _functionName).GetChild(2);
         }
 
         //Cover the cenario for creates a ancestor Chromosome from AST (ANTLR)
         [Test]
         public void BuildJavascriptChromosomeFromAst()
         {
-            var javaChromosome = new JavascriptChromosome(_functionBody);
-            Assert.AreEqual(true, true);
+            var javaChromosome = new JavascriptChromosome(_tree, _functionName);
 
+            Assert.AreEqual(_tree, javaChromosome.Tree);
+            Assert.AreEqual(_functionBody, javaChromosome.Function);
         }
 
         //Covers mutation too
         [Test]
         public void CreateOffspring()
         {
-            var javaChromosome = new JavascriptChromosome(_functionBody);
+            var javaChromosome = new JavascriptChromosome(_tree, _functionName);
             var newJavaChromosome = javaChromosome.CreateOffspring();
-            
             Assert.AreNotEqual(newJavaChromosome, javaChromosome);
 
         }
@@ -61,23 +61,30 @@ namespace Tests
         [Test]
         public void Clone()
         {
-            var javaChromosome = new JavascriptChromosome(_functionBody);
+            var javaChromosome = new JavascriptChromosome(_tree, _functionName);
             var newJavaChromosome = javaChromosome.Clone();
 
+            Assert.AreEqual(_tree, javaChromosome.Tree);
+            Assert.AreEqual(_functionBody, javaChromosome.Function);
             Assert.AreEqual(newJavaChromosome.Fitness, javaChromosome.Fitness);
-
         }
 
         //Covers Delete operator
         [Test]
         public void Delete()
         {
-            var javaChromosome = new JavascriptChromosome(_functionBody);
-            var totalLines = javaChromosome.Root.Children.Count;
+            var javaChromosome = new JavascriptChromosome(_tree, _functionName);
+            var totalLines = javaChromosome.Function.ChildCount;
+            
             javaChromosome.Delete();
-            var totalLinesAfter = javaChromosome.Root.Children.Count;
 
-            Assert.AreEqual(totalLines, totalLinesAfter);
+            var totalLinesAfter = javaChromosome.Function.ChildCount;
+
+            Assert.AreNotEqual(totalLines, totalLinesAfter);
+
+            //var codeGenerator = new JavascriptAstCodeGenerator(javaChromosome.Tree);
+            //var generatedJsCode = codeGenerator.DoCodeTransformation();
+            //File.WriteAllText("generatedJsCode_Delete.js", generatedJsCode);
 
         }
 

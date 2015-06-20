@@ -17,35 +17,45 @@ namespace ConsoleApplication1
     public class JavascriptChromosome : IChromosome
     {
         /// <summary>
-        /// Keeps the original AST from function
+        /// Keeps the name of a function to Optmize
+        /// </summary>
+        private string _functionName;
+
+        /// <summary>
+        /// Keeps the AST Block from function
         /// </summary>
         private ITree _function;
 
         /// <summary>
+        /// Function Block Tree of Chromosome
+        /// </summary>
+        public ITree Function {
+            get { return _function; }
+        }
+
+        /// <summary>
+        /// Keeps the original AST tree
+        /// </summary>
+        private CommonTree _tree;
+
+        /// <summary>
+        /// Full Tree
+        /// </summary>
+        public CommonTree Tree
+        {
+            get { return _tree; }
+        }
+
+        /// <summary>
         /// Parser generated file
         /// </summary>
-        private string _instructionsFile = "ES3.tokens";
+        private const string InstructionsFile = "ES3.tokens";
 
         /// <summary>
         /// List of javascript instructions
         /// </summary>
         private List<string> _possibleFunctions;
-
-        /// <summary>
-        /// Total size of the tree
-        /// </summary>
-        private int _totalLevel = 0;
-
-        // tree root
-        private GPTreeNode _root = new GPTreeNode();
-
-        /// <summary>
-        /// Read Only Tree nodes
-        /// </summary>
-        public GPTreeNode Root {
-            get { return _root; }
-        }
-
+        
         // random number generator for chromosoms generation
         protected static Random Rand = new Random((int)DateTime.Now.Ticks);
 
@@ -55,14 +65,15 @@ namespace ConsoleApplication1
         public double Fitness { get; private set; }
 
         /// <summary>
-        /// Starts a new instance based on function AST
+        /// Starts a new instance based on Tree AST
         /// </summary>
-        /// <param name="function">Function AST</param>
-        public JavascriptChromosome(ITree function)
+        /// <param name="functionName"></param>
+        public JavascriptChromosome(CommonTree tree, string functionName)
         {
-            _possibleFunctions = BuildFunctionList();
-            _function = function;
-            BuildGenesFrom(function);
+            _tree = tree;
+            _functionName = functionName;
+            _possibleFunctions = BuildFunctionList(); //TODO: rever isso aqui. Pool mais forte de funções tipadas para substituição na mutação
+            _function = JavascriptAstCodeGenerator.FindFunctionTree(_tree, functionName).GetChild(2);
         }
 
         /// <summary>
@@ -71,7 +82,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private List<string> BuildFunctionList()
         {
-            var sr = System.IO.File.OpenText(_instructionsFile);
+            var sr = System.IO.File.OpenText(InstructionsFile);
             string line = "";
             var list = new List<string>();
             int lineCount = 0;
@@ -92,73 +103,12 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// Creates a Tree 
-        /// </summary>
-        /// <param name="function"></param>
-        private void BuildGenesFrom(ITree function)
-        {
-            var functionBlock = function.GetChild(2);
-            SetupRoot(function);
-            
-            _totalLevel = 1;
-
-            for (int i = 0; i < functionBlock.ChildCount; i++)
-            {
-                var instructionLine = functionBlock.GetChild(i);
-                var geneFromInstruction = BuildGene(instructionLine);
-                _root.Children.Add(geneFromInstruction);
-            }
-        }
-
-        /// <summary>
-        /// Build a single gene (recursive)
-        /// </summary>
-        /// <param name="instructionLine"></param>
-        private GPTreeNode BuildGene(ITree instructionLine)
-        {
-            var jsGene = new JavascriptGene
-                {
-                    GeneType = JavascriptAstCodeGenerator.IsFunction(instructionLine) ? GPGeneType.Function : GPGeneType.Argument,
-                    Name = instructionLine.Text
-                };
-
-            var gene = new GPTreeNode {Gene = jsGene};
-
-            if (jsGene.GeneType == GPGeneType.Function)
-            {
-                for (int i = 0; i < instructionLine.ChildCount; i++)
-                {
-                    var childInstruction = instructionLine.GetChild(i);
-                    var childGene = BuildGene(childInstruction);
-                    gene.Children.Add(childGene);
-                }
-                _totalLevel += 1;
-            }
-
-            return gene;
-        }
-
-        /// <summary>
-        /// Make a root GPGPTreeNode
-        /// </summary>
-        /// <param name="functionBlock"></param>
-        private void SetupRoot(ITree functionBlock)
-        {
-            _root.Gene = new JavascriptGene()
-                {
-                    Name = "" /*functionBlock.Text*/,
-                    GeneType = GPGeneType.Function,
-                    MaxArgumentsCount = int.MaxValue
-                };
-        }
-
-        /// <summary>
         /// Overrides ToString 
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return _root.ToString();
+            return _function.ToStringTree();
         }
 
         #region IChromosome implementation
@@ -186,7 +136,7 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome CreateOffspring()
         {
-            var newChromosome = new JavascriptChromosome(this._function);
+            var newChromosome = this.Clone();
             newChromosome.Mutate();
             return newChromosome;
         }
@@ -196,7 +146,7 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome Clone()
         {
-            return new JavascriptChromosome(this._function){ Fitness = this.Fitness};
+            return new JavascriptChromosome(this._tree, _functionName ){ Fitness = this.Fitness};
         }
 
         /// <summary>
@@ -204,19 +154,24 @@ namespace ConsoleApplication1
         /// </summary>
         public void Mutate()
         {
-            int instructionLevelToMutate = Rand.Next(0, _root.Children.Count); //at line instruction
-            var functionNode = _root.Children[instructionLevelToMutate] as GPTreeNode;
-            int levelToMutate = Rand.Next(0, functionNode.Children.Count); //at level 
-            int indexTargetFunction = Rand.Next(0, _possibleFunctions.Count);
+            #region Defines Line and instruction to Mutate
+            int lineLevelToMutate = Rand.Next(0, _function.ChildCount); //at line instruction
+            var functionNode = _function.GetChild(lineLevelToMutate);
+            int instructionLevelToMutate = Rand.Next(0, functionNode.ChildCount); //at level <--------------------------------------------------------------------
+            #endregion
+            
+            #region Defines Target Function to Mutate
+            int indexTargetFunction = Rand.Next(0, _possibleFunctions.Count);//target mutation function
             var targetFunction = _possibleFunctions.ElementAt(indexTargetFunction);
+            #endregion
 
-            var functionToMutate = functionNode.Children[levelToMutate] as GPTreeNode;
-            functionToMutate.Gene = new JavascriptGene()
-                {
-                    GeneType = GPGeneType.Function,
-                    Name = targetFunction
-                };
+            var instructionToMutate = functionNode.GetChild(instructionLevelToMutate) as CommonTree;
 
+            instructionToMutate.Text = targetFunction;
+            instructionToMutate.Type = 1;
+
+            functionNode.ReplaceChildren(0, instructionLevelToMutate, instructionToMutate);
+            
         }
 
         /// <summary>
@@ -228,22 +183,23 @@ namespace ConsoleApplication1
 
             while (sinal)
             {
-                int instructionLevelToDelete = Rand.Next(0, _root.Children.Count); //at line instruction
-                var functionNode = _root.Children[instructionLevelToDelete] as GPTreeNode;
-                int levelToDelete = Rand.Next(0, functionNode.Children.Count); //at level 
+                int instructionLevelToDelete = Rand.Next(0,  _function.ChildCount); //at line instruction
+                var functionToDelete = _function.GetChild(instructionLevelToDelete);
 
-                var functionToDelete = functionNode.Children[levelToDelete] as GPTreeNode;
-
-                if (functionToDelete.Gene.GeneType == GPGeneType.Function)
+                if (JavascriptAstCodeGenerator.IsFunction(functionToDelete))
                 {
-                    functionNode.Children.Remove(functionToDelete);
-                    sinal = false;
-
+                    if (JavascriptAstCodeGenerator.IsFunction(functionToDelete.Parent) && functionToDelete.Parent.Type != 113) //Not block and is a Function? Delete entire line
+                    {
+                        _function.Parent.DeleteChild(0);
+                        sinal = false;
+                    }
+                    else
+                    {
+                        _function.DeleteChild(instructionLevelToDelete);
+                        sinal = false;
+                    }
                 }
-                    
             }
-
-            
         }
 
         /// <summary>
@@ -251,22 +207,22 @@ namespace ConsoleApplication1
         /// </summary>
         public  void Crossover(IChromosome pair)
         {
-            var javascriptChromosomePair = (JavascriptChromosome)pair;
-            int cutPointInstructionDad = Rand.Next(0, javascriptChromosomePair.Root.Children.Count); //at line instruction
-            int cutPointInstructionMom = Rand.Next(0, _root.Children.Count); //at line instruction
+            //var javascriptChromosomePair = (JavascriptChromosome)pair;
+            //int cutPointInstructionDad = Rand.Next(0, javascriptChromosomePair.Root.Children.Count); //at line instruction
+            //int cutPointInstructionMom = Rand.Next(0, _root.Children.Count); //at line instruction
 
-            var functionNodeDad = javascriptChromosomePair.Root.Children[cutPointInstructionDad] as GPTreeNode;
-            var functionNodeMom = javascriptChromosomePair.Root.Children[cutPointInstructionMom] as GPTreeNode;
+            //var functionNodeDad = javascriptChromosomePair.Root.Children[cutPointInstructionDad] as GPTreeNode;
+            //var functionNodeMom = javascriptChromosomePair.Root.Children[cutPointInstructionMom] as GPTreeNode;
 
-            int cutPointDad = Rand.Next(0, functionNodeDad.Children.Count); //at instruction
-            int cutPointMom = Rand.Next(0, functionNodeMom.Children.Count); //at instruction
+            //int cutPointDad = Rand.Next(0, functionNodeDad.Children.Count); //at instruction
+            //int cutPointMom = Rand.Next(0, functionNodeMom.Children.Count); //at instruction
 
-            var functionToCrossDad = functionNodeDad.Children[cutPointDad] as GPTreeNode;
-            var functionToCrossMom = functionNodeMom.Children[cutPointMom] as GPTreeNode;
+            //var functionToCrossDad = functionNodeDad.Children[cutPointDad] as GPTreeNode;
+            //var functionToCrossMom = functionNodeMom.Children[cutPointMom] as GPTreeNode;
 
-            //Change one per another one
-            functionNodeDad.Children[cutPointDad] = functionToCrossMom;
-            functionNodeMom.Children[cutPointMom] = functionToCrossDad;
+            ////Change one per another one
+            //functionNodeDad.Children[cutPointDad] = functionToCrossMom;
+            //functionNodeMom.Children[cutPointMom] = functionToCrossDad;
         }
 
         /// <summary>

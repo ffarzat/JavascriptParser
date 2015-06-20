@@ -126,7 +126,7 @@ namespace ConsoleApplication1
         {
 
             string instructionCode = "";
-            instructionCode = string.Format("{0}", instruction.Text);
+            instructionCode = String.Format("{0}", instruction.Text);
 
             if (instruction.Parent.Type == 0)
                 instructionCode += ";"; // use strict exception! oO
@@ -144,7 +144,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+            instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
             return instructionCode; 
         }
@@ -158,7 +158,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+            instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
             return instructionCode; 
         }
@@ -172,7 +172,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+            instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
             return instructionCode; 
         }
@@ -186,7 +186,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            instructionCode = string.Format("return {0}", HandleChild(instruction.GetChild(0)));
+            instructionCode = String.Format("return {0}", HandleChild(instruction.GetChild(0)));
 
             return instructionCode;
         }
@@ -200,7 +200,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
             
-            instructionCode = string.Format("({0})", HandleChild(instruction.GetChild(0)));
+            instructionCode = String.Format("({0})", HandleChild(instruction.GetChild(0)));
             
             return instructionCode;
         }
@@ -214,7 +214,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+            instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
             return instructionCode;
         }
@@ -228,7 +228,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+            instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
             return instructionCode;
         }
@@ -242,7 +242,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+            instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
             return instructionCode;
         }
@@ -256,7 +256,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+            instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
             return instructionCode;
         }
@@ -311,14 +311,14 @@ namespace ConsoleApplication1
             if (block2Code != "")
             {
                 if (block2.Type == 18) //else if
-                    instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}  else {2}", conditionCode, block1Code,
+                    instructionCode = String.Format("if ({0}) {{\r\n  {1}\r\n  }}  else {2}", conditionCode, block1Code,
                                                     block2Code);
                 else
-                    instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}  else  {{\r\n  {2}\r\n  }}",
+                    instructionCode = String.Format("if ({0}) {{\r\n  {1}\r\n  }}  else  {{\r\n  {2}\r\n  }}",
                                                     conditionCode, block1Code, block2Code);
             }
             else
-                instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}", conditionCode, block1Code);
+                instructionCode = String.Format("if ({0}) {{\r\n  {1}\r\n  }}", conditionCode, block1Code);
 
             return instructionCode;
         }
@@ -349,7 +349,7 @@ namespace ConsoleApplication1
                     argsNames += ", ";
             }
 
-            instructionCode = string.Format("{0}({1})", functionName, argsNames);
+            instructionCode = String.Format("{0}({1})", functionName, argsNames);
 
             return instructionCode;
         }
@@ -363,7 +363,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+            instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
             return instructionCode;
         }
@@ -392,7 +392,7 @@ namespace ConsoleApplication1
 
             string blockCode = HandleBlockInstruction(block);
 
-            instructionCode = string.Format("function {0}({1}) {{\r\n{2}}}", functionName, argsNames, blockCode);
+            instructionCode = String.Format("function {0}({1}) {{\r\n{2}}}", functionName, argsNames, blockCode);
 
             return instructionCode;
         }
@@ -408,12 +408,12 @@ namespace ConsoleApplication1
 
             if (instruction.ChildCount==1)
             {
-                instructionCode = string.Format("{0} {1}", instruction.Text, HandleChild(instruction.GetChild(0)));
+                instructionCode = String.Format("{0} {1}", instruction.Text, HandleChild(instruction.GetChild(0)));
             }
             else
             {
                 //TODO: forcei aqui sabendo que só tem essas duas opções no código alvo
-                instructionCode = string.Format("{0} {1}, {2}, {3}", instruction.Text, instruction.GetChild(0).Text, instruction.GetChild(1).Text, instruction.GetChild(2).Text);
+                instructionCode = String.Format("{0} {1}, {2}, {3}", instruction.Text, instruction.GetChild(0).Text, instruction.GetChild(1).Text, instruction.GetChild(2).Text);
             }
             
             return instructionCode;
@@ -482,6 +482,28 @@ namespace ConsoleApplication1
 
             }
             return false;
+        }
+
+
+        /// <summary>
+        /// Finds TreeNode of functionName
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <param name="nomeFuncaoOtimizar"></param>
+        /// <returns></returns>
+        public static ITree FindFunctionTree(CommonTree tree, string nomeFuncaoOtimizar)
+        {
+
+            for (int i = 0; i < tree.ChildCount; i++)
+            {
+                var funcaoAtual = tree.GetChild(i);
+                var nome = funcaoAtual.GetChild(0) == null ? "" : funcaoAtual.GetChild(0).Text;
+
+                if (nome == nomeFuncaoOtimizar)
+                    return funcaoAtual;
+            }
+
+            return null;
         }
 
         #endregion
