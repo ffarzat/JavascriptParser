@@ -306,16 +306,19 @@ namespace ConsoleApplication1
 
             if (IsFunction(block2))
                 block2Code = HandleChild(block2);
-            
 
-            if(block2Code != "")
+
+            if (block2Code != "")
+            {
                 if (block2.Type == 18) //else if
-                    instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}  else {2}", conditionCode, block1Code, block2Code);
+                    instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}  else {2}", conditionCode, block1Code,
+                                                    block2Code);
                 else
-                    instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}  else  {{\r\n  {2}\r\n  }}", conditionCode, block1Code, block2Code);
-                
+                    instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}  else  {{\r\n  {2}\r\n  }}",
+                                                    conditionCode, block1Code, block2Code);
+            }
             else
-                instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}", conditionCode, block1Code); 
+                instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}", conditionCode, block1Code);
 
             return instructionCode;
         }
@@ -360,15 +363,8 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            if (IsFunction(instruction.GetChild(0)))
-                instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), instruction.GetChild(1), instruction.Text);
+            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
-            if (IsFunction(instruction.GetChild(1)))
-                instructionCode = string.Format("{0} {2} {1}", instruction.GetChild(0), HandleChild(instruction.GetChild(1)), instruction.Text);
-
-            else
-                instructionCode = string.Format("{0} {2} {1}", instruction.GetChild(0), instruction.GetChild(1), instruction.Text);
-            
             return instructionCode;
         }
 

@@ -90,7 +90,7 @@ namespace Tests
             var codeGenerator = new JavascriptAstCodeGenerator(newTree);
             var generatedJsCode = codeGenerator.DoCodeTransformation();
 
-            File.WriteAllText("generatedJsCode.js", generatedJsCode);
+            //File.WriteAllText("generatedJsCode.js", generatedJsCode);
 
             var originalText = _javascriptTextWithoutComments.Replace(" ", "").Replace("\r\n", "");
             var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "");
