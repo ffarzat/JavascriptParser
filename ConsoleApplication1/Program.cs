@@ -26,6 +26,8 @@ namespace ConsoleApplication1
             {
                 var text = System.IO.File.ReadAllText(jsFile);
                 var dirinfo = Directory.CreateDirectory(jsFile.Replace(".js", ""));
+                dirinfo.EnumerateFiles().ToList().ForEach(f=> f.Delete()); //clean directory
+                
 
                 //Copia o js principal e o Js de Testes
                 //File.Copy(jsFile, Path.Combine(dirinfo.FullName, jsFile), true);
@@ -98,8 +100,13 @@ namespace ConsoleApplication1
 
             for (int i = 0; i < generations; i++)
             {
-                population.RunEpoch(); //executa uma iteração??
-                Console.WriteLine(population.BestChromosome.ToString());
+                population.RunEpoch(); 
+                var bestJavascript = population.BestChromosome as JavascriptChromosome;
+                
+                var codeGenerator = new JavascriptAstCodeGenerator(bestJavascript.Tree);
+                var generatedJsCode = codeGenerator.DoCodeTransformation();
+                File.WriteAllText( directoryInfo.FullName +"/" + i + ".js", generatedJsCode);
+
             }
             
             #endregion
