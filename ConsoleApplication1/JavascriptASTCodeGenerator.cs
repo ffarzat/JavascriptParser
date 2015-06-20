@@ -67,6 +67,9 @@ namespace ConsoleApplication1
                 case 18:
                     instructionCode = HandleIfInstruction(instruction);
                     break;
+                case 22:
+                    instructionCode = HandleReturnInstruction(instruction);
+                    break;
                 case 28: 
                     instructionCode = HandleVarInstruction(instruction);
                     break;
@@ -79,7 +82,7 @@ namespace ConsoleApplication1
                 case 98:
                     instructionCode = HandleSetInstruction(instruction);
                     break;
-                case 102:
+                case 83:
                     instructionCode = HandleModInstruction(instruction);
                     break;
                 case 109:
@@ -91,8 +94,11 @@ namespace ConsoleApplication1
                 case 116:
                     instructionCode = HandleCallInstruction(instruction);
                     break;
+                case 126:
+                    instructionCode = HandleParamExprInstruction(instruction);
+                    break;
                 case 149:
-                    instructionCode = string.Format("{0};", instruction.Text);
+                    instructionCode = string.Format("{0}", instruction.Text);
                     break;
                 
                 default:
@@ -100,6 +106,34 @@ namespace ConsoleApplication1
                     break;
             }
 
+            return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates Return Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleReturnInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = string.Format("return {0}", HandleChild(instruction.GetChild(0)));
+
+            return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates (itens) code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleParamExprInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+            
+            instructionCode = string.Format("({0})", HandleChild(instruction.GetChild(0)));
+            
             return instructionCode;
         }
 
@@ -154,10 +188,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            if (IsFunction(instruction.GetChild(1)))
-                instructionCode = string.Format("{0} {2} {1}", instruction.GetChild(0), HandleChild(instruction.GetChild(1)), instruction.Text);
-            else
-                instructionCode = string.Format("{0} {2} {1}", instruction.GetChild(0), instruction.GetChild(1), instruction.Text);
+            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
             return instructionCode;
         }
@@ -173,7 +204,7 @@ namespace ConsoleApplication1
             
             for (int i = 0; i < instruction.ChildCount; i++)
             {
-                blockCode += "  " + HandleChild(instruction.GetChild(i)) + Environment.NewLine;
+                blockCode += "  " + HandleChild(instruction.GetChild(i)) + "" + Environment.NewLine;
             }
             
             return blockCode;
@@ -226,7 +257,13 @@ namespace ConsoleApplication1
             string argsNames = "";
             for (int i = 0; i < args.ChildCount; i++)
             {
-                argsNames += args.GetChild(i).Text;
+
+
+                if (IsFunction(args.GetChild(i)))
+                    argsNames += HandleChild(args.GetChild(i));
+                else
+                    argsNames += args.GetChild(i).Text;
+
 
                 if (i < (args.ChildCount - 1))
                     argsNames += ", ";
@@ -247,13 +284,13 @@ namespace ConsoleApplication1
             string instructionCode = "";
 
             if (IsFunction(instruction.GetChild(0)))
-                instructionCode = string.Format("{0} {2} {1};", HandleChild(instruction.GetChild(0)), instruction.GetChild(1), instruction.Text);
+                instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), instruction.GetChild(1), instruction.Text);
 
             if (IsFunction(instruction.GetChild(1)))
-                instructionCode = string.Format("{0} {2} {1};", instruction.GetChild(0), HandleChild(instruction.GetChild(1)), instruction.Text);
+                instructionCode = string.Format("{0} {2} {1}", instruction.GetChild(0), HandleChild(instruction.GetChild(1)), instruction.Text);
 
             else
-                instructionCode = string.Format("{0} {2} {1};", instruction.GetChild(0), instruction.GetChild(1), instruction.Text);
+                instructionCode = string.Format("{0} {2} {1}", instruction.GetChild(0), instruction.GetChild(1), instruction.Text);
             
             return instructionCode;
         }
@@ -305,12 +342,12 @@ namespace ConsoleApplication1
                 if (IsFunction(instruction.GetChild(0)))
                     instructionCode = string.Format("{0} {1}", instruction.Text, HandleChild(instruction.GetChild(0)));
                 else
-                    instructionCode = string.Format("{0} {1};", instruction.Text, instruction.GetChild(0).Text);
+                    instructionCode = string.Format("{0} {1}", instruction.Text, instruction.GetChild(0).Text);
             }
             else
             {
                 //TODO: forcei aqui sabendo que só tem essas duas opções no código alvo
-                instructionCode = string.Format("{0} {1}, {2}, {3};", instruction.Text, instruction.GetChild(0).Text, instruction.GetChild(1).Text, instruction.GetChild(2).Text);
+                instructionCode = string.Format("{0} {1}, {2}, {3}", instruction.Text, instruction.GetChild(0).Text, instruction.GetChild(1).Text, instruction.GetChild(2).Text);
             }
             
             return instructionCode;
