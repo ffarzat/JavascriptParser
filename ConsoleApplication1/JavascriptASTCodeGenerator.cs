@@ -204,7 +204,7 @@ namespace ConsoleApplication1
             
             for (int i = 0; i < instruction.ChildCount; i++)
             {
-                blockCode += "  " + HandleChild(instruction.GetChild(i)) + "" + Environment.NewLine;
+                blockCode += "  " + HandleChild(instruction.GetChild(i)) + Environment.NewLine;
             }
             
             return blockCode;
