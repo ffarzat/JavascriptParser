@@ -57,6 +57,10 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private string HandleChild(ITree instruction)
         {
+
+            if (instruction == null)
+                return "";
+
             string instructionCode = "";
 
             switch (instruction.Type)

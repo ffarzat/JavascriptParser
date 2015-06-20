@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AForge.Genetic;
+using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 
 namespace ConsoleApplication1
@@ -54,7 +55,7 @@ namespace ConsoleApplication1
         /// <summary>
         /// List of javascript instructions
         /// </summary>
-        private List<string> _possibleFunctions;
+        private IDictionary<string, string> _possibleFunctions;
         
         // random number generator for chromosoms generation
         protected static Random Rand = new Random((int)DateTime.Now.Ticks);
@@ -80,11 +81,11 @@ namespace ConsoleApplication1
         /// Reads the Tokens file and process a lista of possible functions
         /// </summary>
         /// <returns></returns>
-        private List<string> BuildFunctionList()
+        private IDictionary<string, string> BuildFunctionList()
         {
             var sr = System.IO.File.OpenText(InstructionsFile);
             string line = "";
-            var list = new List<string>();
+            var list = new Dictionary<string, string>();
             int lineCount = 0;
 
             while ((line = sr.ReadLine()) != null && lineCount <=168)
@@ -92,9 +93,9 @@ namespace ConsoleApplication1
                 lineCount++;
                 var functionName = line.Split(" = ".ToCharArray())[0];
                 var functionNumber = line.Split(" = ".ToCharArray())[1];
+                
                 if (JavascriptAstCodeGenerator.IsFunction(int.Parse(functionNumber)))
-                    list.Add(functionName);
-
+                    list.Add(functionName, functionNumber);
             }
 
             sr.Close();
@@ -154,24 +155,55 @@ namespace ConsoleApplication1
         /// </summary>
         public void Mutate()
         {
-            #region Defines Line and instruction to Mutate
-            int lineLevelToMutate = Rand.Next(0, _function.ChildCount); //at line instruction
-            var functionNode = _function.GetChild(lineLevelToMutate);
-            int instructionLevelToMutate = Rand.Next(0, functionNode.ChildCount); //at level <--------------------------------------------------------------------
-            #endregion
-            
             #region Defines Target Function to Mutate
-            int indexTargetFunction = Rand.Next(0, _possibleFunctions.Count);//target mutation function
+            int indexTargetFunction = Rand.Next(0, _possibleFunctions.Count);          //target mutation function
             var targetFunction = _possibleFunctions.ElementAt(indexTargetFunction);
             #endregion
 
-            var instructionToMutate = functionNode.GetChild(instructionLevelToMutate) as CommonTree;
+            bool sinal = true;
 
-            instructionToMutate.Text = targetFunction;
-            instructionToMutate.Type = 1;
+            while (sinal)
+            {
+                int instructionLevelToDelete = Rand.Next(0, _function.ChildCount); //at line instruction
+                var functionToDelete = _function.GetChild(instructionLevelToDelete);
 
-            functionNode.ReplaceChildren(0, instructionLevelToMutate, instructionToMutate);
-            
+                if (JavascriptAstCodeGenerator.IsFunction(functionToDelete))
+                {
+
+                    #region Keeps all children nodes
+                    var listOfChildren = new List<ITree>();
+
+                    for (int i = 0; i < functionToDelete.ChildCount; i++)
+                    {
+                        listOfChildren.Add(functionToDelete.GetChild(i));
+
+                    }
+                    #endregion
+
+                    #region Creates The New one
+
+                    var newOne = new CommonTree(new CommonToken()
+                        {
+                            Text = targetFunction.Key,
+                            Type = int.Parse(targetFunction.Value),
+                        });
+
+                    //Add all chidren
+                    listOfChildren.ForEach(newOne.AddChild);
+
+                    #endregion
+
+                    #region Replaces it
+                    
+
+                    _function.ReplaceChildren(instructionLevelToDelete, instructionLevelToDelete, newOne);
+                    
+                    sinal = false;
+
+                    #endregion
+                }
+
+            }
         }
 
         /// <summary>

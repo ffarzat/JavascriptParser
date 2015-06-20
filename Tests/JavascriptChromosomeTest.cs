@@ -47,14 +47,29 @@ namespace Tests
             Assert.AreEqual(_functionBody, javaChromosome.Function);
         }
 
-        //Covers mutation too
+        //Covers CreateOffspring
         [Test]
         public void CreateOffspring()
         {
             var javaChromosome = new JavascriptChromosome(_tree, _functionName);
             var newJavaChromosome = javaChromosome.CreateOffspring();
             Assert.AreNotEqual(newJavaChromosome, javaChromosome);
+        }
 
+
+        //Covers mutation
+        [Test]
+        public void Mutate()
+        {
+            var javaChromosome = new JavascriptChromosome(_tree, _functionName);
+            var totalLines = javaChromosome.Function.ChildCount;
+            javaChromosome.Mutate();
+            var totalLinesAfter = javaChromosome.Function.ChildCount;
+            Assert.AreEqual(totalLines, totalLinesAfter);
+
+            var codeGenerator = new JavascriptAstCodeGenerator(javaChromosome.Tree);
+            var generatedJsCode = codeGenerator.DoCodeTransformation();
+            File.WriteAllText("generatedJsCode_Mutate.js", generatedJsCode);
         }
 
         //Covers Clone
@@ -82,9 +97,9 @@ namespace Tests
 
             Assert.AreNotEqual(totalLines, totalLinesAfter);
 
-            //var codeGenerator = new JavascriptAstCodeGenerator(javaChromosome.Tree);
-            //var generatedJsCode = codeGenerator.DoCodeTransformation();
-            //File.WriteAllText("generatedJsCode_Delete.js", generatedJsCode);
+            var codeGenerator = new JavascriptAstCodeGenerator(javaChromosome.Tree);
+            var generatedJsCode = codeGenerator.DoCodeTransformation();
+            File.WriteAllText("generatedJsCode_Delete.js", generatedJsCode);
 
         }
 
@@ -97,7 +112,7 @@ namespace Tests
             var codeGenerator = new JavascriptAstCodeGenerator(newTree);
             var generatedJsCode = codeGenerator.DoCodeTransformation();
 
-            //File.WriteAllText("generatedJsCode.js", generatedJsCode);
+            File.WriteAllText("generatedJsCode.js", generatedJsCode);
 
             var originalText = _javascriptTextWithoutComments.Replace(" ", "").Replace("\r\n", "");
             var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "");
