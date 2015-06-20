@@ -23,7 +23,7 @@ namespace AForge.Genetic
 		// population parameters
 		private double		crossOverRate	= 0.75;
 		private double		mutationRate	= 0.10;
-        private double      deleteRate      = 0.50;
+        private double      deleteRate      = 0.10;
 
 		// random number generator
 		private static Random rand = new Random( (int) DateTime.Now.Ticks );

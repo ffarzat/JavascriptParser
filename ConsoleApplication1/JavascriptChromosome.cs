@@ -231,10 +231,10 @@ namespace ConsoleApplication1
                     #endregion
 
                     #region Replaces it
-                    
+
 
                     _function.ReplaceChildren(instructionLevelToDelete, instructionLevelToDelete, newOne);
-                    
+
                     sinal = false;
 
                     #endregion

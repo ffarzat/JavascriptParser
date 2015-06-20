@@ -22,7 +22,8 @@ function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
 
   }
   var resultado = ltDia + '/' + ltMes + '/' + ltAno;
-  SAME;
+  escreverNaTela(resultado);
+  return resultado;
 }
 function DeterminarQuantidadeDeDias(ldMes, ldAno) {
   var ndiasmes = 0;

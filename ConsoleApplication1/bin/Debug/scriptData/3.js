@@ -1,13 +1,29 @@
 'use strict';
 function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
-  TYPEOF;
-  var ltDia, ltMes, ltAno;
+  var ndiasmes = '';
+  INC;
+  ltDia = ldDia;
   ltMes = ldMes;
   ltAno = ldAno;
   ndiasmes = DeterminarQuantidadeDeDias(ldMes, ldAno);
+  if (ldDia + lnDias <= ndiasmes) {
+    ltDia = ldDia + lnDias;
+
+  }  else  {
+    ltDia = parseInt((ldDia + lnDias) % ndiasmes);
+  if (parseInt(ldMes + (ldDia + lnDias) / ndiasmes) <= 12) {
+    ltMes = parseInt(ldMes + (ldDia + lnDias) / ndiasmes);
+
+  }  else  {
+    ltMes = parseInt((ldMes + (ldDia + lnDias) / ndiasmes) % 12);
+  ltAno = parseInt(ldAno + (ldMes + (ldDia + lnDias) / ndiasmes) / 12);
+
+  }
+
+  }
   var resultado = ltDia + '/' + ltMes + '/' + ltAno;
   escreverNaTela(resultado);
-  XOR;
+  return resultado;
 }
 function DeterminarQuantidadeDeDias(ldMes, ldAno) {
   var ndiasmes = 0;

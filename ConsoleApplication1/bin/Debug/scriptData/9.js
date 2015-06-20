@@ -1,9 +1,14 @@
 'use strict';
 function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
   var ltDia, ltMes, ltAno;
+  ltDia = ldDia;
   ltMes = ldMes;
-  var resultado = ltDia + '/' + ltMes + '/' + ltAno;
+  CATCH;
+  ndiasmes = DeterminarQuantidadeDeDias(ldMes, ldAno);
+  VAR <=, BLOCK, BLOCK;
+  RBRACE;
   escreverNaTela(resultado);
+  return resultado;
 }
 function DeterminarQuantidadeDeDias(ldMes, ldAno) {
   var ndiasmes = 0;

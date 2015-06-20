@@ -85,7 +85,7 @@ namespace ConsoleApplication1
             #endregion
 
             #region Faz o setup da população inicial
-            int populationSize = 40;
+            int populationSize = 500;
             int generations = 50;
             
             IFitnessFunction fitness = new JavascriptFitness();
@@ -109,10 +109,6 @@ namespace ConsoleApplication1
 
             }
             
-            #endregion
-
-            #region Exporta os resultados
-
             #endregion
 
         }
