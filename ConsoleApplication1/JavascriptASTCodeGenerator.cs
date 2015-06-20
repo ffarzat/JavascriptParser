@@ -107,15 +107,32 @@ namespace ConsoleApplication1
                     instructionCode = HandleParamExprInstruction(instruction);
                     break;
                 case 149:
-                    instructionCode = string.Format("{0}", instruction.Text);
+                    instructionCode = HandleStringLiteral(instruction);
                     break;
-                
                 default:
                     instructionCode = instruction.Text;
                     break;
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates code for a Literal String
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleStringLiteral(ITree instruction)
+        {
+
+            string instructionCode = "";
+            instructionCode = string.Format("{0}", instruction.Text);
+
+            if (instruction.Parent.Type == 0)
+                instructionCode += ";"; // use strict exception! oO
+
+            return instructionCode; 
+            
         }
 
         /// <summary>
@@ -289,9 +306,14 @@ namespace ConsoleApplication1
 
             if (IsFunction(block2))
                 block2Code = HandleChild(block2);
+            
 
             if(block2Code != "")
-                instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}  else  {{\r\n  {2}\r\n  }}", conditionCode, block1Code, block2Code);
+                if (block2.Type == 18) //else if
+                    instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}  else {2}", conditionCode, block1Code, block2Code);
+                else
+                    instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}  else  {{\r\n  {2}\r\n  }}", conditionCode, block1Code, block2Code);
+                
             else
                 instructionCode = string.Format("if ({0}) {{\r\n  {1}\r\n  }}", conditionCode, block1Code); 
 
