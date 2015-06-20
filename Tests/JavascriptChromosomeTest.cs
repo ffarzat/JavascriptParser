@@ -37,16 +37,6 @@ namespace Tests
             _functionBody = JavascriptAstCodeGenerator.FindFunctionTree(_tree, _functionName).GetChild(2);
         }
 
-        //Cover the cenario for creates a ancestor Chromosome from AST (ANTLR)
-        [Test]
-        public void BuildJavascriptChromosomeFromAst()
-        {
-            var javaChromosome = new JavascriptChromosome(_tree, _functionName);
-
-            Assert.AreEqual(_tree, javaChromosome.Tree);
-            Assert.AreEqual(_functionBody, javaChromosome.Function);
-        }
-
         //Covers CreateOffspring
         [Test]
         public void CreateOffspring()
@@ -77,11 +67,17 @@ namespace Tests
         public void Clone()
         {
             var javaChromosome = new JavascriptChromosome(_tree, _functionName);
-            var newJavaChromosome = javaChromosome.Clone();
+            var newJavaChromosome = javaChromosome.Clone() as JavascriptChromosome;
 
-            Assert.AreEqual(_tree, javaChromosome.Tree);
-            Assert.AreEqual(_functionBody, javaChromosome.Function);
+            Assert.AreNotEqual(javaChromosome, newJavaChromosome);
             Assert.AreEqual(newJavaChromosome.Fitness, javaChromosome.Fitness);
+
+            var codeGenerator = new JavascriptAstCodeGenerator(newJavaChromosome.Tree);
+            var generatedJsCode = codeGenerator.DoCodeTransformation();
+
+            var originalText = _javascriptTextWithoutComments.Replace(" ", "").Replace("\r\n", "");
+            var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "");
+            Assert.AreEqual(originalText, generatedText);
         }
 
         //Covers Delete operator
@@ -108,8 +104,7 @@ namespace Tests
         [Test]
         public void ToCodeTest()
         {
-            var newTree = _tree;
-            var codeGenerator = new JavascriptAstCodeGenerator(newTree);
+            var codeGenerator = new JavascriptAstCodeGenerator(_tree);
             var generatedJsCode = codeGenerator.DoCodeTransformation();
 
             File.WriteAllText("generatedJsCode.js", generatedJsCode);

@@ -71,11 +71,48 @@ namespace ConsoleApplication1
         /// <param name="functionName"></param>
         public JavascriptChromosome(CommonTree tree, string functionName)
         {
-            _tree = tree;
+            _tree = DeepClone(tree);
             _functionName = functionName;
             _possibleFunctions = BuildFunctionList(); //TODO: rever isso aqui. Pool mais forte de funções tipadas para substituição na mutação
             _function = JavascriptAstCodeGenerator.FindFunctionTree(_tree, functionName).GetChild(2);
         }
+
+        /// <summary>
+        /// Creates a Clone of a Tree
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <returns></returns>
+        private CommonTree DeepClone(CommonTree tree)
+        {
+            var root = tree.DupNode();
+
+            for (int i = 0; i < tree.ChildCount; i++)
+            {
+                var clonedChild = DeepClone(tree.GetChild(i));
+                root.AddChild(clonedChild);
+            }
+
+            return root as CommonTree;
+        }
+
+        /// <summary>
+        /// Creates a Deep Clone of a ITree node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private ITree DeepClone(ITree node)
+        {
+            var cloneNode = node.DupNode();
+
+            for (int i = 0; i < node.ChildCount; i++)
+            {
+                var cloneChildNode = DeepClone(node.GetChild(i)); //gets a dupNode cloned
+                cloneNode.AddChild(cloneChildNode); //adds
+            }
+
+            return cloneNode;
+        }
+
 
         /// <summary>
         /// Reads the Tokens file and process a lista of possible functions
