@@ -76,8 +76,17 @@ namespace ConsoleApplication1
                 case 74:
                     instructionCode = HandleLessEqualInstruction(instruction);
                     break;
+                case 76:
+                    instructionCode = HandleEqualInstruction(instruction);
+                    break;
                 case 80:
                     instructionCode = HandleSumInstruction(instruction);
+                    break;
+                case 94:
+                    instructionCode = HandleAndInstruction(instruction);
+                    break;
+                case 95:
+                    instructionCode = HandleOrInstruction(instruction);
                     break;
                 case 98:
                     instructionCode = HandleSetInstruction(instruction);
@@ -107,6 +116,48 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates && Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleAndInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+
+            return instructionCode; 
+        }
+
+        /// <summary>
+        /// Generates Equal Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleEqualInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+
+            return instructionCode; 
+        }
+
+        /// <summary>
+        /// Generates OR code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleOrInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+
+            return instructionCode; 
         }
 
         /// <summary>
@@ -204,7 +255,11 @@ namespace ConsoleApplication1
             
             for (int i = 0; i < instruction.ChildCount; i++)
             {
-                blockCode += "  " + HandleChild(instruction.GetChild(i)) + Environment.NewLine;
+                var actualInstruction = instruction.GetChild(i);
+
+                blockCode += "  " + HandleChild(actualInstruction);
+                blockCode += actualInstruction.Type == 18 ? "" : ";"; //se for uma condição em if não colocar ';'
+                blockCode += Environment.NewLine;
             }
             
             return blockCode;
@@ -317,11 +372,7 @@ namespace ConsoleApplication1
                     argsNames += ", ";
             }
 
-            string blockCode = "";
-            for (int i = 0; i < block.ChildCount; i++)
-            {
-                blockCode += "  " + HandleChild(block.GetChild(i)) + Environment.NewLine;
-            }
+            string blockCode = HandleBlockInstruction(block);
 
             instructionCode = string.Format("function {0}({1}) {{\r\n{2}}}", functionName, argsNames, blockCode);
 
@@ -339,10 +390,7 @@ namespace ConsoleApplication1
 
             if (instruction.ChildCount==1)
             {
-                if (IsFunction(instruction.GetChild(0)))
-                    instructionCode = string.Format("{0} {1}", instruction.Text, HandleChild(instruction.GetChild(0)));
-                else
-                    instructionCode = string.Format("{0} {1}", instruction.Text, instruction.GetChild(0).Text);
+                instructionCode = string.Format("{0} {1}", instruction.Text, HandleChild(instruction.GetChild(0)));
             }
             else
             {

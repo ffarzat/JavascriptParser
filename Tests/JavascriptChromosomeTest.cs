@@ -91,8 +91,11 @@ namespace Tests
             var generatedJsCode = codeGenerator.DoCodeTransformation();
 
             File.WriteAllText("generatedJsCode.js", generatedJsCode);
-            
-            //Assert.AreEqual(_javascriptTextWithoutComments, codeGenerator.DoCodeTransformation());
+
+            var originalText = _javascriptTextWithoutComments.Replace(" ", "").Replace("\r\n", "");
+            var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "");
+
+            Assert.AreEqual(originalText, generatedText);
         }
 
     }
