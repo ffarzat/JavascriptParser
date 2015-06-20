@@ -1,4 +1,5 @@
-﻿using Antlr.Runtime;
+﻿using System.IO;
+using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using ConsoleApplication1;
 using NUnit.Framework;
@@ -87,7 +88,11 @@ namespace Tests
         {
             var newTree = _tree;
             var codeGenerator = new JavascriptAstCodeGenerator(newTree);
-            Assert.AreEqual(_javascriptTextWithoutComments, codeGenerator.DoCodeTransformation());
+            var generatedJsCode = codeGenerator.DoCodeTransformation();
+
+            File.WriteAllText("generatedJsCode.js", generatedJsCode);
+            
+            //Assert.AreEqual(_javascriptTextWithoutComments, codeGenerator.DoCodeTransformation());
         }
 
     }

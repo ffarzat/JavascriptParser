@@ -79,6 +79,12 @@ namespace ConsoleApplication1
                 case 98:
                     instructionCode = HandleSetInstruction(instruction);
                     break;
+                case 102:
+                    instructionCode = HandleModInstruction(instruction);
+                    break;
+                case 109:
+                    instructionCode = HandleDivideInstruction(instruction);
+                    break;
                 case 113:
                     instructionCode = HandleBlockInstruction(instruction);
                     break;
@@ -98,7 +104,35 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// 
+        /// Generates Mod Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleModInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+
+            return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates Divide Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleDivideInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = string.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+
+            return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates LessOrEqual Code
         /// </summary>
         /// <param name="instruction"></param>
         /// <returns></returns>
@@ -111,6 +145,11 @@ namespace ConsoleApplication1
             return instructionCode;
         }
 
+        /// <summary>
+        /// Generates Add code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
         private string HandleSumInstruction(ITree instruction)
         {
             string instructionCode = "";
