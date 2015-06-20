@@ -14,7 +14,7 @@ using Xebic.Parsers.ES3;
 
 namespace ConsoleApplication1
 {
-    class Program
+    public class Program
     {
         private static string jsFile = @"scriptData.js";
         private static string jsFileTest = @"scriptDataTest.js";
@@ -116,14 +116,15 @@ namespace ConsoleApplication1
         /// <param name="tree"></param>
         /// <param name="nomeFuncaoOtimizar"></param>
         /// <returns></returns>
-        private static ITree RecuperarNoDaFuncao(CommonTree tree, string nomeFuncaoOtimizar)
+        public static ITree RecuperarNoDaFuncao(CommonTree tree, string nomeFuncaoOtimizar)
         {
 
             for (int i = 0; i < tree.ChildCount; i++)
             {
                 var funcaoAtual = tree.GetChild(i);
+                var nome = funcaoAtual.GetChild(0) == null ? "" : funcaoAtual.GetChild(0).Text;
 
-                if (funcaoAtual.GetChild(0).Text == nomeFuncaoOtimizar)
+                if (nome == nomeFuncaoOtimizar)
                     return funcaoAtual;
             }
 

@@ -81,7 +81,7 @@ namespace ConsoleApplication1
                 lineCount++;
                 var functionName = line.Split(" = ".ToCharArray())[0];
                 var functionNumber = line.Split(" = ".ToCharArray())[1];
-                if (IsFunction(int.Parse(functionNumber)))
+                if (JavascriptAstCodeGenerator.IsFunction(int.Parse(functionNumber)))
                     list.Add(functionName);
 
             }
@@ -118,7 +118,7 @@ namespace ConsoleApplication1
         {
             var jsGene = new JavascriptGene
                 {
-                    GeneType = IsFunction(instructionLine) ? GPGeneType.Function : GPGeneType.Argument,
+                    GeneType = JavascriptAstCodeGenerator.IsFunction(instructionLine) ? GPGeneType.Function : GPGeneType.Argument,
                     Name = instructionLine.Text
                 };
 
@@ -150,70 +150,6 @@ namespace ConsoleApplication1
                     GeneType = GPGeneType.Function,
                     MaxArgumentsCount = int.MaxValue
                 };
-        }
-
-        /// <summary>
-        /// Determine if the instruction is a function node
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        private bool IsFunction(ITree node)
-        {
-            switch (node.Type)
-            {
-                case 113: //Block
-                    return true;
-                    break;
-                case 116: //Call
-                    return true;
-                    break;
-                case 126: //PAREXPR = {}
-                    return true;
-                    break;
-                default: // Restante
-                    if (node.Type >= 7)
-                    {
-                        if (node.Type <= 110)
-                        {
-                            return true;
-                        }
-                    }
-                    break;
-
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Determine if the instruction is a function node
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        private bool IsFunction(int number)
-        {
-            switch (number)
-            {
-                case 113: //Block
-                    return true;
-                    break;
-                case 116: //Call
-                    return true;
-                    break;
-                case 126: //PAREXPR = {}
-                    return true;
-                    break;
-                default: // Restante
-                    if (number >= 7)
-                    {
-                        if (number <= 110)
-                        {
-                            return true;
-                        }
-                    }
-                    break;
-
-            }
-            return false;
         }
 
         /// <summary>
@@ -309,8 +245,6 @@ namespace ConsoleApplication1
 
             
         }
-
-        
 
         /// <summary>
         /// Crossover operator

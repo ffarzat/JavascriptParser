@@ -10,9 +10,11 @@ namespace Tests
     public class JavascriptChromosomeTest
     {
         private static string _jsFile = @"scriptData.js";
+        private static string _jsFileWithouComments = @"scriptData_sem_comentarios.js";
         private static string _jsFileTest = @"scriptDataTest.js";
         private static string _functionName = "AvancaDias";
         private static string _javascriptText = "";
+        private static string _javascriptTextWithoutComments = "";
         private static CommonTree _tree;
         private static ITree _functionBody;
 
@@ -20,6 +22,7 @@ namespace Tests
         public void Setup()
         {
             _javascriptText = System.IO.File.ReadAllText(_jsFile);
+            _javascriptTextWithoutComments = System.IO.File.ReadAllText(_jsFileWithouComments);
 
             #region Build the AST from Js
             var stream = new ANTLRStringStream(_javascriptText);
@@ -30,7 +33,7 @@ namespace Tests
             _tree = programReturn.Tree as CommonTree;
             #endregion
 
-            _functionBody = FindFunctionNode(_tree, _functionName);
+            _functionBody = Program.RecuperarNoDaFuncao(_tree, _functionName);
         }
 
         //Cover the cenario for creates a ancestor Chromosome from AST (ANTLR)
@@ -84,28 +87,7 @@ namespace Tests
         {
             var newTree = _tree;
             var codeGenerator = new JavascriptAstCodeGenerator(newTree);
-            Assert.AreEqual(_javascriptText, codeGenerator.DoCodeTransformation());
-        }
-
-
-        /// <summary>
-        /// Descobre qual a função na Tree pelo nome
-        /// </summary>
-        /// <param name="tree"></param>
-        /// <param name="nomeFuncaoOtimizar"></param>
-        /// <returns></returns>
-        private static ITree FindFunctionNode(CommonTree tree, string nomeFuncaoOtimizar)
-        {
-
-            for (int i = 0; i < tree.ChildCount; i++)
-            {
-                var funcaoAtual = tree.GetChild(i);
-
-                if (funcaoAtual.GetChild(0).Text == nomeFuncaoOtimizar)
-                    return funcaoAtual;
-            }
-
-            return null;
+            Assert.AreEqual(_javascriptTextWithoutComments, codeGenerator.DoCodeTransformation());
         }
 
     }
