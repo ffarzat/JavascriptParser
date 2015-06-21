@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using AForge.Genetic;
@@ -48,6 +49,8 @@ namespace ConsoleApplication1
         /// </summary>
         private static CommonTree Setup()
         {
+            var sw = new Stopwatch();
+            sw.Start();
             CommonTree tree = null;
 
             try
@@ -74,6 +77,9 @@ namespace ConsoleApplication1
             {
                 Console.WriteLine(ex.ToString());
             }
+            
+            sw.Stop();
+            Console.WriteLine("Árvore inicial construída em {0} milisegundos", sw.ElapsedMilliseconds);
 
             return tree;
         }
@@ -85,6 +91,10 @@ namespace ConsoleApplication1
         /// <param name="directoryInfo"></param>
         private static void ExecutarRodadas(CommonTree tree, DirectoryInfo directoryInfo)
         {
+            var sw = new Stopwatch();
+            var swEpoch = new Stopwatch();
+            sw.Start();
+
             #region Encontra a função alvo da otimização, recupera o bloco de instruções
             var funcaoOtimizar = JavascriptAstCodeGenerator.FindFunctionTree(tree, NomeFuncaoOtimizar);
 
@@ -107,17 +117,30 @@ namespace ConsoleApplication1
             Population population = new Population(PopulationSize, ancestral, fitness, metodoSelecao);
 
             #endregion
+            
+            sw.Stop();
+            Console.WriteLine("Setup da população em {0} segundos", sw.Elapsed.Seconds);
 
+            sw.Reset();
+            sw.Start();
             #region Executa a otimização
 
             for (int i = 0; i < Generations; i++)
             {
+                swEpoch.Reset();
+                swEpoch.Start();
+
                 Console.WriteLine("Processing generation {0}... ", i);
                 population.RunEpoch();
+                swEpoch.Stop();
+                Console.WriteLine("{0} segundos", swEpoch.Elapsed.Seconds);
                 Console.WriteLine("--------------------------");
             }
             
             #endregion
+
+            sw.Stop();
+            Console.WriteLine("Processo executado em {0} minutos", sw.Elapsed.Minutes);
 
             #region Results
 
