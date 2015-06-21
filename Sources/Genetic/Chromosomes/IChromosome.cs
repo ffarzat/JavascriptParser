@@ -13,7 +13,12 @@ namespace AForge.Genetic
 	/// </summary>
 	public interface IChromosome : IComparable
 	{
-		/// <summary>
+        /// <summary>
+        /// Id of Individual inside a population
+        /// </summary>
+        int Id { get; set; }
+
+	    /// <summary>
 		/// Chromosome's fintess value
 		/// </summary>
 		double Fitness { get; }

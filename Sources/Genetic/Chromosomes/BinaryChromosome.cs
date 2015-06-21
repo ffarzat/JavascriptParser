@@ -49,7 +49,9 @@ namespace AForge.Genetic
 			get { return 0xFFFFFFFFFFFFFFFF >> ( 64 - length ); }
 		}
 
-		/// <summary>
+	    public int Id { get; set; }
+
+	    /// <summary>
 		/// Chromosome's fintess value
 		/// </summary>
 		public double Fitness

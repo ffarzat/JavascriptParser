@@ -53,7 +53,9 @@ namespace AForge.Genetic
 			get { return maxValue; }
 		}
 
-		/// <summary>
+	    public int Id { get; set; }
+
+	    /// <summary>
 		/// Chromosome's fintess value
 		/// </summary>
 		public double Fitness

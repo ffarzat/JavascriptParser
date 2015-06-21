@@ -29,7 +29,9 @@ namespace AForge.Genetic
 		// random number generator for chromosomes generation
 		protected static Random	rand = new Random( (int) DateTime.Now.Ticks );
 
-		/// <summary>
+	    public int Id { get; set; }
+
+	    /// <summary>
 		/// Chromosome's fintess value
 		/// </summary>
 		public double Fitness

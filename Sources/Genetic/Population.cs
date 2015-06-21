@@ -4,6 +4,8 @@
 // andrew.kirillov@gmail.com
 //
 
+using System.Collections.Generic;
+
 namespace AForge.Genetic
 {
 	using System;
@@ -18,6 +20,7 @@ namespace AForge.Genetic
 		private ISelectionMethod selectionMethod;
 		private ArrayList	population = new ArrayList( );
 		private int			size;
+	    private int         _generationCount = 0;
 		private double		randomSelectionPortion = 0.0;
 
 		// population parameters
@@ -33,6 +36,11 @@ namespace AForge.Genetic
 		private double		fitnessSum = 0;
 		private double		fitnessAvg = 0;
 		private IChromosome	bestChromosome = null;
+
+        /// <summary>
+        /// Keeps the best Chromosome of each generation
+        /// </summary>
+        private IDictionary<int, IChromosome> _generationsBestChromosomes = null;
 
 		/// <summary>
 		/// Maximum fitness of the population
@@ -74,7 +82,23 @@ namespace AForge.Genetic
 			get { return size; }
 		}
 
-		/// <sumary>
+        /// <summary>
+        /// Total generations executed
+        /// </summary>
+	    public int GenerationCount
+	    {
+	        get { return _generationCount; }
+	    }
+
+	    /// <summary>
+	    /// List of the best Chromosomes of each generation
+	    /// </summary>
+	    public IDictionary<int, IChromosome> GenerationsBestChromosomes
+	    {
+	        get { return _generationsBestChromosomes; }
+	    }
+
+	    /// <sumary>
 		/// Get chromosome with specified index
 		/// </sumary>
 		public IChromosome this[int index]
@@ -94,6 +118,7 @@ namespace AForge.Genetic
 			this.fitnessFunction = fitnessFunction;
 			this.selectionMethod = selectionMethod;
 			this.size	= size;
+            this._generationsBestChromosomes = new Dictionary<int, IChromosome>();
 
 			// add ancestor to the population
 			ancestor.Evaluate( fitnessFunction );
@@ -103,6 +128,7 @@ namespace AForge.Genetic
 			{
 				// create new chromosome
 				IChromosome c = ancestor.CreateOffspring( );
+			    c.Id = i;
 				// calculate it's fitness
 				c.Evaluate( fitnessFunction );
 				// add it to population
@@ -275,6 +301,11 @@ namespace AForge.Genetic
 			Mutate( );
 		    Delete();
 			Selection( );
+
+            //Keeps the best Chromossome of run
+		    _generationCount = GenerationCount + 1;
+            GenerationsBestChromosomes.Add(GenerationCount, bestChromosome);
+
 		}
 		
 		public void Trace( )

@@ -61,6 +61,11 @@ namespace ConsoleApplication1
         protected static Random Rand = new Random((int)DateTime.Now.Ticks);
 
         /// <summary>
+        /// Id of individual inside a population
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
         /// Chromosome's fintess value
         /// </summary>
         public double Fitness { get; private set; }

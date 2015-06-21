@@ -17,7 +17,6 @@ namespace Tests
         private static string _javascriptText = "";
         private static string _javascriptTextWithoutComments = "";
         private static CommonTree _tree;
-        private static ITree _functionBody;
 
         [TestFixtureSetUp]
         public void Setup()
@@ -33,8 +32,6 @@ namespace Tests
             ES3Parser.program_return programReturn = parser.program();
             _tree = programReturn.Tree as CommonTree;
             #endregion
-
-            _functionBody = JavascriptAstCodeGenerator.FindFunctionTree(_tree, _functionName).GetChild(2);
         }
 
         //Covers CreateOffspring
@@ -45,7 +42,6 @@ namespace Tests
             var newJavaChromosome = javaChromosome.CreateOffspring();
             Assert.AreNotEqual(newJavaChromosome, javaChromosome);
         }
-
 
         //Covers mutation
         [Test]
@@ -98,7 +94,6 @@ namespace Tests
             File.WriteAllText("generatedJsCode_Delete.js", generatedJsCode);
 
         }
-
 
         //Covers ToString Behavior
         [Test]

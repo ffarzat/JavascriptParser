@@ -102,11 +102,6 @@ namespace ConsoleApplication1
             {
                 population.RunEpoch(); 
                 var bestJavascript = population.BestChromosome as JavascriptChromosome;
-                
-                var codeGenerator = new JavascriptAstCodeGenerator(bestJavascript.Tree);
-                var generatedJsCode = codeGenerator.DoCodeTransformation();
-                File.WriteAllText( directoryInfo.FullName +"/" + i + ".js", generatedJsCode);
-
             }
             
             #endregion
