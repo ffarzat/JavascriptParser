@@ -58,6 +58,21 @@ namespace ConsoleApplication1
             try
             {
                 var text = System.IO.File.ReadAllText(JsFile);
+                var dirOfRun = new DirectoryInfo(Environment.CurrentDirectory + "/" + DateTime.Now.ToString("yyyy_MM_dd"));
+
+                #region Clean directories and Files
+                if (dirOfRun.Exists)
+                {
+                    dirOfRun.EnumerateDirectories()
+                            .ToList()
+                            .ForEach(d => d.EnumerateFiles().ToList().ForEach(f => f.Delete()));
+
+                    dirOfRun.EnumerateDirectories()
+                            .ToList()
+                            .ForEach(d => d.Delete());
+                }
+                #endregion
+
                 #region Gera a AST do javascript origem
 
                 var stream = new ANTLRStringStream(text);

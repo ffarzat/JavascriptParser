@@ -116,15 +116,15 @@ namespace ConsoleApplication1
 
             int totalTestok = 0;
 
-            if ("3/5/2015" == (string)scriptRunning["stringData1"])
+            if ("3/5/2015" == scriptRunning["stringData1"].ToString())
                 totalTestok += 1;
-            if ("4/5/2015" == (string)scriptRunning["stringData2"])
+            if ("4/5/2015" == scriptRunning["stringData2"].ToString())
                 totalTestok += 1;
-            if ("5/5/2015" == (string)scriptRunning["stringData3"])
+            if ("5/5/2015" == scriptRunning["stringData3"].ToString())
                 totalTestok += 1;
-            if ("6/5/2015" == (string)scriptRunning["stringData4"])
+            if ("6/5/2015" == scriptRunning["stringData4"].ToString())
                 totalTestok += 1;
-            if ("7/5/2015" == (string)scriptRunning["stringData5"])
+            if ("7/5/2015" == scriptRunning["stringData5"].ToString())
                 totalTestok += 1;
 
             if(totalTestok == 5)
