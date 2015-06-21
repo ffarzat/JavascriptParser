@@ -14,44 +14,63 @@ using Xebic.Parsers.ES3;
 
 namespace ConsoleApplication1
 {
+    /// <summary>
+    /// Console executable program
+    /// </summary>
     public class Program
     {
-        private static string jsFile = @"scriptData.js";
-        private static string jsFileTest = @"scriptDataTest.js";
-        private static string _nomeFuncaoOtimizar = "AvancaDias";
+        private static string _jsFile = @"scriptData.js";
+        private const string JsFileTest = @"scriptDataTest.js";
+        private const string NomeFuncaoOtimizar = "AvancaDias";
+        private static DirectoryInfo _dirinfo = null;
 
+        /// <summary>
+        /// Main routine
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
+            var tree = Setup();
+            ExecutarRodadas(tree, _dirinfo);
+        }
+
+        /// <summary>
+        /// Faz o setup do Ambiente e das rodadas
+        /// </summary>
+        private static CommonTree Setup()
+        {
+            CommonTree tree;
+
             try
             {
-                var text = System.IO.File.ReadAllText(jsFile);
-                var dirinfo = Directory.CreateDirectory(jsFile.Replace(".js", ""));
-                dirinfo.EnumerateFiles().ToList().ForEach(f=> f.Delete()); //clean directory
-                
+                var text = System.IO.File.ReadAllText(_jsFile);
+                _dirinfo = Directory.CreateDirectory(_jsFile.Replace(".js", ""));
+                _dirinfo.EnumerateFiles().ToList().ForEach(f => f.Delete()); //clean directory
+
 
                 //Copia o js principal e o Js de Testes
                 //File.Copy(jsFile, Path.Combine(dirinfo.FullName, jsFile), true);
-                File.Copy(jsFileTest, Path.Combine(dirinfo.FullName, jsFileTest), true);
+                File.Copy(JsFileTest, Path.Combine(_dirinfo.FullName, JsFileTest), true);
 
                 //macetão
-                jsFile = jsFile.Replace(".js", "");
+                _jsFile = _jsFile.Replace(".js", "");
 
                 #region Gera a AST do javascript origem
+
                 var stream = new ANTLRStringStream(text);
                 var lexer = new ES3Lexer(stream);
                 var tokenStream = new CommonTokenStream(lexer);
                 var parser = new ES3Parser(tokenStream);
                 ES3Parser.program_return programReturn = parser.program();
-                var tree = programReturn.Tree as CommonTree;
-                
+                tree = programReturn.Tree as CommonTree;
+
 
                 //var gen = new DotTreeGenerator();
                 //Console.Write(gen.ToDot(tree));
                 //Console.Write(tree.GetChild(1).ToStringTree());
-                
+
                 #endregion
 
-                GerarArquivosParaExecucao(tree, dirinfo);
                 
             }
             catch (Exception ex)
@@ -59,8 +78,7 @@ namespace ConsoleApplication1
                 Console.WriteLine(ex.ToString());
             }
 
-            //Console.Write("Press any key to continue...");
-            //Console.ReadKey(true); 
+            return tree;
         }
 
         /// <summary>
@@ -68,19 +86,19 @@ namespace ConsoleApplication1
         /// </summary>
         /// <param name="tree"></param>
         /// <param name="directoryInfo"></param>
-        private static void GerarArquivosParaExecucao(CommonTree tree, DirectoryInfo directoryInfo)
+        private static void ExecutarRodadas(CommonTree tree, DirectoryInfo directoryInfo)
         {
             #region Encontra a função alvo da otimização, recupera o bloco de instruções
-            var funcaoOtimizar = JavascriptAstCodeGenerator.FindFunctionTree(tree, _nomeFuncaoOtimizar);
+            var funcaoOtimizar = JavascriptAstCodeGenerator.FindFunctionTree(tree, NomeFuncaoOtimizar);
 
             if (funcaoOtimizar == null)
-                throw new ApplicationException(String.Format("Função não encontrada: {0}", _nomeFuncaoOtimizar));
+                throw new ApplicationException(String.Format("Função não encontrada: {0}", NomeFuncaoOtimizar));
 
             #endregion
 
             #region Monta o primeiro individuo
 
-            var ancestral = new JavascriptChromosome(tree, _nomeFuncaoOtimizar);
+            var ancestral = new JavascriptChromosome(tree, NomeFuncaoOtimizar);
             
             #endregion
 
