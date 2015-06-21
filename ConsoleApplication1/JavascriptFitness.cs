@@ -116,15 +116,15 @@ namespace ConsoleApplication1
 
             int totalTestok = 0;
 
-            if ("3/5/2015" == scriptRunning["stringData1"].ToString())
+            if (scriptRunning.GetGlobalVariable("stringData1") != null && "3/5/2015" == scriptRunning["stringData1"].ToString())
                 totalTestok += 1;
-            if ("4/5/2015" == scriptRunning["stringData2"].ToString())
+            if (scriptRunning.GetGlobalVariable("stringData2") != null && "4/5/2015" == scriptRunning["stringData2"].ToString())
                 totalTestok += 1;
-            if ("5/5/2015" == scriptRunning["stringData3"].ToString())
+            if (scriptRunning.GetGlobalVariable("stringData3") != null && "5/5/2015" == scriptRunning["stringData3"].ToString())
                 totalTestok += 1;
-            if ("6/5/2015" == scriptRunning["stringData4"].ToString())
+            if (scriptRunning.GetGlobalVariable("stringData4") != null && "6/5/2015" == scriptRunning["stringData4"].ToString())
                 totalTestok += 1;
-            if ("7/5/2015" == scriptRunning["stringData5"].ToString())
+            if (scriptRunning.GetGlobalVariable("stringData5") != null && "7/5/2015" == scriptRunning["stringData5"].ToString())
                 totalTestok += 1;
 
             if(totalTestok == 5)
