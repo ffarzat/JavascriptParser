@@ -310,7 +310,7 @@ namespace AForge.Genetic
 		}
 
         /// <summary>
-        /// Do the refresh componentes
+        /// Refresh Chromosomes
         /// </summary>
 	    private void Refresh()
 	    {
