@@ -24,11 +24,17 @@ namespace ConsoleApplication1
         private DirectoryInfo dirOfRun;
 
         /// <summary>
+        /// Path to test script
+        /// </summary>
+        private string _scriptTestPtah;
+
+        /// <summary>
         /// Do the setup for a future execution
         /// </summary>
-        public JavascriptFitness(string pathToExecution)
+        public JavascriptFitness(string pathToExecution, string scriptTestPtah)
         {
             _pathToExecution = pathToExecution;
+            _scriptTestPtah = scriptTestPtah;
             var dirInfo = new DirectoryInfo(_pathToExecution);
 
             #region setup directory
@@ -48,6 +54,7 @@ namespace ConsoleApplication1
         {
             DirectoryInfo directoryForIndividual = null;
             double fitness = 0.0;
+            var scriptRunning = new ScriptRunningMachine();
 
             #region setup a directory for this individual?
             var createNewDirectoryForGeneration = dirOfRun.GetDirectories().FirstOrDefault(d => d.Name == chromosome.GenerationId.ToString(CultureInfo.InvariantCulture)) == null;
@@ -69,7 +76,6 @@ namespace ConsoleApplication1
                 var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Tree);
                 string generatedJsCode = codeGenerator.DoCodeTransformation();
                 File.WriteAllText(fileName, generatedJsCode);
-                var scriptRunning = new ScriptRunningMachine();
                 var compiledJs = scriptRunning.Compile(generatedJsCode);
             }
             catch (Exception)
@@ -79,10 +85,44 @@ namespace ConsoleApplication1
             }
             
             #endregion
+            
+            #region Executar os testes no novo Js (medindo tempo)
+            scriptRunning.AllowDirectAccess = true;
+            scriptRunning.Load(fileName);
+           
+            /*Meu macete pessoal*/
+            scriptRunning["print"] = new NativeFunctionObject("print", (ctx, owner, args) =>
+            {
+                //Console.WriteLine(args[0]);
+                System.Threading.Thread.Sleep(1000); //dorme um segundo. Se não disparar essa função vai ser mais rápido
+                return null;
+            });
 
-            //TODO: copiar os testes para lá
-            //TODO: Executar os testes no novo Js
-            //TODO: Medir o tempo de execução
+            var sw = new Stopwatch();
+            sw.Start();
+            
+            scriptRunning.Run(new FileInfo(_scriptTestPtah));
+            
+            sw.Stop();
+
+            int totalTestok = 0;
+
+            if ("3/5/2015" == (string)scriptRunning["stringData1"])
+                totalTestok += 1;
+            if ("4/5/2015" == (string)scriptRunning["stringData2"])
+                totalTestok += 1;
+            if ("5/5/2015" == (string)scriptRunning["stringData3"])
+                totalTestok += 1;
+            if ("6/5/2015" == (string)scriptRunning["stringData4"])
+                totalTestok += 1;
+            if ("7/5/2015" == (string)scriptRunning["stringData5"])
+                totalTestok += 1;
+
+            fitness = (sw.ElapsedMilliseconds + totalTestok);
+
+            #endregion
+
+
 
             //Penalizar o tempo x Qtd de Testes passando
 
