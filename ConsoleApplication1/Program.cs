@@ -19,8 +19,8 @@ namespace ConsoleApplication1
         private const string NomeFuncaoOtimizar = "AvancaDias";
         private static DirectoryInfo _dirinfo = null;
 
-        private const int PopulationSize = 2;
-        private const int Generations = 10;
+        private const int PopulationSize = 100;
+        private const int Generations = 50;
         private static readonly string ExecutionPath = Environment.CurrentDirectory;
 
 
@@ -124,14 +124,16 @@ namespace ConsoleApplication1
             Console.WriteLine("Max = " + population.FitnessMax);
             Console.WriteLine("Sum = " + population.FitnessSum);
             Console.WriteLine("Avg = " + population.FitnessAvg);
+            Console.WriteLine("Best= " + population.BestChromosome.Id);
+            Console.WriteLine(population.BestChromosome.ToString());
 
-            foreach (var generationsBestChromosome in population.GenerationsBestChromosomes)
-            {
-                Console.WriteLine("");
-                Console.WriteLine("generation {0} ", generationsBestChromosome.Key);
-                Console.WriteLine("Best Founded = " + generationsBestChromosome.Value);
-                Console.WriteLine("==========================");
-            }
+            //foreach (var generationsBestChromosome in population.GenerationsBestChromosomes)
+            //{
+            //    Console.WriteLine("");
+            //    Console.WriteLine("generation {0} ", generationsBestChromosome.Key);
+            //    Console.WriteLine("Best Founded = " + generationsBestChromosome.Value);
+            //    Console.WriteLine("==========================");
+            //}
             #endregion
         }
     } 

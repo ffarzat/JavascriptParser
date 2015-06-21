@@ -53,7 +53,7 @@ namespace ConsoleApplication1
         public double Evaluate(IChromosome chromosome)
         {
             DirectoryInfo directoryForIndividual = null;
-            double fitness = 0.0;
+            double fitness = double.MaxValue;
             var scriptRunning = new ScriptRunningMachine();
 
             #region setup a directory for this individual?
@@ -80,13 +80,16 @@ namespace ConsoleApplication1
             }
             catch (Exception)
             {
-                fitness = double.MaxValue; //Se é inválido penalizo lá no céu
+                return fitness;
                 //TODO: logar a exceção para tratamento do gerador de código
             }
             
             #endregion
             
             #region Executar os testes no novo Js (medindo tempo)
+            var sw = new Stopwatch();
+            sw.Start();
+            
             scriptRunning.AllowDirectAccess = true;
             scriptRunning.Load(fileName);
            
@@ -94,16 +97,22 @@ namespace ConsoleApplication1
             scriptRunning["print"] = new NativeFunctionObject("print", (ctx, owner, args) =>
             {
                 //Console.WriteLine(args[0]);
-                System.Threading.Thread.Sleep(1000); //dorme um segundo. Se não disparar essa função vai ser mais rápido
+                System.Threading.Thread.Sleep(100); //dorme um segundo. Se não disparar essa função vai ser mais rápido
                 return null;
             });
 
-            var sw = new Stopwatch();
-            sw.Start();
-            
-            scriptRunning.Run(new FileInfo(_scriptTestPtah));
-            
+            try
+            {
+                scriptRunning.Run(new FileInfo(_scriptTestPtah));
+            }
+            catch (Exception)
+            {
+                return fitness;
+            }
+
             sw.Stop();
+            
+            //Console.WriteLine("Fitness {0} segundos", sw.Elapsed.Seconds);
 
             int totalTestok = 0;
 
@@ -118,14 +127,12 @@ namespace ConsoleApplication1
             if ("7/5/2015" == (string)scriptRunning["stringData5"])
                 totalTestok += 1;
 
-            fitness = (sw.ElapsedMilliseconds + totalTestok);
+            if(totalTestok == 5)
+                fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
 
             #endregion
-
-
-
-            //Penalizar o tempo x Qtd de Testes passando
-
+            
+            //Console.WriteLine("Fitness {0}", fitness);
             return fitness;
         }
 
