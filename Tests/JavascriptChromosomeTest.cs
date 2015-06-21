@@ -122,7 +122,20 @@ namespace Tests
 
             var result = scriptRunning.Compile(generatedJsCode);
             Assert.AreEqual(0, result.CompilingErrors.Count);
+        }
 
+        //Compile the Js code if erros
+        [Test]
+        public void ToCompileCodeTestFail()
+        {
+            ScriptRunningMachine scriptRunning = new ScriptRunningMachine();
+
+            var codeGenerator = new JavascriptAstCodeGenerator(_tree);
+            var generatedJsCode = codeGenerator.DoCodeTransformation();
+
+            Assert.Throws<ReoScriptCompilingException>(() => scriptRunning.Compile(generatedJsCode + "EROROROROROROR"));
+
+            
         }
 
     }

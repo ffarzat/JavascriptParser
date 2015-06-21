@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using AForge.Genetic;
+using unvell.ReoScript;
 
 namespace ConsoleApplication1
 {
@@ -28,7 +29,7 @@ namespace ConsoleApplication1
         public JavascriptFitness(string pathToExecution)
         {
             _pathToExecution = pathToExecution;
-            var dirInfo = new DirectoryInfo(pathToExecution);
+            var dirInfo = new DirectoryInfo(_pathToExecution);
 
             #region setup directory
             if (!dirInfo.Exists)
@@ -46,6 +47,7 @@ namespace ConsoleApplication1
         public double Evaluate(IChromosome chromosome)
         {
             DirectoryInfo directoryForIndividual = null;
+            double fitness = 0.0;
 
             #region setup a directory for this individual?
             var createNewDirectoryForGeneration = dirOfRun.GetDirectories().FirstOrDefault(d => d.Name == chromosome.GenerationId.ToString(CultureInfo.InvariantCulture)) == null;
@@ -67,10 +69,12 @@ namespace ConsoleApplication1
                 var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Tree);
                 string generatedJsCode = codeGenerator.DoCodeTransformation();
                 File.WriteAllText(fileName, generatedJsCode);
+                var scriptRunning = new ScriptRunningMachine();
+                var compiledJs = scriptRunning.Compile(generatedJsCode);
             }
             catch (Exception)
             {
-                return double.MaxValue; //Se é inválido penalizo lá no céu
+                fitness = double.MaxValue; //Se é inválido penalizo lá no céu
                 //TODO: logar a exceção para tratamento do gerador de código
             }
             
@@ -82,7 +86,7 @@ namespace ConsoleApplication1
 
             //Penalizar o tempo x Qtd de Testes passando
 
-            return chromosome.Id * (0.01);
+            return fitness;
         }
 
         /// <summary>
