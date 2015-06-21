@@ -47,7 +47,7 @@ namespace ConsoleApplication1
 
                 //var gen = new DotTreeGenerator();
                 //Console.Write(gen.ToDot(tree));
-                Console.Write(tree.GetChild(1).ToStringTree()); //TODO: traduzir o Tostring em código...
+                //Console.Write(tree.GetChild(1).ToStringTree());
                 
                 #endregion
 
@@ -100,12 +100,30 @@ namespace ConsoleApplication1
 
             for (int i = 0; i < generations; i++)
             {
-                population.RunEpoch(); 
-                var bestJavascript = population.BestChromosome as JavascriptChromosome;
+                Console.WriteLine("Processing generation {0}... ", i);
+                population.RunEpoch();
+                Console.WriteLine("--------------------------");
             }
             
             #endregion
 
+            #region Results
+
+            Console.WriteLine("Max = " + population.FitnessMax);
+            Console.WriteLine("Sum = " + population.FitnessSum);
+            Console.WriteLine("Avg = " + population.FitnessAvg);
+
+            foreach (var generationsBestChromosome in population.GenerationsBestChromosomes)
+            {
+                Console.WriteLine("");
+                Console.WriteLine("generation {0} ", generationsBestChromosome.Key);
+                Console.WriteLine("Best Founded = " + generationsBestChromosome.Value);
+                Console.WriteLine("==========================");
+            }
+
+            Console.WriteLine("Press any key...");
+            Console.Read();
+            #endregion
         }
     } 
 }
