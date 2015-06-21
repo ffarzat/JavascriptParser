@@ -19,7 +19,7 @@ namespace ConsoleApplication1
     /// </summary>
     public class Program
     {
-        private static string _jsFile = @"scriptData.js";
+        private const string JsFile = @"scriptData.js";
         private const string JsFileTest = @"scriptDataTest.js";
         private const string NomeFuncaoOtimizar = "AvancaDias";
         private static DirectoryInfo _dirinfo = null;
@@ -31,7 +31,16 @@ namespace ConsoleApplication1
         static void Main(string[] args)
         {
             var tree = Setup();
-            ExecutarRodadas(tree, _dirinfo);
+
+            if (tree == null)
+                Console.WriteLine("Erro ao processar a AST do arquivo {0}", JsFile);
+            else
+                ExecutarRodadas(tree, _dirinfo);
+
+
+            Console.WriteLine("Aperte qualquer tecla para encerrar...");
+            Console.Read();
+
         }
 
         /// <summary>
@@ -39,21 +48,20 @@ namespace ConsoleApplication1
         /// </summary>
         private static CommonTree Setup()
         {
-            CommonTree tree;
+            CommonTree tree = null;
 
             try
             {
-                var text = System.IO.File.ReadAllText(_jsFile);
-                _dirinfo = Directory.CreateDirectory(_jsFile.Replace(".js", ""));
+                var text = System.IO.File.ReadAllText(JsFile);
+                _dirinfo = Directory.CreateDirectory(JsFile.Replace(".js", ""));
                 _dirinfo.EnumerateFiles().ToList().ForEach(f => f.Delete()); //clean directory
-
 
                 //Copia o js principal e o Js de Testes
                 //File.Copy(jsFile, Path.Combine(dirinfo.FullName, jsFile), true);
-                File.Copy(JsFileTest, Path.Combine(_dirinfo.FullName, JsFileTest), true);
+                //File.Copy(JsFileTest, Path.Combine(_dirinfo.FullName, JsFileTest), true);
 
                 //macetão
-                _jsFile = _jsFile.Replace(".js", "");
+                //_jsFile = _jsFile.Replace(".js", "");
 
                 #region Gera a AST do javascript origem
 
@@ -139,9 +147,6 @@ namespace ConsoleApplication1
                 Console.WriteLine("Best Founded = " + generationsBestChromosome.Value);
                 Console.WriteLine("==========================");
             }
-
-            Console.WriteLine("Press any key...");
-            Console.Read();
             #endregion
         }
     } 
