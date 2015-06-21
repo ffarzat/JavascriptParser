@@ -49,7 +49,7 @@ namespace AForge.Genetic
 			get { return 0xFFFFFFFFFFFFFFFF >> ( 64 - length ); }
 		}
 
-	    public int Id { get; set; }
+	    public Guid Id { get; set; }
 	    public int GenerationId { get; set; }
 
 	    /// <summary>

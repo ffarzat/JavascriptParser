@@ -63,7 +63,7 @@ namespace ConsoleApplication1
         /// <summary>
         /// Id of individual inside a population
         /// </summary>
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Generation Parent Id
@@ -194,7 +194,7 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome Clone()
         {
-            return new JavascriptChromosome(this._tree, _functionName ){ Fitness = this.Fitness};
+            return new JavascriptChromosome(this._tree, _functionName ){ Fitness = this.Fitness, Id = Guid.NewGuid(), GenerationId = this.GenerationId};
         }
 
         /// <summary>

@@ -61,7 +61,7 @@ namespace ConsoleApplication1
 
             #endregion
 
-            #region gerar o código em um diretório temporário
+            #region gerar o código em um diretório temporário, testar compilação
             string fileName = string.Format("{0}/{1}.js", directoryForIndividual.FullName, chromosome.Id);
 
             try

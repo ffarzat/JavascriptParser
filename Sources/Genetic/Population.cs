@@ -128,7 +128,7 @@ namespace AForge.Genetic
 			{
 				// create new chromosome
 				IChromosome c = ancestor.CreateOffspring( );
-			    c.Id = i;
+			    c.Id = Guid.NewGuid();
 			    c.GenerationId = _generationCount;
 				// calculate it's fitness
 				c.Evaluate( fitnessFunction );
@@ -298,6 +298,7 @@ namespace AForge.Genetic
 		/// </summary>
 		public void RunEpoch( )
 		{
+		    Refresh();
 			Crossover( );
 			Mutate( );
 		    Delete();
@@ -307,8 +308,20 @@ namespace AForge.Genetic
             GenerationsBestChromosomes.Add(GenerationCount, bestChromosome);
 		    _generationCount++;
 		}
-		
-		public void Trace( )
+
+        /// <summary>
+        /// Do the refresh componentes
+        /// </summary>
+	    private void Refresh()
+	    {
+            foreach (IChromosome c in population)
+            {
+                c.GenerationId = _generationCount;
+            }
+
+	    }
+
+	    public void Trace( )
 		{
 			System.Diagnostics.Debug.WriteLine( "Max = " + fitnessMax );
 			System.Diagnostics.Debug.WriteLine( "Sum = " + fitnessSum );

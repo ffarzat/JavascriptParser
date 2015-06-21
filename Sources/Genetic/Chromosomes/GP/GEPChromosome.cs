@@ -29,7 +29,7 @@ namespace AForge.Genetic
 		// random number generator for chromosomes generation
 		protected static Random	rand = new Random( (int) DateTime.Now.Ticks );
 
-	    public int Id { get; set; }
+	    public Guid Id { get; set; }
 	    public int GenerationId { get; set; }
 
 	    /// <summary>

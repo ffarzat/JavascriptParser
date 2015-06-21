@@ -19,6 +19,11 @@ namespace ConsoleApplication1
         private const string NomeFuncaoOtimizar = "AvancaDias";
         private static DirectoryInfo _dirinfo = null;
 
+        private const int PopulationSize = 2;
+        private const int Generations = 10;
+        private static readonly string ExecutionPath = Environment.CurrentDirectory;
+
+
         /// <summary>
         /// Main routine
         /// </summary>
@@ -48,16 +53,6 @@ namespace ConsoleApplication1
             try
             {
                 var text = System.IO.File.ReadAllText(JsFile);
-                _dirinfo = Directory.CreateDirectory(JsFile.Replace(".js", ""));
-                _dirinfo.EnumerateFiles().ToList().ForEach(f => f.Delete()); //clean directory
-
-                //Copia o js principal e o Js de Testes
-                //File.Copy(jsFile, Path.Combine(dirinfo.FullName, jsFile), true);
-                //File.Copy(JsFileTest, Path.Combine(_dirinfo.FullName, JsFileTest), true);
-
-                //macetão
-                //_jsFile = _jsFile.Replace(".js", "");
-
                 #region Gera a AST do javascript origem
 
                 var stream = new ANTLRStringStream(text);
@@ -73,8 +68,7 @@ namespace ConsoleApplication1
                 //Console.Write(tree.GetChild(1).ToStringTree());
 
                 #endregion
-
-                
+               
             }
             catch (Exception ex)
             {
@@ -106,21 +100,17 @@ namespace ConsoleApplication1
             #endregion
 
             #region Faz o setup da população inicial
-            int populationSize = 500;
-            int generations = 50;
-            string executionPath = Environment.CurrentDirectory;
-
-            IFitnessFunction fitness = new JavascriptFitness(executionPath);
+            IFitnessFunction fitness = new JavascriptFitness(ExecutionPath);
 
             ISelectionMethod metodoSelecao = new EliteSelection();
 
-            Population population = new Population(populationSize, ancestral, fitness, metodoSelecao);
+            Population population = new Population(PopulationSize, ancestral, fitness, metodoSelecao);
 
             #endregion
 
             #region Executa a otimização
 
-            for (int i = 0; i < generations; i++)
+            for (int i = 0; i < Generations; i++)
             {
                 Console.WriteLine("Processing generation {0}... ", i);
                 population.RunEpoch();

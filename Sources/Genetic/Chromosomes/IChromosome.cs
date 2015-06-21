@@ -16,7 +16,7 @@ namespace AForge.Genetic
         /// <summary>
         /// Id of Individual inside a population
         /// </summary>
-        int Id { get; set; }
+        Guid Id { get; set; }
 
         /// <summary>
         /// Id of generation Parent

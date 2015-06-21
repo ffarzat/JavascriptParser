@@ -53,7 +53,7 @@ namespace AForge.Genetic
 			get { return maxValue; }
 		}
 
-	    public int Id { get; set; }
+	    public Guid Id { get; set; }
 	    public int GenerationId { get; set; }
 
 	    /// <summary>
