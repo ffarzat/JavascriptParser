@@ -161,7 +161,9 @@ namespace ConsoleApplication1
             var line = 20;
             var sb = new StringBuilder();
             sb.AppendFormat("\"{0}\" -n{1}", nppReadmePath, line);
-            Process.Start(nppExePath, sb.ToString());
+            
+            if (File.Exists(nppExePath))
+                Process.Start(nppExePath, sb.ToString());
 
             
 
