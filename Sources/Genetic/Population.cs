@@ -270,10 +270,10 @@ namespace AForge.Genetic
 					// add it to population
 					population.Add( c );
 				}
-			}
+            }
 
-			// find best chromosome
-			fitnessMax = 0;
+            #region find best chromosome
+            fitnessMax = 0;
 			fitnessSum = 0;
 
 			foreach ( IChromosome c in population )
@@ -283,15 +283,17 @@ namespace AForge.Genetic
 				// accumulate summary value
 				fitnessSum += fitness;
 
-				// check for max
-				if ( fitness > fitnessMax )
+				// check for min
+				if ( fitness < fitnessMax )
 				{
 					fitnessMax = fitness;
 					bestChromosome = c;
 				}
 			}
 			fitnessAvg = fitnessSum / size;
-		}
+
+            #endregion
+        }
 
 		/// <summary>
 		/// Run one epoch of the population - crossover, mutation and selection
@@ -305,7 +307,7 @@ namespace AForge.Genetic
 			Selection( );
 
             //Keeps the best Chromossome of run
-            GenerationsBestChromosomes.Add(GenerationCount, bestChromosome);
+            //GenerationsBestChromosomes.Add(GenerationCount, bestChromosome);
 		    _generationCount++;
 		}
 
