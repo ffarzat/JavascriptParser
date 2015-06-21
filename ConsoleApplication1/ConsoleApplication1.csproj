@@ -32,20 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr3.Runtime">
-      <HintPath>antlr-dotnet-tool-3.3.1.7705\Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Antlr3.Runtime.Debug">
-      <HintPath>antlr-dotnet-tool-3.3.1.7705\Antlr3.Runtime.Debug.dll</HintPath>
-    </Reference>
-    <Reference Include="Antlr3.StringTemplate">
-      <HintPath>antlr-dotnet-tool-3.3.1.7705\Antlr3.StringTemplate.dll</HintPath>
-    </Reference>
-    <Reference Include="Antlr4.StringTemplate">
-      <HintPath>antlr-dotnet-tool-3.3.1.7705\Antlr4.StringTemplate.dll</HintPath>
-    </Reference>
-    <Reference Include="Antlr4.StringTemplate.Visualizer">
-      <HintPath>antlr-dotnet-tool-3.3.1.7705\Antlr4.StringTemplate.Visualizer.dll</HintPath>
+    <Reference Include="Antlr3.Runtime, Version=3.3.1.7705, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

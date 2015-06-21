@@ -5,6 +5,7 @@ D:\GitHub\JavascriptParser\Tests\bin\Debug\moment.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\scriptData.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\scriptDataTest.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\ES3.tokens
+D:\GitHub\JavascriptParser\Tests\bin\Debug\scriptData_sem_comentarios.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\Tests.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\Tests.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.dll
@@ -12,12 +13,11 @@ D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.Genetic.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\Antlr3.Runtime.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\ConsoleApplication1.exe
 D:\GitHub\JavascriptParser\Tests\bin\Debug\nunit.framework.dll
+D:\GitHub\JavascriptParser\Tests\bin\Debug\unvell.ReoScript.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\ConsoleApplication1.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.Genetic.pdb
-D:\GitHub\JavascriptParser\Tests\bin\Debug\Antlr3.Runtime.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\nunit.framework.xml
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.dll
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.pdb
-D:\GitHub\JavascriptParser\Tests\bin\Debug\scriptData_sem_comentarios.js

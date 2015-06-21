@@ -4,6 +4,7 @@ using Antlr.Runtime.Tree;
 using ConsoleApplication1;
 using NUnit.Framework;
 using Xebic.Parsers.ES3;
+using unvell.ReoScript;
 
 namespace Tests
 {
@@ -108,6 +109,20 @@ namespace Tests
             var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "");
 
             Assert.AreEqual(originalText, generatedText);
+        }
+
+        //Compile the Js code
+        [Test]
+        public void ToCompileCodeTest()
+        {
+            ScriptRunningMachine scriptRunning = new ScriptRunningMachine();
+
+            var codeGenerator = new JavascriptAstCodeGenerator(_tree);
+            var generatedJsCode = codeGenerator.DoCodeTransformation();
+
+            var result = scriptRunning.Compile(generatedJsCode);
+            Assert.AreEqual(0, result.CompilingErrors.Count);
+
         }
 
     }
