@@ -18,7 +18,12 @@ namespace AForge.Genetic
         /// </summary>
         Guid Id { get; set; }
 
-        /// <summary>
+	    /// <summary>
+	    /// File Path of individual
+	    /// </summary>
+        string File { get; set; }
+
+	    /// <summary>
         /// Id of generation Parent
         /// </summary>
         int GenerationId { get; set; }

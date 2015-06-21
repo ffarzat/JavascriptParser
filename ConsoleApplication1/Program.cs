@@ -2,9 +2,11 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using AForge.Genetic;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
+using Microsoft.Win32;
 using Xebic.Parsers.ES3;
 
 
@@ -20,7 +22,7 @@ namespace ConsoleApplication1
         private const string NomeFuncaoOtimizar = "AvancaDias";
         private static DirectoryInfo _dirinfo = null;
 
-        private const int PopulationSize = 100;
+        private const int PopulationSize = 10;
         private const int Generations = 50;
         private static readonly string ExecutionPath = Environment.CurrentDirectory;
 
@@ -133,6 +135,8 @@ namespace ConsoleApplication1
                 Console.WriteLine("Processing generation {0}... ", i);
                 population.RunEpoch();
                 swEpoch.Stop();
+                Console.WriteLine("Best Fit {0}", population.FitnessMax);
+                //Console.WriteLine("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", ""));
                 Console.WriteLine("{0} segundos", swEpoch.Elapsed.Seconds);
                 Console.WriteLine("--------------------------");
             }
@@ -150,6 +154,18 @@ namespace ConsoleApplication1
             Console.WriteLine("Best= " + population.BestChromosome.Id);
             Console.WriteLine(population.BestChromosome.ToString());
 
+
+            var nppDir = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Notepad++", null, null);
+            var nppExePath = Path.Combine(nppDir, "Notepad++.exe");
+            var nppReadmePath = population.BestChromosome.File;
+            var line = 20;
+            var sb = new StringBuilder();
+            sb.AppendFormat("\"{0}\" -n{1}", nppReadmePath, line);
+            Process.Start(nppExePath, sb.ToString());
+
+            
+
+
             //foreach (var generationsBestChromosome in population.GenerationsBestChromosomes)
             //{
             //    Console.WriteLine("");
@@ -157,6 +173,7 @@ namespace ConsoleApplication1
             //    Console.WriteLine("Best Founded = " + generationsBestChromosome.Value);
             //    Console.WriteLine("==========================");
             //}
+
             #endregion
         }
     } 

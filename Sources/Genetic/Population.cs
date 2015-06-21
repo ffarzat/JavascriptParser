@@ -16,9 +16,9 @@ namespace AForge.Genetic
 	/// </summary>
 	public class Population
 	{
-		private IFitnessFunction fitnessFunction;
-		private ISelectionMethod selectionMethod;
-		private ArrayList	population = new ArrayList( );
+		private IFitnessFunction    fitnessFunction;
+		private ISelectionMethod    selectionMethod;
+        private List<IChromosome>   population = new List<IChromosome>();
 		private int			size;
 	    private int         _generationCount = 0;
 		private double		randomSelectionPortion = 0.0;
@@ -32,7 +32,7 @@ namespace AForge.Genetic
 		private static Random rand = new Random( (int) DateTime.Now.Ticks );
 
 		//
-		private double		fitnessMax = 0;
+		private double		fitnessMax = double.MaxValue;
 		private double		fitnessSum = 0;
 		private double		fitnessAvg = 0;
 		private IChromosome	bestChromosome = null;
@@ -273,7 +273,7 @@ namespace AForge.Genetic
             }
 
             #region find best chromosome
-            fitnessMax = 0;
+            //fitnessMax = 0;
 			fitnessSum = 0;
 
 			foreach ( IChromosome c in population )

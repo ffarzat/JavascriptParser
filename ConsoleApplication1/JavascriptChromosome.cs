@@ -66,6 +66,11 @@ namespace ConsoleApplication1
         public Guid Id { get; set; }
 
         /// <summary>
+        /// Javascript File path
+        /// </summary>
+        public string File { get; set; }
+
+        /// <summary>
         /// Generation Parent Id
         /// </summary>
         public int GenerationId { get; set; }

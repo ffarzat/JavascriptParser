@@ -4,6 +4,8 @@
 // andrew.kirillov@gmail.com
 //
 
+using System.Collections.Generic;
+
 namespace AForge.Genetic
 {
 	using System;
@@ -25,7 +27,7 @@ namespace AForge.Genetic
 		/// <summary>
 		/// Apply selection to the population
 		/// </summary>
-		public void ApplySelection( ArrayList chromosomes, int size )
+        public void ApplySelection(List<IChromosome> chromosomes, int size)
 		{
 			// new population, initially empty
 			ArrayList newPopulation = new ArrayList( );
@@ -75,7 +77,7 @@ namespace AForge.Genetic
 			// !!! moving is done to reduce objects cloning
 			for ( int i = 0; i < size; i++ )
 			{
-				chromosomes.Add( newPopulation[0] );
+                chromosomes.Add((IChromosome) newPopulation[0]);
 				newPopulation.RemoveAt( 0 );
 			}
 		}

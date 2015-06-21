@@ -70,7 +70,7 @@ namespace ConsoleApplication1
 
             #region gerar o código em um diretório temporário, testar compilação
             string fileName = string.Format("{0}/{1}.js", directoryForIndividual.FullName, chromosome.Id);
-
+            chromosome.File = fileName;
             try
             {
                 var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Tree);

@@ -4,6 +4,8 @@
 // andrew.kirillov@gmail.com
 //
 
+using System.Collections.Generic;
+
 namespace AForge.Genetic
 {
 	using System;
@@ -17,6 +19,6 @@ namespace AForge.Genetic
 		/// <summary>
 		/// Apply selection to the population
 		/// </summary>
-		void ApplySelection( ArrayList chromosomes, int size );
+		void ApplySelection( List<IChromosome> chromosomes, int size );
 	}
 }

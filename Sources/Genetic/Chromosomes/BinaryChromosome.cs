@@ -50,6 +50,7 @@ namespace AForge.Genetic
 		}
 
 	    public Guid Id { get; set; }
+	    public string File { get; set; }
 	    public int GenerationId { get; set; }
 
 	    /// <summary>

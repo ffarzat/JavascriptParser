@@ -4,10 +4,15 @@
 // andrew.kirillov@gmail.com
 //
 
+
+
+
+
 namespace AForge.Genetic
 {
 	using System;
-	using System.Collections;
+    using System.Linq;
+    using System.Collections.Generic;
 
 	/// <summary>
 	/// Elite selection method
@@ -45,13 +50,13 @@ namespace AForge.Genetic
 		/// <summary>
 		/// Apply selection to the population
 		/// </summary>
-		public void ApplySelection( ArrayList chromosomes, int size )
+        public void ApplySelection(List<IChromosome> chromosomes, int size)
 		{
 			// sort chromosomes
-			chromosomes.Sort( );
-
+		    var ordered = chromosomes.OrderBy(c => c.Fitness).ToList();
+			
 			// remove bad chromosomes
-			chromosomes.RemoveRange( size, chromosomes.Count - size );
+            ordered.RemoveRange(size, chromosomes.Count - size);
 
 			// shuffle chromosomes
 			if ( shuffle )
@@ -62,7 +67,7 @@ namespace AForge.Genetic
 					int c2 = rand.Next( size );
 
 					// swap two chromosomes
-					object temp = chromosomes[c1];
+					IChromosome temp = chromosomes[c1];
 					chromosomes[c1] = chromosomes[c2];
 					chromosomes[c2] = temp;
 				}
