@@ -87,8 +87,9 @@ namespace ConsoleApplication1
             #region Faz o setup da população inicial
             int populationSize = 500;
             int generations = 50;
-            
-            IFitnessFunction fitness = new JavascriptFitness();
+            string executionPath = Environment.CurrentDirectory;
+
+            IFitnessFunction fitness = new JavascriptFitness(executionPath);
 
             ISelectionMethod metodoSelecao = new EliteSelection();
 

@@ -30,6 +30,7 @@ namespace AForge.Genetic
 		protected static Random	rand = new Random( (int) DateTime.Now.Ticks );
 
 	    public int Id { get; set; }
+	    public int GenerationId { get; set; }
 
 	    /// <summary>
 		/// Chromosome's fintess value

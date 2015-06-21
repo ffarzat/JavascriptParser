@@ -18,6 +18,11 @@ namespace AForge.Genetic
         /// </summary>
         int Id { get; set; }
 
+        /// <summary>
+        /// Id of generation Parent
+        /// </summary>
+        int GenerationId { get; set; }
+
 	    /// <summary>
 		/// Chromosome's fintess value
 		/// </summary>

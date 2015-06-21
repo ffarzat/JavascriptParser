@@ -66,6 +66,11 @@ namespace ConsoleApplication1
         public int Id { get; set; }
 
         /// <summary>
+        /// Generation Parent Id
+        /// </summary>
+        public int GenerationId { get; set; }
+
+        /// <summary>
         /// Chromosome's fintess value
         /// </summary>
         public double Fitness { get; private set; }

@@ -54,6 +54,7 @@ namespace AForge.Genetic
 		}
 
 	    public int Id { get; set; }
+	    public int GenerationId { get; set; }
 
 	    /// <summary>
 		/// Chromosome's fintess value

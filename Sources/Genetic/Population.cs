@@ -129,6 +129,7 @@ namespace AForge.Genetic
 				// create new chromosome
 				IChromosome c = ancestor.CreateOffspring( );
 			    c.Id = i;
+			    c.GenerationId = _generationCount;
 				// calculate it's fitness
 				c.Evaluate( fitnessFunction );
 				// add it to population
@@ -303,9 +304,8 @@ namespace AForge.Genetic
 			Selection( );
 
             //Keeps the best Chromossome of run
-		    _generationCount = GenerationCount + 1;
             GenerationsBestChromosomes.Add(GenerationCount, bestChromosome);
-
+		    _generationCount++;
 		}
 		
 		public void Trace( )
