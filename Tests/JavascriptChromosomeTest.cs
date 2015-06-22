@@ -97,21 +97,6 @@ namespace Tests
 
         }
 
-        //Covers ToString Behavior
-        [Test]
-        public void ToCodeTest()
-        {
-            var codeGenerator = new JavascriptAstCodeGenerator(_tree);
-            var generatedJsCode = codeGenerator.DoCodeTransformation();
-
-            File.WriteAllText("generatedJsCode.js", generatedJsCode);
-
-            var originalText = _javascriptTextWithoutComments.Replace(" ", "").Replace("\r\n", "");
-            var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "");
-
-            Assert.AreEqual(originalText, generatedText);
-        }
-
         //Compile the Js code
         [Test]
         public void ToCompileCodeTest()

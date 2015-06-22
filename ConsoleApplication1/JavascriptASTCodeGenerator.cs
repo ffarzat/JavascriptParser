@@ -272,6 +272,9 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private string HandleBlockInstruction(ITree instruction)
         {
+            if(instruction != null)
+                return "";
+
             string blockCode = "";
             
             for (int i = 0; i < instruction.ChildCount; i++)
@@ -332,27 +335,30 @@ namespace ConsoleApplication1
         /// </summary>
         /// <param name="instruction"></param>
         /// <returns></returns>
+        /// <remarks>
+        /// A Call node may contains a Function Name OR a Function Node
+        /// </remarks>
         private string HandleCallInstruction(ITree instruction)
         {
             string instructionCode = "";
-            string functionName = instruction.GetChild(0).Text;
-            var args = instruction.GetChild(1);
+
+            object functionName = instruction.GetChild(0).Text == "{ARGS}" ? "" : HandleFunctionInstruction(instruction.GetChild(0));
+            var args = instruction.GetChild(1).Text == "{ARGS}" ? instruction.GetChild(1) : null;
 
             string argsNames = "";
-            for (int i = 0; i < args.ChildCount; i++)
+            if (args != null)
             {
-
-
-                if (IsFunction(args.GetChild(i)))
-                    argsNames += HandleChild(args.GetChild(i));
-                else
+                for (int i = 0; i < args.ChildCount; i++)
+                {
                     argsNames += args.GetChild(i).Text;
 
-
-                if (i < (args.ChildCount - 1))
-                    argsNames += ", ";
+                    if (i < (args.ChildCount - 1))
+                        argsNames += ", ";
+                }
             }
 
+            var functionIsString = ((ITree )functionName) == null;
+            
             instructionCode = String.Format("{0}({1})", functionName, argsNames);
 
             return instructionCode;
@@ -380,20 +386,23 @@ namespace ConsoleApplication1
         private string HandleFunctionInstruction(ITree instruction)
         {
             string instructionCode = "";
-            
-            string functionName = instruction.GetChild(0).Text;
-            var args = instruction.GetChild(1);
-            var block = instruction.GetChild(2);
+
+            string functionName = instruction.GetChild(0).Text == "{ARGS}" ? "" : instruction.GetChild(0).Text;
+            var args = instruction.GetChild(1).Text == "{ARGS}" ? instruction.GetChild(1): null ;
+            var block = instruction.GetChild(2).Text == "{BLOCK}" ? instruction.GetChild(2) : null;
 
             string argsNames = "";
-            for (int i = 0; i < args.ChildCount; i++)
+            if (args != null)
             {
-                argsNames += args.GetChild(i).Text;
-                
-                if (i < (args.ChildCount -1))
-                    argsNames += ", ";
-            }
+                for (int i = 0; i < args.ChildCount; i++)
+                {
+                    argsNames += args.GetChild(i).Text;
 
+                    if (i < (args.ChildCount - 1))
+                        argsNames += ", ";
+                }    
+            }
+            
             string blockCode = HandleBlockInstruction(block);
 
             instructionCode = String.Format("function {0}({1}) {{\r\n{2}}}", functionName, argsNames, blockCode);
