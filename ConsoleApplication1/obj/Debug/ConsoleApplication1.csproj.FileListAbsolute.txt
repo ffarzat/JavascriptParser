@@ -36,9 +36,9 @@ D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.dll
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.Genetic.dll
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Antlr3.Runtime.dll
+D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\unvell.ReoScript.dll
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.pdb
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.Genetic.pdb
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
 D:\GitHub\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
-D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\unvell.ReoScript.dll

@@ -199,7 +199,7 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome Clone()
         {
-            return new JavascriptChromosome(this._tree, _functionName ){ Fitness = this.Fitness, Id = Guid.NewGuid(), GenerationId = this.GenerationId};
+            return new JavascriptChromosome(DeepClone(this._tree), _functionName ){ Fitness = this.Fitness, Id = Guid.NewGuid(), GenerationId = this.GenerationId};
         }
 
         /// <summary>

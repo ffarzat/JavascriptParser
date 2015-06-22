@@ -97,7 +97,7 @@ namespace ConsoleApplication1
             scriptRunning["print"] = new NativeFunctionObject("print", (ctx, owner, args) =>
             {
                 //Console.WriteLine(args[0]);
-                System.Threading.Thread.Sleep(100); //dorme um segundo. Se não disparar essa função vai ser mais rápido
+                System.Threading.Thread.Sleep(10); //dorme um segundo. Se não disparar essa função vai ser mais rápido
                 return null;
             });
 
