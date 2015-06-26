@@ -816,11 +816,11 @@
     );
 
     function createDate (y, m, d, h, M, s, ms) {
-        //can't just apply() to create a date:
-        //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
+        
+        
         var date = new Date(y, m, d, h, M, s, ms);
 
-        //the date constructor doesn't accept years < 1970
+        
         if (y < 1970) {
             date.setFullYear(y);
         }
@@ -843,11 +843,11 @@
     addFormatToken(0, ['YYYYY',  5],       0, 'year');
     addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
 
-    // ALIASES
+    
 
     addUnitAlias('year', 'y');
 
-    // PARSING
+    
 
     addRegexToken('Y',      matchSigned);
     addRegexToken('YY',     match1to2, match2);
@@ -860,7 +860,7 @@
         array[YEAR] = utils_hooks__hooks.parseTwoDigitYear(input);
     });
 
-    // HELPERS
+    
 
     function daysInYear(year) {
         return isLeapYear(year) ? 366 : 365;
@@ -870,13 +870,13 @@
         return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
     }
 
-    // HOOKS
+    
 
     utils_hooks__hooks.parseTwoDigitYear = function (input) {
         return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
     };
 
-    // MOMENTS
+    
 
     var getSetYear = makeGetSet('FullYear', false);
 
@@ -887,12 +887,12 @@
     addFormatToken('w', ['ww', 2], 'wo', 'week');
     addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
 
-    // ALIASES
+    
 
     addUnitAlias('week', 'w');
     addUnitAlias('isoWeek', 'W');
 
-    // PARSING
+    
 
     addRegexToken('w',  match1to2);
     addRegexToken('ww', match1to2, match2);
@@ -903,15 +903,15 @@
         week[token.substr(0, 1)] = toInt(input);
     });
 
-    // HELPERS
+    
 
-    // firstDayOfWeek       0 = sun, 6 = sat
-    //                      the day of the week that starts the week
-    //                      (usually sunday or monday)
-    // firstDayOfWeekOfYear 0 = sun, 6 = sat
-    //                      the first week is the week that contains the first
-    //                      of this day of the week
-    //                      (eg. ISO weeks use thursday (4))
+    
+    
+    
+    
+    
+    
+    
     function weekOfYear(mom, firstDayOfWeek, firstDayOfWeekOfYear) {
         var end = firstDayOfWeekOfYear - firstDayOfWeek,
             daysToDayOfWeek = firstDayOfWeekOfYear - mom.day(),
@@ -933,15 +933,15 @@
         };
     }
 
-    // LOCALES
+    
 
     function localeWeek (mom) {
         return weekOfYear(mom, this._week.dow, this._week.doy).week;
     }
 
     var defaultLocaleWeek = {
-        dow : 0, // Sunday is the first day of the week.
-        doy : 6  // The week that contains Jan 1st is the first week of the year.
+        dow : 0, 
+        doy : 6  
     };
 
     function localeFirstDayOfWeek () {
@@ -952,7 +952,7 @@
         return this._week.doy;
     }
 
-    // MOMENTS
+    
 
     function getSetWeek (input) {
         var week = this.localeData().week(this);

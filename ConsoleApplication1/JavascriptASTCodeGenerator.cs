@@ -40,11 +40,18 @@ namespace ConsoleApplication1
         {
             var sb = new StringBuilder();
 
-            //for each instruction in tree
-            for (int i = 0; i < _tree.ChildCount; i++)
+            //for each instruction in tree (sometime including tree root node)
+            if (_tree.IsNil)
             {
-                var instruction = _tree.GetChild(i);
-                sb.AppendLine(HandleChild(instruction));
+                for (int i = 0; i < _tree.ChildCount; i++)
+                {
+                    var instruction = _tree.GetChild(i);
+                    sb.AppendLine(HandleChild(instruction));
+                }
+            }
+            else
+            {
+                sb.AppendLine(HandleChild(_tree));
             }
 
             return sb.ToString();
@@ -104,6 +111,9 @@ namespace ConsoleApplication1
                 case 113:
                     instructionCode = HandleBlockInstruction(instruction);
                     break;
+                case 114:
+                    instructionCode = HandleByFieldInstruction(instruction);
+                    break;
                 case 116:
                     instructionCode = HandleCallInstruction(instruction);
                     break;
@@ -119,6 +129,17 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates ByField code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleByFieldInstruction(ITree instruction)
+        {
+            return string.Format("{0}.{1}", instruction.GetChild(0).Text, instruction.GetChild(1).Text);
+
         }
 
         /// <summary>
@@ -388,25 +409,45 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            string functionName = instruction.GetChild(0).Text;
-            var args = instruction.GetChild(1);
-            var block = instruction.GetChild(2);
-
-            string argsNames = "";
-            if (args != null)
+            if (instruction.GetChild(0).Text == "ARGS")
             {
-                for (int i = 0; i < args.ChildCount; i++)
-                {
-                    argsNames += args.GetChild(i).Text;
+                #region Function defination
 
-                    if (i < (args.ChildCount - 1))
-                        argsNames += ", ";
-                }    
+                string functionName = "";
+                var args = "";
+                var block = instruction.GetChild(1);
+
+                string blockCode = HandleBlockInstruction(block);
+
+                instructionCode = String.Format("{0}", blockCode);
+                #endregion
+
             }
-            
-            string blockCode = HandleBlockInstruction(block);
+            else
+            {
+                #region Function Body inside a commom node
+                string functionName = instruction.GetChild(0).Text;
+                var args = instruction.GetChild(1);
+                var block = instruction.GetChild(2);
 
-            instructionCode = String.Format("function {0}({1}) {{\r\n{2}}}", functionName, argsNames, blockCode);
+                string argsNames = "";
+                if (args != null)
+                {
+                    for (int i = 0; i < args.ChildCount; i++)
+                    {
+                        argsNames += args.GetChild(i).Text;
+
+                        if (i < (args.ChildCount - 1))
+                            argsNames += ", ";
+                    }
+                }
+
+                string blockCode = HandleBlockInstruction(block);
+
+                instructionCode = String.Format("function {0}({1}) {{\r\n{2}}}", functionName, argsNames, blockCode);
+                #endregion
+            }
+
 
             return instructionCode;
         }
@@ -426,8 +467,13 @@ namespace ConsoleApplication1
             }
             else
             {
-                //TODO: forcei aqui sabendo que só tem essas duas opções no código alvo
-                instructionCode = String.Format("{0} {1}, {2}, {3}", instruction.Text, instruction.GetChild(0).Text, instruction.GetChild(1).Text, instruction.GetChild(2).Text);
+                string vars = "var ";
+                for (int i = 0; i < instruction.ChildCount; i++)
+                {
+                    vars += HandleChild(instruction.GetChild(i)) + (i == (instruction.ChildCount -1) ? "": ",") ;
+                }
+
+                instructionCode = vars;
             }
             
             return instructionCode;
@@ -441,6 +487,9 @@ namespace ConsoleApplication1
         /// <returns></returns>
         public static bool IsFunction(ITree node)
         {
+            if (node == null) 
+                return false;
+
             switch (node.Type)
             {
                 case 113: //Block
