@@ -381,6 +381,9 @@ namespace ConsoleApplication1
         /// </summary>
         /// <param name="instruction"></param>
         /// <returns></returns>
+        /// <remarks>
+        /// Existem dois tipos de nó função: função na raiz e definição de função anonima
+        /// </remarks>
         private string HandleFunctionInstruction(ITree instruction)
         {
             string instructionCode = "";

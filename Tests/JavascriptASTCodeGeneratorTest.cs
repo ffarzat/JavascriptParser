@@ -10,7 +10,7 @@ namespace Tests
     [TestFixture]
     public class JavascriptAstCodeGeneratorTest
     {
-        private const string JsFileWithouComments = @"scriptData_sem_comentarios.js";   //momentNoComments
+        private const string JsFileWithouComments = @"scriptData_sem_comentarios.js";   
         private static string _javascriptTextWithoutComments = "";
         private static CommonTree _tree;
 
@@ -29,7 +29,7 @@ namespace Tests
             #endregion
         }
 
-        //Covers ToString Behavior
+        
         [Test]
         public void ToCodeTest()
         {
@@ -43,6 +43,38 @@ namespace Tests
 
             Assert.AreEqual(originalText, generatedText);
         }
+
+        /// <summary>
+        /// MomentJs Code regenaration
+        /// </summary>
+        [Test]
+        public void ToMomentCodeTest()
+        {
+
+            var momentTextWithoutComments = File.ReadAllText("moment.Js"); //momentNoComments
+
+            #region Build the AST from Js
+            var stream = new ANTLRStringStream(momentTextWithoutComments);
+            var lexer = new ES3Lexer(stream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new ES3Parser(tokenStream);
+            ES3Parser.program_return programReturn = parser.program();
+            var tree = programReturn.Tree as CommonTree;
+            #endregion
+
+            var codeGenerator = new JavascriptAstCodeGenerator(tree);
+            var generatedJsCode = codeGenerator.DoCodeTransformation();
+
+            File.WriteAllText("momentgeneratedJsCode.js", generatedJsCode);
+
+            var originalText = momentTextWithoutComments.Replace(" ", "").Replace("\r\n", "");
+            var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "");
+
+            Assert.AreEqual(originalText, generatedText);
+        }
+
+
+        
 
     }
 }
