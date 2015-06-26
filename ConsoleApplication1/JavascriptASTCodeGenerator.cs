@@ -84,6 +84,9 @@ namespace ConsoleApplication1
                 case 20:
                     instructionCode = HandleInstanceOfInstruction(instruction);
                     break;
+                case 21:
+                    instructionCode = HandleNewInstruction(instruction);
+                    break;
                 case 22:
                     instructionCode = HandleReturnInstruction(instruction);
                     break;
@@ -96,10 +99,19 @@ namespace ConsoleApplication1
                 case 72:
                     instructionCode = HandleLessEqualInstruction(instruction);
                     break;
+                case 73:
+                    instructionCode = HandleLessEqualInstruction(instruction);
+                    break;
                 case 74:
                     instructionCode = HandleLessEqualInstruction(instruction);
                     break;
+                case 75:
+                    instructionCode = HandleEqualInstruction(instruction);
+                    break;
                 case 76:
+                    instructionCode = HandleEqualInstruction(instruction);
+                    break;
+                case 77:
                     instructionCode = HandleEqualInstruction(instruction);
                     break;
                 case 78:
@@ -113,6 +125,9 @@ namespace ConsoleApplication1
                     break;
                 case 84:
                     instructionCode = HandlePlusPlusInstruction(instruction);
+                    break;
+                case 92:
+                    instructionCode = HandleNotInstruction(instruction);
                     break;
                 case 94:
                     instructionCode = HandleAndInstruction(instruction);
@@ -168,6 +183,9 @@ namespace ConsoleApplication1
                 case 126:
                     instructionCode = HandleParamExprInstruction(instruction);
                     break;
+                case 129:
+                    instructionCode = HandlePosInstruction(instruction);
+                    break;
                 case 149:
                     instructionCode = HandleStringLiteral(instruction);
                     break;
@@ -177,6 +195,36 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates POS code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandlePosInstruction(ITree instruction)
+        {
+            return string.Format("+{0}", HandleChild(instruction.GetChild(0)));
+        }
+
+        /// <summary>
+        /// Generates New instruction
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleNewInstruction(ITree instruction)
+        {
+            return string.Format("new {0}", HandleChild(instruction.GetChild(0)));
+        }
+
+        /// <summary>
+        /// Generates Not instruction
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleNotInstruction(ITree instruction)
+        {
+            return string.Format("!{0}", HandleChild(instruction.GetChild(0)));
         }
 
         /// <summary>
@@ -504,9 +552,9 @@ namespace ConsoleApplication1
         private string HandleSumInstruction(ITree instruction)
         {
             string instructionCode = "";
-
+            
             instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
-
+            
             return instructionCode;
         }
 
@@ -560,7 +608,6 @@ namespace ConsoleApplication1
             return returningVal;
         }
 
-
         /// <summary>
         /// Generates IF code
         /// </summary>
@@ -577,14 +624,9 @@ namespace ConsoleApplication1
             string block1Code = "";
             string block2Code = "";
 
-            if (IsFunction(condition))
-                conditionCode = HandleChild(condition);
-
-            if (IsFunction(block1))
-                block1Code = HandleChild(block1);
-
-            if (IsFunction(block2))
-                block2Code = HandleChild(block2);
+            conditionCode = HandleChild(condition);
+            block1Code = HandleChild(block1);
+            block2Code = HandleChild(block2);
 
 
             if (block2Code != "")
