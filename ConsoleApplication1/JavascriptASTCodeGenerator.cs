@@ -123,6 +123,9 @@ namespace ConsoleApplication1
                 case 80:
                     instructionCode = HandleSumInstruction(instruction);
                     break;
+                case 81:
+                    instructionCode = HandleSumInstruction(instruction);
+                    break;
                 case 84:
                     instructionCode = HandlePlusPlusInstruction(instruction);
                     break;
@@ -182,6 +185,9 @@ namespace ConsoleApplication1
                     break;
                 case 126:
                     instructionCode = HandleParamExprInstruction(instruction);
+                    break;
+                case 128:
+                    instructionCode = HandlePlusPlusInstruction(instruction);
                     break;
                 case 129:
                     instructionCode = HandlePosInstruction(instruction);
@@ -295,7 +301,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private string HandlePlusPlusInstruction(ITree instruction)
         {
-            string instructionCode = string.Format("{1}{0}", HandleChild(instruction.GetChild(0)), instruction.Text); //mega estranho... mais blz
+            string instructionCode = string.Format("{0}{1}", HandleChild(instruction.GetChild(0)), instruction.Text); //mega estranho... mais blz
 
             return instructionCode; 
         }

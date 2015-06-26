@@ -26,7 +26,7 @@
 
     function map(arr, fn) {
         var res = [], i;
-        for (i = 0; i < arr.length; ++i) {
+        for (i = 0; i < arr.length; i++) {
             res.push(fn(arr[i], i));
         }
         return res;
@@ -1061,7 +1061,7 @@
         // * if day of month is given, default month and year
         // * if month is given, default only year
         // * if year is given, don't default anything
-        for (i = 0; i < 3 && config._a[i] == null; ++i) {
+        for (i = 0; i < 3 && config._a[i] == null; i++) {
             config._a[i] = input[i] = currentDate[i];
         }
 
@@ -1393,7 +1393,7 @@
             return local__createLocal();
         }
         res = moments[0];
-        for (i = 1; i < moments.length; ++i) {
+        for (i = 1; i < moments.length; i++) {
             if (moments[i][fn](res)) {
                 res = moments[i];
             }
