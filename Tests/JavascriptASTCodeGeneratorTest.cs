@@ -67,7 +67,7 @@ namespace Tests
 
             File.WriteAllText("momentgeneratedJsCode.js", generatedJsCode);
 
-            var originalText = momentTextWithoutComments.Replace(" ", "").Replace("\r\n", "");
+            var originalText = momentTextWithoutComments.Replace(" ", "").Replace("\n", "");
             var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "");
 
             Assert.AreEqual(originalText, generatedText);

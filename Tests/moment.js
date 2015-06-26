@@ -1,9 +1,3 @@
-//! moment.js
-//! version : 2.10.3
-//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
-//! license : MIT
-//! momentjs.com
-
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
@@ -16,8 +10,6 @@
         return hookCallback.apply(null, arguments);
     }
 
-    // This is done to register the method called with moment()
-    // without creating circular dependencies.
     function setHookCallback (callback) {
         hookCallback = callback;
     }
@@ -65,7 +57,7 @@
     }
 
     function defaultParsingFlags() {
-        // We need to deep clone this object.
+        
         return {
             empty           : false,
             unusedTokens    : [],
@@ -171,12 +163,11 @@
 
     var updateInProgress = false;
 
-    // Moment prototype object
+    
     function Moment(config) {
         copyConfig(this, config);
         this._d = new Date(+config._d);
-        // Prevent infinite loop in case updateOffset creates new moment
-        // objects.
+    
         if (updateInProgress === false) {
             updateInProgress = true;
             utils_hooks__hooks.updateOffset(this);
@@ -227,9 +218,7 @@
         return key ? key.toLowerCase().replace('_', '-') : key;
     }
 
-    // pick the locale from the array
-    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
-    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
+    
     function chooseLocale(names) {
         var i = 0, j, next, locale, split;
 
@@ -244,7 +233,7 @@
                     return locale;
                 }
                 if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
-                    //the next array item is better than a shallower substring of this one
+                    
                     break;
                 }
                 j--;
@@ -256,23 +245,19 @@
 
     function loadLocale(name) {
         var oldLocale = null;
-        // TODO: Find a better way to register and load all the locales in Node
+        
         if (!locales[name] && typeof module !== 'undefined' &&
                 module && module.exports) {
             try {
                 oldLocale = globalLocale._abbr;
                 require('./locale/' + name);
-                // because defineLocale currently also sets the global locale, we
-                // want to undo that for lazy loaded locales
                 locale_locales__getSetGlobalLocale(oldLocale);
             } catch (e) { }
         }
         return locales[name];
     }
 
-    // This function will load locale and then set the global locale.  If
-    // no arguments are passed in, it will simply return the current global
-    // locale key.
+    
     function locale_locales__getSetGlobalLocale (key, values) {
         var data;
         if (key) {
@@ -284,7 +269,7 @@
             }
 
             if (data) {
-                // moment.duration._locale = moment._locale = data;
+                
                 globalLocale = data;
             }
         }
@@ -300,18 +285,18 @@
             }
             locales[name].set(values);
 
-            // backwards compat for now: also set the locale
+            
             locale_locales__getSetGlobalLocale(name);
 
             return locales[name];
         } else {
-            // useful for testing
+            
             delete locales[name];
             return null;
         }
     }
 
-    // returns locale data
+    
     function locale_locales__getLocale (key) {
         var locale;
 
@@ -324,7 +309,7 @@
         }
 
         if (!isArray(key)) {
-            //short-circuit everything else
+            
             locale = loadLocale(key);
             if (locale) {
                 return locale;
@@ -383,7 +368,7 @@
         return mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
     }
 
-    // MOMENTS
+    
 
     function getSet (units, value) {
         var unit;
@@ -418,10 +403,7 @@
 
     var formatTokenFunctions = {};
 
-    // token:    'M'
-    // padded:   ['MM', 2]
-    // ordinal:  'Mo'
-    // callback: function () { this.month() + 1 }
+    
     function addFormatToken (token, padded, ordinal, callback) {
         var func = callback;
         if (typeof callback === 'string') {
@@ -471,7 +453,7 @@
         };
     }
 
-    // format date using native date object
+    
     function formatMoment(m, format) {
         if (!m.isValid()) {
             return m.localeData().invalidDate();
@@ -503,24 +485,24 @@
         return format;
     }
 
-    var match1         = /\d/;            //       0 - 9
-    var match2         = /\d\d/;          //      00 - 99
-    var match3         = /\d{3}/;         //     000 - 999
-    var match4         = /\d{4}/;         //    0000 - 9999
-    var match6         = /[+-]?\d{6}/;    // -999999 - 999999
-    var match1to2      = /\d\d?/;         //       0 - 99
-    var match1to3      = /\d{1,3}/;       //       0 - 999
-    var match1to4      = /\d{1,4}/;       //       0 - 9999
-    var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
+    var match1         = /\d/;            
+    var match2         = /\d\d/;          
+    var match3         = /\d{3}/;         
+    var match4         = /\d{4}/;         
+    var match6         = /[+-]?\d{6}/;    
+    var match1to2      = /\d\d?/;         
+    var match1to3      = /\d{1,3}/;       
+    var match1to4      = /\d{1,4}/;       
+    var match1to6      = /[+-]?\d{1,6}/;  
 
-    var matchUnsigned  = /\d+/;           //       0 - inf
-    var matchSigned    = /[+-]?\d+/;      //    -inf - inf
+    var matchUnsigned  = /\d+/;           
+    var matchSigned    = /[+-]?\d+/;      
 
-    var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
+    var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; 
 
-    var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
+    var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; 
 
-    // any word (or two) characters or numbers including two/three word month in arabic.
+    
     var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
 
     var regexes = {};
@@ -539,7 +521,7 @@
         return regexes[token](config._strict, config._locale);
     }
 
-    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+    
     function unescapeFormat(s) {
         return s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
             return p1 || p2 || p3 || p4;
@@ -588,7 +570,7 @@
         return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
     }
 
-    // FORMATTING
+    
 
     addFormatToken('M', ['MM', 2], 'Mo', function () {
         return this.month() + 1;
@@ -602,11 +584,11 @@
         return this.localeData().months(this, format);
     });
 
-    // ALIASES
+    
 
     addUnitAlias('month', 'M');
 
-    // PARSING
+    
 
     addRegexToken('M',    match1to2);
     addRegexToken('MM',   match1to2, match2);
@@ -619,7 +601,7 @@
 
     addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
         var month = config._locale.monthsParse(input, token, config._strict);
-        // if we didn't find a month name, mark the date as invalid.
+        
         if (month != null) {
             array[MONTH] = month;
         } else {
@@ -627,7 +609,7 @@
         }
     });
 
-    // LOCALES
+    
 
     var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
     function localeMonths (m) {
@@ -649,7 +631,7 @@
         }
 
         for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
+            
             mom = create_utc__createUTC([2000, i]);
             if (strict && !this._longMonthsParse[i]) {
                 this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
@@ -659,7 +641,7 @@
                 regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
                 this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
             }
-            // test the regex
+            
             if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
                 return i;
             } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
@@ -670,15 +652,15 @@
         }
     }
 
-    // MOMENTS
+    
 
     function setMonth (mom, value) {
         var dayOfMonth;
 
-        // TODO: Move this out of here!
+        
         if (typeof value === 'string') {
             value = mom.localeData().monthsParse(value);
-            // TODO: Another silent failure?
+            
             if (typeof value !== 'number') {
                 return mom;
             }
@@ -767,7 +749,7 @@
         ['YYYY-DDD', /\d{4}-\d{3}/]
     ];
 
-    // iso time formats and regexes
+    
     var isoTimes = [
         ['HH:mm:ss.SSSS', /(T| )\d\d:\d\d:\d\d\.\d+/],
         ['HH:mm:ss', /(T| )\d\d:\d\d:\d\d/],
@@ -777,7 +759,7 @@
 
     var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
 
-    // date from iso format
+    
     function configFromISO(config) {
         var i, l,
             string = config._i,
@@ -787,7 +769,7 @@
             getParsingFlags(config).iso = true;
             for (i = 0, l = isoDates.length; i < l; i++) {
                 if (isoDates[i][1].exec(string)) {
-                    // match[5] should be 'T' or undefined
+                    
                     config._f = isoDates[i][0] + (match[6] || ' ');
                     break;
                 }
@@ -807,7 +789,7 @@
         }
     }
 
-    // date from iso format or fallback
+    
     function configFromString(config) {
         var matched = aspNetJsonRegex.exec(config._i);
 
