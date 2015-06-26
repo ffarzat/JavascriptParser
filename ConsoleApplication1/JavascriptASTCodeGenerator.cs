@@ -96,6 +96,9 @@ namespace ConsoleApplication1
                 case 28: 
                     instructionCode = HandleVarInstruction(instruction);
                     break;
+                case 30:
+                    instructionCode = HandleWhileInstruction(instruction);
+                    break;
                 case 72:
                     instructionCode = HandleLessEqualInstruction(instruction);
                     break;
@@ -128,6 +131,9 @@ namespace ConsoleApplication1
                     break;
                 case 84:
                     instructionCode = HandlePlusPlusInstruction(instruction);
+                    break;
+                case 85:
+                    instructionCode = HandleMinusMinusInstruction(instruction);
                     break;
                 case 92:
                     instructionCode = HandleNotInstruction(instruction);
@@ -186,6 +192,9 @@ namespace ConsoleApplication1
                 case 126:
                     instructionCode = HandleParamExprInstruction(instruction);
                     break;
+                case 127:
+                    instructionCode = HandleMinusMinusInstruction(instruction);
+                    break;
                 case 128:
                     instructionCode = HandlePlusPlusInstruction(instruction);
                     break;
@@ -201,6 +210,29 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// -- code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleMinusMinusInstruction(ITree instruction)
+        {
+            return string.Format("{0}--", HandleChild(instruction.GetChild(0)));
+        }
+
+        /// <summary>
+        /// While Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleWhileInstruction(ITree instruction)
+        {
+            var condition = HandleChild(instruction.GetChild(0));
+            var blockCode = HandleChild(instruction.GetChild(1));
+
+            return string.Format("while ({0}) {{{1}}}", condition, blockCode);
         }
 
         /// <summary>
@@ -607,6 +639,9 @@ namespace ConsoleApplication1
                     returningVal = false;
                     break;
                 case 18: //If
+                    returningVal = false;
+                    break;
+                case 30: //While
                     returningVal = false;
                     break;
             }
