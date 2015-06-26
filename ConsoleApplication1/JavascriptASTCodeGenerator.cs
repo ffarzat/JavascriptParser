@@ -78,6 +78,9 @@ namespace ConsoleApplication1
                 case 18:
                     instructionCode = HandleIfInstruction(instruction);
                     break;
+                case 20:
+                    instructionCode = HandleInstanceOfInstruction(instruction);
+                    break;
                 case 22:
                     instructionCode = HandleReturnInstruction(instruction);
                     break;
@@ -141,6 +144,20 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates Instance of Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleInstanceOfInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = String.Format("{1} {0} {2}", instruction.Text, HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)));
+
+            return instructionCode;   
         }
 
         /// <summary>
@@ -265,7 +282,7 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            instructionCode = String.Format("return {0}", HandleChild(instruction.GetChild(0)));
+            instructionCode = String.Format("{1} {0}", HandleChild(instruction.GetChild(0)), instruction.Text);
 
             return instructionCode;
         }
@@ -357,7 +374,8 @@ namespace ConsoleApplication1
                 var actualInstruction = instruction.GetChild(i);
 
                 blockCode += "  " + HandleChild(actualInstruction);
-                blockCode += actualInstruction.Type == 18 ? "" : ";"; //se for uma condição em if não colocar ';'
+                blockCode += (actualInstruction.Type == 18 || actualInstruction.Type == 17) ? "" : ";"; //se for uma condição em if não colocar ';'
+                
                 blockCode += Environment.NewLine;
             }
             
