@@ -156,6 +156,15 @@ namespace ConsoleApplication1
                 case 120:
                     instructionCode = HandleForStepInstruction(instruction);
                     break;
+                case 123:
+                    instructionCode = HandleNamedValueInstruction(instruction);
+                    break;
+                case 124:
+                    instructionCode = HandleNegInstruction(instruction);
+                    break;
+                case 125:
+                    instructionCode = HandleObjectInstruction(instruction);
+                    break;
                 case 126:
                     instructionCode = HandleParamExprInstruction(instruction);
                     break;
@@ -168,6 +177,45 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates NEG code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleNegInstruction(ITree instruction)
+        {
+            return string.Format("-{0}", HandleChild(instruction.GetChild(0)));
+        }
+
+        /// <summary>
+        /// Generates dictonary code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleNamedValueInstruction(ITree instruction)
+        {
+            return string.Format("{0} : {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)));
+        }
+
+        /// <summary>
+        /// Generates objects code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleObjectInstruction(ITree instruction)
+        {
+            string instructionCode = "{";
+
+            for (int i = 0; i < instruction.ChildCount; i++)
+            {
+                instructionCode += HandleChild(instruction.GetChild(i));
+                if (i < instruction.ChildCount - 1)
+                    instructionCode += ", \r\n";
+            }
+
+            return instructionCode + "}"; 
         }
 
         /// <summary>
