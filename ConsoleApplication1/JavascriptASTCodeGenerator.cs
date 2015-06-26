@@ -424,9 +424,10 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private string HandleArrayInstruction(ITree instruction)
         {
-            string instructionCode = "";
+            string instructionCode = "[]";
 
-            instructionCode = "[]";
+            if (instruction.ChildCount > 0)
+                instructionCode = string.Format("[{0}]", HandleChild(instruction.GetChild(0).GetChild(0)));
 
             return instructionCode; 
 
