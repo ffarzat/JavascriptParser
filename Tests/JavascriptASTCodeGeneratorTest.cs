@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using ConsoleApplication1;
 using NUnit.Framework;
 using Xebic.Parsers.ES3;
+using unvell.ReoScript;
 
 namespace Tests
 {
@@ -74,7 +76,51 @@ namespace Tests
         }
 
 
-        
+        /// <summary>
+        /// Execute the tests of MomentJs
+        /// </summary>
+        [Test]
+        public void RunTestsFromMomentJs()
+        {
+            var fileToParse = File.ReadAllText("moment.Js"); //momentNoComments
+            var localeFile = "locales.js";
+            var jsqueryFile = "jquery.min.js";
+            var jsTestFile = "tests.js";
+            string fileMomentPath = "momentgeneratedJsCodeForTests.js";
+            var scriptRunning = new ScriptRunningMachine();
+            
+            #region Build the AST from Js
+            var stream = new ANTLRStringStream(fileToParse);
+            var lexer = new ES3Lexer(stream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new ES3Parser(tokenStream);
+            ES3Parser.program_return programReturn = parser.program();
+            var tree = programReturn.Tree as CommonTree;
+            #endregion
 
+            #region Generates the target code
+            var codeGenerator = new JavascriptAstCodeGenerator(tree);
+            var generatedJsCode = codeGenerator.DoCodeTransformation();
+            File.WriteAllText(fileMomentPath, generatedJsCode);
+            #endregion
+
+            /*Entender melhor porque o MomentJs não executa sem esses caras, não servem para nada*/
+            scriptRunning.SetGlobalVariable("global", scriptRunning.GlobalObject);
+            //scriptRunning.SetGlobalVariable("window", scriptRunning.GlobalObject);
+            scriptRunning["factory"] = new NativeFunctionObject("print", (ctx, owner, args) => null);
+
+
+            scriptRunning["window"] = new NativeFunctionObject("window", (ctx, owner, args) => scriptRunning.GlobalObject);
+
+            scriptRunning.AllowDirectAccess = true;
+            scriptRunning.Load(jsqueryFile);
+            scriptRunning.Load(fileMomentPath);
+            scriptRunning.Load(localeFile);
+            //scriptRunning.Load(jsTestFile);
+            
+
+
+        }
+        
     }
 }
