@@ -51,7 +51,7 @@ namespace ConsoleApplication1
             }
             else
             {
-                sb.AppendLine(HandleChild(_tree));
+                sb.AppendLine(HandleChild(_tree) + ";");
             }
 
             return sb.ToString();
@@ -101,6 +101,9 @@ namespace ConsoleApplication1
                     break;
                 case 23:
                     instructionCode = HandleSwitchInstruction(instruction);
+                    break;
+                case 25:
+                    instructionCode = HandleNewInstruction(instruction);
                     break;
                 case 26:
                     instructionCode = HandleTryInstruction(instruction);
@@ -271,16 +274,39 @@ namespace ConsoleApplication1
             var condition = HandleChild(instruction.GetChild(0));
             string casesCode = "";
 
-            for (int i = 1; i < instruction.ChildCount; i++)
+            //there is a dafault node?
+            var defaultInstruction = instruction.GetChild(1).Text == "default";
+            int init = 1;
+            string defaultCode = "";
+
+            #region Default code
+            if (defaultInstruction)
+            {
+                init = 2;
+                
+                var actualInstruction = instruction.GetChild(1);
+                var blockCase = HandleChild(actualInstruction.GetChild(0));
+                
+                blockCase = blockCase == "" ? "" : blockCase + ";";
+
+                defaultCode = string.Format("{0} : \r\n {1}", "default", blockCase);
+            }
+            #endregion
+
+            for (var i = init; i < instruction.ChildCount; i++)
             {
                 var actualInstruction = instruction.GetChild(i);
-                var conditionCase = HandleChild(actualInstruction.GetChild(0));
                 
+                var textInstruction = actualInstruction.Text == "default" ? "default" : "case";
+
+                var conditionCase = HandleChild(actualInstruction.GetChild(0));
                 var blockCase = HandleChild(actualInstruction.GetChild(1));
                 blockCase = blockCase == "" ? "" : blockCase + ";";
 
-                casesCode += string.Format("case {0} : \r\n {1}", conditionCase, blockCase);
+                casesCode += string.Format("{0} {1} : \r\n {2}", textInstruction, conditionCase, blockCase);
             }
+
+            casesCode += defaultCode;
 
             return string.Format("switch ({0}) \r\n {{{1}}}", condition, casesCode);
         }
@@ -430,7 +456,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private string HandleNewInstruction(ITree instruction)
         {
-            return string.Format("new {0}", HandleChild(instruction.GetChild(0)));
+            return string.Format("{0} {1}", instruction.Text, HandleChild(instruction.GetChild(0)));
         }
 
         /// <summary>
