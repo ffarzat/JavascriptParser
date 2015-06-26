@@ -72,6 +72,12 @@ namespace ConsoleApplication1
 
             switch (instruction.Type)
             {
+                case 9:
+                    instructionCode = HandleCatchInstruction(instruction);
+                    break;
+                case 12:
+                    instructionCode = HandleDeleteInstruction(instruction);
+                    break;
                 case 16:
                     instructionCode = HandleForInstruction(instruction);
                     break;
@@ -89,6 +95,9 @@ namespace ConsoleApplication1
                     break;
                 case 22:
                     instructionCode = HandleReturnInstruction(instruction);
+                    break;
+                case 26:
+                    instructionCode = HandleTryInstruction(instruction);
                     break;
                 case 27:
                     instructionCode = HandleTypeOfInstruction(instruction);
@@ -210,6 +219,44 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// Delete code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleDeleteInstruction(ITree instruction)
+        {
+            return string.Format("{0} {1}", instruction.Text, HandleChild(instruction.GetChild(0)));
+        }
+
+        /// <summary>
+        /// Catch code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleCatchInstruction(ITree instruction)
+        {
+            var exceptionCode = HandleChild(instruction.GetChild(0));
+            var blockCode = HandleChild(instruction.GetChild(1));
+
+            return string.Format("catch ({0})\r\n {{{1}}}", exceptionCode, blockCode);
+
+        }
+
+        /// <summary>
+        /// Try code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleTryInstruction(ITree instruction)
+        {
+
+            var blockCode = HandleChild(instruction.GetChild(0));
+            var catchsCode = HandleChild(instruction.GetChild(1));
+            
+            return string.Format("try {{{0}}} \r\n {1}", blockCode, catchsCode);
         }
 
         /// <summary>
@@ -632,6 +679,9 @@ namespace ConsoleApplication1
 
             switch (instruction.Type)
             {
+                case 3: //Catch
+                    returningVal = false;
+                    break;
                 case 16: //For
                     returningVal = false;
                     break;
@@ -639,6 +689,9 @@ namespace ConsoleApplication1
                     returningVal = false;
                     break;
                 case 18: //If
+                    returningVal = false;
+                    break;
+                case 26: //Try
                     returningVal = false;
                     break;
                 case 30: //While
