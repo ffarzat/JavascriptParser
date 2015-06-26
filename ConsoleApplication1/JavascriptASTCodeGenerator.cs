@@ -72,6 +72,9 @@ namespace ConsoleApplication1
 
             switch (instruction.Type)
             {
+                case 16:
+                    instructionCode = HandleForInstruction(instruction);
+                    break;
                 case 17: 
                     instructionCode = HandleFunctionInstruction(instruction);
                     break;
@@ -90,6 +93,9 @@ namespace ConsoleApplication1
                 case 28: 
                     instructionCode = HandleVarInstruction(instruction);
                     break;
+                case 72:
+                    instructionCode = HandleLessEqualInstruction(instruction);
+                    break;
                 case 74:
                     instructionCode = HandleLessEqualInstruction(instruction);
                     break;
@@ -104,6 +110,9 @@ namespace ConsoleApplication1
                     break;
                 case 80:
                     instructionCode = HandleSumInstruction(instruction);
+                    break;
+                case 84:
+                    instructionCode = HandlePlusPlusInstruction(instruction);
                     break;
                 case 94:
                     instructionCode = HandleAndInstruction(instruction);
@@ -123,14 +132,29 @@ namespace ConsoleApplication1
                 case 109:
                     instructionCode = HandleDivideInstruction(instruction);
                     break;
+                case 112:
+                    instructionCode = HandleArrayInstruction(instruction);
+                    break;
                 case 113:
                     instructionCode = HandleBlockInstruction(instruction);
                     break;
                 case 114:
                     instructionCode = HandleByFieldInstruction(instruction);
                     break;
+                case 115:
+                    instructionCode = HandleByIndexdInstruction(instruction);
+                    break;
                 case 116:
                     instructionCode = HandleCallInstruction(instruction);
+                    break;
+                case 118:
+                    instructionCode = HandleChild(instruction.GetChild(0));
+                    break;
+                case 119:
+                    instructionCode = HandleForIterInstruction(instruction);
+                    break;
+                case 120:
+                    instructionCode = HandleForStepInstruction(instruction);
                     break;
                 case 126:
                     instructionCode = HandleParamExprInstruction(instruction);
@@ -144,6 +168,87 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// Generates foreach condition code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleForIterInstruction(ITree instruction)
+        {
+            var condition1 = HandleChild(instruction.GetChild(0));
+            var condition2 = HandleChild(instruction.GetChild(1));
+            return string.Format("{0} in {1}", condition1, condition2);
+        }
+
+        /// <summary>
+        /// Generates array[index] code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleByIndexdInstruction(ITree instruction)
+        {
+            return string.Format("{0}[{1}]", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)));
+        }
+
+        /// <summary>
+        /// Generates ++ code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandlePlusPlusInstruction(ITree instruction)
+        {
+            string instructionCode = string.Format("{1}{0}", HandleChild(instruction.GetChild(0)), instruction.Text); //mega estranho... mais blz
+
+            return instructionCode; 
+        }
+
+        /// <summary>
+        /// Generates FORSTEP code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleForStepInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            for (int i = 0; i < instruction.ChildCount; i++)
+            {
+                instructionCode += HandleChild(instruction.GetChild(i).GetChild(0));
+                if (i < instruction.ChildCount - 1)
+                    instructionCode += "; ";
+            }
+
+            return instructionCode; 
+        }
+
+        /// <summary>
+        /// Generates FOR code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleForInstruction(ITree instruction)
+        {
+            var forstepsCode = HandleChild(instruction.GetChild(0));
+            var blockCode = HandleChild(instruction.GetChild(1));
+
+            return string.Format("for ({0}) {{{1}}}", forstepsCode, blockCode);
+        }
+
+        /// <summary>
+        /// Generates Array Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleArrayInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = "[]";
+
+            return instructionCode; 
+
         }
 
         /// <summary>
@@ -374,13 +479,39 @@ namespace ConsoleApplication1
                 var actualInstruction = instruction.GetChild(i);
 
                 blockCode += "  " + HandleChild(actualInstruction);
-                blockCode += (actualInstruction.Type == 18 || actualInstruction.Type == 17) ? "" : ";"; //se for uma condição em if não colocar ';'
+                blockCode += (IsNecessaryComma(actualInstruction)) ? ";" : "";
                 
                 blockCode += Environment.NewLine;
             }
             
             return blockCode;
         }
+
+        /// <summary>
+        /// Determines or not use comma at EOF
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private bool IsNecessaryComma(ITree instruction)
+        {
+            bool returningVal = true;
+
+            switch (instruction.Type)
+            {
+                case 16: //For
+                    returningVal = false;
+                    break;
+                case 17: //Function
+                    returningVal = false;
+                    break;
+                case 18: //If
+                    returningVal = false;
+                    break;
+            }
+            
+            return returningVal;
+        }
+
 
         /// <summary>
         /// Generates IF code
