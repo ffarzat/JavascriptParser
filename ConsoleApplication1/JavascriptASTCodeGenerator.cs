@@ -272,7 +272,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private string HandleBlockInstruction(ITree instruction)
         {
-            if(instruction != null)
+            if(instruction == null)
                 return "";
 
             string blockCode = "";
@@ -342,23 +342,21 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            object functionName = instruction.GetChild(0).Text == "{ARGS}" ? "" : HandleFunctionInstruction(instruction.GetChild(0));
-            var args = instruction.GetChild(1).Text == "{ARGS}" ? instruction.GetChild(1) : null;
+            string functionName = instruction.GetChild(0).Text;
+            var args = instruction.GetChild(1);
 
             string argsNames = "";
             if (args != null)
             {
                 for (int i = 0; i < args.ChildCount; i++)
                 {
-                    argsNames += args.GetChild(i).Text;
+                    argsNames += HandleChild(args.GetChild(i));
 
                     if (i < (args.ChildCount - 1))
                         argsNames += ", ";
                 }
             }
 
-            var functionIsString = ((ITree )functionName) == null;
-            
             instructionCode = String.Format("{0}({1})", functionName, argsNames);
 
             return instructionCode;
@@ -387,9 +385,9 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            string functionName = instruction.GetChild(0).Text == "{ARGS}" ? "" : instruction.GetChild(0).Text;
-            var args = instruction.GetChild(1).Text == "{ARGS}" ? instruction.GetChild(1): null ;
-            var block = instruction.GetChild(2).Text == "{BLOCK}" ? instruction.GetChild(2) : null;
+            string functionName = instruction.GetChild(0).Text;
+            var args = instruction.GetChild(1);
+            var block = instruction.GetChild(2);
 
             string argsNames = "";
             if (args != null)

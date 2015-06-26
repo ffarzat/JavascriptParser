@@ -10,14 +10,14 @@ namespace Tests
     [TestFixture]
     public class JavascriptAstCodeGeneratorTest
     {
-        private const string JsFileWithouComments = @"momentNoComments.js";
+        private const string JsFileWithouComments = @"scriptData_sem_comentarios.js";   //momentNoComments
         private static string _javascriptTextWithoutComments = "";
         private static CommonTree _tree;
 
         [TestFixtureSetUp]
         public void Setup()
         {
-            _javascriptTextWithoutComments = System.IO.File.ReadAllText(JsFileWithouComments);
+            _javascriptTextWithoutComments = File.ReadAllText(JsFileWithouComments);
 
             #region Build the AST from Js
             var stream = new ANTLRStringStream(_javascriptTextWithoutComments);
