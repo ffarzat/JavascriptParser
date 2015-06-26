@@ -99,6 +99,9 @@ namespace ConsoleApplication1
                 case 22:
                     instructionCode = HandleReturnInstruction(instruction);
                     break;
+                case 23:
+                    instructionCode = HandleSwitchInstruction(instruction);
+                    break;
                 case 26:
                     instructionCode = HandleTryInstruction(instruction);
                     break;
@@ -180,6 +183,9 @@ namespace ConsoleApplication1
                 case 101:
                     instructionCode = HandleMultiplyInstruction(instruction);
                     break;
+                case 102:
+                    instructionCode = HandleModEqualInstruction(instruction);
+                    break;
                 case 109:
                     instructionCode = HandleDivideInstruction(instruction);
                     break;
@@ -243,6 +249,40 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// %= code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleModEqualInstruction(ITree instruction)
+        {
+            return HandleSetInstruction(instruction);
+        }
+
+        /// <summary>
+        /// switch Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleSwitchInstruction(ITree instruction)
+        {
+            var condition = HandleChild(instruction.GetChild(0));
+            string casesCode = "";
+
+            for (int i = 1; i < instruction.ChildCount; i++)
+            {
+                var actualInstruction = instruction.GetChild(i);
+                var conditionCase = HandleChild(actualInstruction.GetChild(0));
+                
+                var blockCase = HandleChild(actualInstruction.GetChild(1));
+                blockCase = blockCase == "" ? "" : blockCase + ";";
+
+                casesCode += string.Format("case {0} : \r\n {1}", conditionCase, blockCase);
+            }
+
+            return string.Format("switch ({0}) \r\n {{{1}}}", condition, casesCode);
         }
 
         /// <summary>
@@ -818,6 +858,9 @@ namespace ConsoleApplication1
                     returningVal = false;
                     break;
                 case 18: //If
+                    returningVal = false;
+                    break;
+                case 23: //switch
                     returningVal = false;
                     break;
                 case 26: //Try
