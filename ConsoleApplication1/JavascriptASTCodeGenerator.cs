@@ -87,6 +87,9 @@ namespace ConsoleApplication1
                 case 18:
                     instructionCode = HandleIfInstruction(instruction);
                     break;
+                case 19:
+                    instructionCode = HandleInInstruction(instruction);
+                    break;
                 case 20:
                     instructionCode = HandleInstanceOfInstruction(instruction);
                     break;
@@ -138,6 +141,9 @@ namespace ConsoleApplication1
                 case 81:
                     instructionCode = HandleSumInstruction(instruction);
                     break;
+                case 82:
+                    instructionCode = HandleMultiplyInstruction(instruction);
+                    break;
                 case 83:
                     instructionCode = HandleModInstruction(instruction);
                     break;
@@ -149,6 +155,9 @@ namespace ConsoleApplication1
                     break;
                 case 92:
                     instructionCode = HandleNotInstruction(instruction);
+                    break;
+                case 93:
+                    instructionCode = HandleTilInstruction(instruction);
                     break;
                 case 94:
                     instructionCode = HandleAndInstruction(instruction);
@@ -167,6 +176,9 @@ namespace ConsoleApplication1
                     break;
                 case 100:
                     instructionCode = HandleSetDecrementalInstruction(instruction);
+                    break;
+                case 101:
+                    instructionCode = HandleMultiplyInstruction(instruction);
                     break;
                 case 109:
                     instructionCode = HandleDivideInstruction(instruction);
@@ -231,6 +243,40 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// In code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleInInstruction(ITree instruction)
+        {
+            return HandleSetInstruction(instruction);
+        }
+
+        /// <summary>
+        /// ~ code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleTilInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = String.Format("{2} {0} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+
+            return instructionCode;
+        }
+
+        /// <summary>
+        /// * code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleMultiplyInstruction(ITree instruction)
+        {
+            return HandleSetInstruction(instruction);
         }
 
         /// <summary>
