@@ -468,8 +468,10 @@ namespace ConsoleApplication1
         {
             string instructionCode = "[]";
 
-            if (instruction.ChildCount > 0)
+            if (instruction.ChildCount == 1)
                 instructionCode = string.Format("[{0}]", HandleChild(instruction.GetChild(0).GetChild(0)));
+            if (instruction.ChildCount == 2)
+                instructionCode = string.Format("[{0}, {1}]", HandleChild(instruction.GetChild(0).GetChild(0)), HandleChild(instruction.GetChild(1).GetChild(0)));
 
             return instructionCode; 
 
