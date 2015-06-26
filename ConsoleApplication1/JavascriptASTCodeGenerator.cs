@@ -138,6 +138,9 @@ namespace ConsoleApplication1
                 case 81:
                     instructionCode = HandleSumInstruction(instruction);
                     break;
+                case 83:
+                    instructionCode = HandleModInstruction(instruction);
+                    break;
                 case 84:
                     instructionCode = HandlePlusPlusInstruction(instruction);
                     break;
@@ -159,8 +162,11 @@ namespace ConsoleApplication1
                 case 98:
                     instructionCode = HandleSetInstruction(instruction);
                     break;
-                case 83:
-                    instructionCode = HandleModInstruction(instruction);
+                case 99:
+                    instructionCode = HandleSetIncrementalInstruction(instruction);
+                    break;
+                case 100:
+                    instructionCode = HandleSetDecrementalInstruction(instruction);
                     break;
                 case 109:
                     instructionCode = HandleDivideInstruction(instruction);
@@ -182,6 +188,9 @@ namespace ConsoleApplication1
                     break;
                 case 118:
                     instructionCode = HandleChild(instruction.GetChild(0));
+                    break;
+                case 117:
+                    instructionCode = HandleCexprInstruction(instruction);
                     break;
                 case 119:
                     instructionCode = HandleForIterInstruction(instruction);
@@ -219,6 +228,39 @@ namespace ConsoleApplication1
             }
 
             return instructionCode;
+        }
+
+        /// <summary>
+        /// -= Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleSetDecrementalInstruction(ITree instruction)
+        {
+            return HandleSetInstruction(instruction);
+        }
+
+        /// <summary>
+        /// += code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleSetIncrementalInstruction(ITree instruction)
+        {
+            return HandleSetInstruction(instruction);
+        }
+
+        /// <summary>
+        /// CEXPR Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleCexprInstruction(ITree instruction)
+        {
+            var condition1 = HandleChild(instruction.GetChild(0));
+            var condition2 = HandleChild(instruction.GetChild(1));
+
+            return string.Format("{0}, {1}", condition1, condition2);
         }
 
         /// <summary>
