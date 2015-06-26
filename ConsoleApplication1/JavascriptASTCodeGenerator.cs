@@ -198,6 +198,9 @@ namespace ConsoleApplication1
                 case 120:
                     instructionCode = HandleForStepInstruction(instruction);
                     break;
+                case 121:
+                    instructionCode = HandleItemInstruction(instruction);
+                    break;
                 case 123:
                     instructionCode = HandleNamedValueInstruction(instruction);
                     break;
@@ -469,12 +472,47 @@ namespace ConsoleApplication1
             string instructionCode = "[]";
 
             if (instruction.ChildCount == 1)
-                instructionCode = string.Format("[{0}]", HandleChild(instruction.GetChild(0).GetChild(0)));
+                instructionCode = string.Format("[{0}]", HandleChild(instruction.GetChild(0)));
+            
             if (instruction.ChildCount == 2)
-                instructionCode = string.Format("[{0}, {1}]", HandleChild(instruction.GetChild(0).GetChild(0)), HandleChild(instruction.GetChild(1).GetChild(0)));
+                instructionCode = string.Format("[{0}, {1}]", HandleChild(instruction.GetChild(0).GetChild(0) ), HandleChild(instruction.GetChild(1).GetChild(0)));
+            
+            if (instruction.ChildCount > 2)
+            {
+                instructionCode = "[";
+
+                for (int i = 0; i < instruction.ChildCount; i++) //para cada item um par.
+                {
+                    instructionCode += HandleItemInstruction(instruction.GetChild(i));
+                    
+                    if (i < instruction.ChildCount - 1)
+                        instructionCode += ",";
+                }
+
+                instructionCode += "]";
+            }
 
             return instructionCode; 
 
+        }
+
+        /// <summary>
+        /// Item code (for array and Dicts)
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleItemInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            if (instruction.ChildCount == 1)
+                instructionCode = string.Format("{0}", HandleChild(instruction.GetChild(0)));
+            
+            if (instruction.ChildCount == 2)
+                instructionCode = string.Format("[{0}, {1}]", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)));
+
+
+            return instructionCode;
         }
 
         /// <summary>

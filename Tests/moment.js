@@ -743,7 +743,7 @@
 
     var from_string__isoRegex = /^\s*(?:[+-]\d{6}|\d{4})-(?:(\d\d-\d\d)|(W\d\d$)|(W\d\d-\d)|(\d\d\d))((T| )(\d\d(:\d\d(:\d\d(\.\d+)?)?)?)?([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
 
-    var isoDates = [
+    var isoDates = [ 
         ['YYYYYY-MM-DD', /[+-]\d{6}-\d{2}-\d{2}/],
         ['YYYY-MM-DD', /\d{4}-\d{2}-\d{2}/],
         ['GGGG-[W]WW-E', /\d{4}-W\d{2}-\d/],
