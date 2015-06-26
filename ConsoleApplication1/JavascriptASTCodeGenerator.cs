@@ -441,7 +441,7 @@ namespace ConsoleApplication1
             else
             {
                 #region When a single call of a named function
-                string functionName = instruction.GetChild(0).Text;
+                string functionName = HandleChild(instruction.GetChild(0));
                 var args = instruction.GetChild(1);
 
                 string argsNames = "";
@@ -529,7 +529,7 @@ namespace ConsoleApplication1
                 {
                     for (int i = 0; i < args.ChildCount; i++)
                     {
-                        argsNames += args.GetChild(i).Text;
+                        argsNames += HandleChild(args.GetChild(i));
 
                         if (i < (args.ChildCount - 1))
                             argsNames += ", ";
