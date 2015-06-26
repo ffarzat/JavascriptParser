@@ -81,6 +81,9 @@ namespace ConsoleApplication1
                 case 22:
                     instructionCode = HandleReturnInstruction(instruction);
                     break;
+                case 27:
+                    instructionCode = HandleTypeOfInstruction(instruction);
+                    break;
                 case 28: 
                     instructionCode = HandleVarInstruction(instruction);
                     break;
@@ -90,6 +93,12 @@ namespace ConsoleApplication1
                 case 76:
                     instructionCode = HandleEqualInstruction(instruction);
                     break;
+                case 78:
+                    instructionCode = Handle3EqualInstruction(instruction);
+                    break;
+                case 79:
+                    instructionCode = Handle3EqualInstruction(instruction);
+                    break;
                 case 80:
                     instructionCode = HandleSumInstruction(instruction);
                     break;
@@ -98,6 +107,9 @@ namespace ConsoleApplication1
                     break;
                 case 95:
                     instructionCode = HandleOrInstruction(instruction);
+                    break;
+                case 96:
+                    instructionCode = HandleQuestionInstruction(instruction);
                     break;
                 case 98:
                     instructionCode = HandleSetInstruction(instruction);
@@ -132,13 +144,55 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
+        /// Generates TypeOf code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleTypeOfInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = String.Format("{0} {1}", instruction.Text, HandleChild(instruction.GetChild(0)));
+
+            return instructionCode; 
+        }
+
+        /// <summary>
+        /// Generates === Code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string Handle3EqualInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
+
+            return instructionCode; 
+        }
+
+        /// <summary>
+        /// Generates ? code
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <returns></returns>
+        private string HandleQuestionInstruction(ITree instruction)
+        {
+            string instructionCode = "";
+
+            instructionCode = String.Format("{0} ? {1} : {2}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), HandleChild(instruction.GetChild(2)));
+
+            return instructionCode;
+        }
+
+        /// <summary>
         /// Generates ByField code
         /// </summary>
         /// <param name="instruction"></param>
         /// <returns></returns>
         private string HandleByFieldInstruction(ITree instruction)
         {
-            return string.Format("{0}.{1}", instruction.GetChild(0).Text, instruction.GetChild(1).Text);
+            return string.Format("{0}.{1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)));
 
         }
 
@@ -363,22 +417,51 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            string functionName = instruction.GetChild(0).Text;
-            var args = instruction.GetChild(1);
-
-            string argsNames = "";
-            if (args != null)
+            if (instruction.GetChild(0).Text == "function")
             {
-                for (int i = 0; i < args.ChildCount; i++)
-                {
-                    argsNames += HandleChild(args.GetChild(i));
+                #region When a call defines a function
+                string functionCode = HandleFunctionInstruction(instruction.GetChild(0));
+                var args = instruction.GetChild(1);
 
-                    if (i < (args.ChildCount - 1))
-                        argsNames += ", ";
+                string argsNames = "";
+                if (args != null)
+                {
+                    for (int i = 0; i < args.ChildCount; i++)
+                    {
+                        argsNames += HandleChild(args.GetChild(i));
+
+                        if (i < (args.ChildCount - 1))
+                            argsNames += ", ";
+                    }
                 }
+
+                instructionCode = String.Format("{0} ({1})", functionCode, argsNames); //rever essa exceção da função raiz... código vem antes!!!
+                #endregion
+            }
+            else
+            {
+                #region When a single call of a named function
+                string functionName = instruction.GetChild(0).Text;
+                var args = instruction.GetChild(1);
+
+                string argsNames = "";
+                if (args != null)
+                {
+                    for (int i = 0; i < args.ChildCount; i++)
+                    {
+                        argsNames += HandleChild(args.GetChild(i));
+
+                        if (i < (args.ChildCount - 1))
+                            argsNames += ", ";
+                    }
+                }
+
+                instructionCode = String.Format("{0}({1})", functionName, argsNames);
+                #endregion
             }
 
-            instructionCode = String.Format("{0}({1})", functionName, argsNames);
+
+            
 
             return instructionCode;
         }
@@ -413,13 +496,24 @@ namespace ConsoleApplication1
             {
                 #region Function defination
 
-                string functionName = "";
-                var args = "";
+                var args = instruction.GetChild(0);
                 var block = instruction.GetChild(1);
+
+                string argsNames = "";
+                if (args != null)
+                {
+                    for (int i = 0; i < args.ChildCount; i++)
+                    {
+                        argsNames += HandleChild(args.GetChild(i));
+
+                        if (i < (args.ChildCount - 1))
+                            argsNames += ", ";
+                    }
+                }
 
                 string blockCode = HandleBlockInstruction(block);
 
-                instructionCode = String.Format("{0}", blockCode);
+                instructionCode = String.Format("function ({0}) {{{1}}}", argsNames, blockCode);
                 #endregion
 
             }
