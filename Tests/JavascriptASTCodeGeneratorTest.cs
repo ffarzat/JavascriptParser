@@ -40,8 +40,8 @@ namespace Tests
 
             File.WriteAllText("generatedJsCode.js", generatedJsCode);
 
-            var originalText = _javascriptTextWithoutComments.Replace(" ", "").Replace("\r\n", "");
-            var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "");
+            var originalText = _javascriptTextWithoutComments.Replace(" ", "").Replace("\r\n", "").Replace("\r", "");
+            var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "").Replace("\r", "");
 
             Assert.AreEqual(originalText, generatedText);
         }
@@ -69,8 +69,8 @@ namespace Tests
 
             File.WriteAllText("momentgeneratedJsCode.js", generatedJsCode);
 
-            var originalText = momentTextWithoutComments.Replace(" ", "").Replace("\n", "").Replace("\t", "");
-            var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "");
+            var originalText = momentTextWithoutComments.Replace(" ", "").Replace("\n", "").Replace("\t", "").Replace("\r", "");
+            var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "").Replace("\r", "");
 
             Assert.AreEqual(originalText, generatedText);
         }
@@ -108,7 +108,6 @@ namespace Tests
             scriptRunning.SetGlobalVariable("global", scriptRunning.GlobalObject);
             //scriptRunning.SetGlobalVariable("window", scriptRunning.GlobalObject);
             scriptRunning["factory"] = new NativeFunctionObject("print", (ctx, owner, args) => null);
-
 
             scriptRunning["window"] = new NativeFunctionObject("window", (ctx, owner, args) => scriptRunning.GlobalObject);
 
