@@ -86,6 +86,7 @@ namespace Tests
             var localeFile = "locales.js";
             var jsqueryFile = "jquery.min.js";
             var jsTestFile = "tests.js";
+            var jsRequire = "require.js";
             string fileMomentPath = "momentgeneratedJsCodeForTests.js";
             var scriptRunning = new ScriptRunningMachine();
             
@@ -111,10 +112,17 @@ namespace Tests
 
             scriptRunning["window"] = new NativeFunctionObject("window", (ctx, owner, args) => scriptRunning.GlobalObject);
 
+            scriptRunning["print"] = new NativeFunctionObject("print", (ctx, owner, args) =>
+            {
+                Console.WriteLine(args[0]);
+                return null;
+            });
+
             scriptRunning.AllowDirectAccess = true;
             scriptRunning.Load(jsqueryFile);
+            scriptRunning.Load(jsRequire);
             scriptRunning.Load(fileMomentPath);
-            scriptRunning.Load(localeFile);
+            //scriptRunning.Load(localeFile);
             //scriptRunning.Load(jsTestFile);
             
 

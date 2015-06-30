@@ -82,6 +82,9 @@
     <Content Include="moment.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="require.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="scriptData.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

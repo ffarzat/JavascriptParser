@@ -24,3 +24,4 @@ D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\jquery.min.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\locales.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\tests.js
+D:\GitHub\JavascriptParser\Tests\bin\Debug\require.js
