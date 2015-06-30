@@ -86,7 +86,7 @@ namespace Tests
             var localeFile = "locales.js";
             var jsqueryFile = "jquery.min.js";
             var jsTestFile = "tests.js";
-            var jsRequire = "require.js";
+            var jsRequire = "r.js";
             string fileMomentPath = "momentgeneratedJsCodeForTests.js";
             var scriptRunning = new ScriptRunningMachine();
             
