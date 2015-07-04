@@ -1,11 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using ConsoleApplication1;
 using NUnit.Framework;
 using Xebic.Parsers.ES3;
-using unvell.ReoScript;
+
 
 namespace Tests
 {
@@ -84,11 +83,8 @@ namespace Tests
         {
             var fileToParse = File.ReadAllText("moment.Js"); //momentNoComments
             var localeFile = "locales.js";
-            var jsqueryFile = "jquery.min.js";
             var jsTestFile = "tests.js";
-            var jsRequire = "r.js";
             string fileMomentPath = "momentgeneratedJsCodeForTests.js";
-            var scriptRunning = new ScriptRunningMachine();
             
             #region Build the AST from Js
             var stream = new ANTLRStringStream(fileToParse);
@@ -105,27 +101,11 @@ namespace Tests
             File.WriteAllText(fileMomentPath, generatedJsCode);
             #endregion
 
-            /*Entender melhor porque o MomentJs não executa sem esses caras, não servem para nada*/
-            scriptRunning.SetGlobalVariable("global", scriptRunning.GlobalObject);
-            //scriptRunning.SetGlobalVariable("window", scriptRunning.GlobalObject);
-            scriptRunning["factory"] = new NativeFunctionObject("print", (ctx, owner, args) => null);
-
-            scriptRunning["window"] = new NativeFunctionObject("window", (ctx, owner, args) => scriptRunning.GlobalObject);
-
-            scriptRunning["print"] = new NativeFunctionObject("print", (ctx, owner, args) =>
-            {
-                Console.WriteLine(args[0]);
-                return null;
-            });
-
-            scriptRunning.AllowDirectAccess = true;
-            scriptRunning.Load(jsqueryFile);
-            scriptRunning.Load(jsRequire);
-            scriptRunning.Load(fileMomentPath);
-            //scriptRunning.Load(localeFile);
-            //scriptRunning.Load(jsTestFile);
-            
-
+            var engine = new Jurassic.ScriptEngine();
+            engine.ExecuteFile(fileMomentPath);
+            engine.ExecuteFile(localeFile);
+            engine.ExecuteFile("qunit-1.18.0.js");
+            engine.ExecuteFile(jsTestFile);
 
         }
         
