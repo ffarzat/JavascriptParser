@@ -302,7 +302,7 @@ namespace AForge.Genetic
 		{
 		    Refresh();
 			Crossover( );
-			Mutate( );
+			//Mutate( );
 		    Delete();
 			Selection( );
 

@@ -18,9 +18,10 @@ namespace ConsoleApplication1
     public class Program
     {
         private const string JsFile = @"moment.js";
-        private const string JsFileTest = @"tests.js";
+        private const string JsFileTest = @"TestMomentSingle.js"; //tests.js
         private const string NomeFuncaoOtimizar = "diff"; //escolhi pelo número de linhas numa rapida olhada
         private static DirectoryInfo _dirinfo = null;
+        private const string QunitFile = "qunit-1.18.0.js";
 
         private const int PopulationSize = 10;
         private const int Generations = 50;
@@ -127,7 +128,7 @@ namespace ConsoleApplication1
             #endregion
 
             #region Faz o setup da população inicial
-            IFitnessFunction fitness = new JavascriptFitness(ExecutionPath, JsFileTest);
+            IFitnessFunction fitness = new JavascriptFitness(ExecutionPath, JsFileTest, QunitFile);
 
             ISelectionMethod metodoSelecao = new EliteSelection();
 

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using AForge.Genetic;
+using Jurassic;
 using unvell.ReoScript;
 
 namespace ConsoleApplication1
@@ -16,17 +17,33 @@ namespace ConsoleApplication1
         /// <summary>
         /// Path for generate the target code
         /// </summary>
-        private readonly string _pathToExecution;
+        private string _pathToExecution;
 
         /// <summary>
         /// Dir of this run
         /// </summary>
-        private DirectoryInfo dirOfRun;
+        private DirectoryInfo _dirOfRun;
 
         /// <summary>
         /// Path to test script
         /// </summary>
         private string _scriptTestPtah;
+
+        /// <summary>
+        /// Jurassic.ScriptEngine to run javascript
+        /// </summary>
+        private ScriptEngine _engine;
+
+        /// <summary>
+        /// QUnit path
+        /// </summary>
+        private string _qunitPath;
+
+        /// <summary>
+        /// Alert delegate
+        /// </summary>
+        /// <param name="message"></param>
+        private delegate void DAlertDelegate(string message);
 
         /// <summary>
         /// Do the setup for a future execution
@@ -35,14 +52,82 @@ namespace ConsoleApplication1
         {
             _pathToExecution = pathToExecution;
             _scriptTestPtah = scriptTestPtah;
+            _engine= new ScriptEngine();
+            DirectorySetup(pathToExecution);
+        }
+
+
+        /// <summary>
+        /// Do the setup for a future execution
+        /// </summary>
+        public JavascriptFitness(string pathToExecution, string scriptTestPtah, string qunitPath)
+        {
+            _pathToExecution = pathToExecution;
+            _scriptTestPtah = scriptTestPtah;
+            _qunitPath = qunitPath;
+
+            _engine = new ScriptEngine();
+            DirectorySetup(pathToExecution);
+            //LoadQunitAndTests();
+        }
+
+        /// <summary>
+        /// Loads Once a Qunit JsFile
+        /// </summary>
+        private void LoadQunitAndTests()
+        {
+            _engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
+            _engine.ExecuteFile(_qunitPath);
+            #region registra os retornos dos testes
+            _engine.Execute(@"   var total, sucess, fail, time;
+                                    QUnit.done(function( details ) {
+                                    //alert('=============================================');
+                                    //alert('Total:' + details.total);
+                                    //alert('Falha:' + details.failed);
+                                    //alert('Sucesso:' + details.passed);
+                                    //alert('Tempo:' + details.runtime);
+
+                                    total = details.total;
+                                    sucess = details.passed;
+                                    fail = details.failed;
+                                    time = details.runtime;
+
+                                });
+
+                                /*
+                                QUnit.testDone(function( details ) {
+                                    alert('Modulo:' + details.module);
+                                    alert('Teste:' + details.name);
+                                    alert(' Falha:' + details.failed);
+                                    alert(' Total:' + details.total);
+                                    alert(' Tempo:' + details.duration);
+                                });
+                                */
+                                QUnit.config.autostart = false;
+                                QUnit.config.ignoreGlobalErrors = true;
+                        ");
+            #endregion
+
+            _engine.ExecuteFile(_scriptTestPtah);
+
+            _engine.Execute(@"QUnit.load();");
+        }
+
+        /// <summary>
+        /// Cleanup or Creates the target directory for run
+        /// </summary>
+        /// <param name="pathToExecution"></param>
+        private void DirectorySetup(string pathToExecution)
+        {
             var dirInfo = new DirectoryInfo(_pathToExecution);
 
             #region setup directory
+
             if (!dirInfo.Exists)
                 dirInfo.Create();
-            
-            dirOfRun = new DirectoryInfo(pathToExecution + "/" + DateTime.Now.ToString("yyyy_MM_dd"));
-            dirOfRun.Create();
+
+            _dirOfRun = new DirectoryInfo(pathToExecution + "/" + DateTime.Now.ToString("yyyy_MM_dd"));
+            _dirOfRun.Create();
 
             #endregion
         }
@@ -54,16 +139,15 @@ namespace ConsoleApplication1
         {
             DirectoryInfo directoryForIndividual = null;
             double fitness = double.MaxValue;
-            var scriptRunning = new ScriptRunningMachine();
-
+            
             #region setup a directory for this individual?
-            var createNewDirectoryForGeneration = dirOfRun.GetDirectories().FirstOrDefault(d => d.Name == chromosome.GenerationId.ToString(CultureInfo.InvariantCulture)) == null;
+            var createNewDirectoryForGeneration = _dirOfRun.GetDirectories().FirstOrDefault(d => d.Name == chromosome.GenerationId.ToString(CultureInfo.InvariantCulture)) == null;
 
             if (createNewDirectoryForGeneration)
-                dirOfRun.CreateSubdirectory(chromosome.GenerationId.ToString(CultureInfo.InvariantCulture));
+                _dirOfRun.CreateSubdirectory(chromosome.GenerationId.ToString(CultureInfo.InvariantCulture));
 
             directoryForIndividual =
-                dirOfRun.GetDirectories()
+                _dirOfRun.GetDirectories()
                         .FirstOrDefault(d => d.Name == chromosome.GenerationId.ToString(CultureInfo.InvariantCulture));
 
             #endregion
@@ -76,7 +160,6 @@ namespace ConsoleApplication1
                 var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Tree);
                 string generatedJsCode = codeGenerator.DoCodeTransformation();
                 File.WriteAllText(fileName, generatedJsCode);
-                var compiledJs = scriptRunning.Compile(generatedJsCode);
             }
             catch (Exception)
             {
@@ -89,50 +172,47 @@ namespace ConsoleApplication1
             #region Executar os testes no novo Js (medindo tempo)
             var sw = new Stopwatch();
             sw.Start();
-            
-            scriptRunning.AllowDirectAccess = true;
-            scriptRunning.Load(fileName);
-           
-            /*Meu macete pessoal*/
-            scriptRunning["print"] = new NativeFunctionObject("print", (ctx, owner, args) =>
-            {
-                //Console.WriteLine(args[0]);
-                System.Threading.Thread.Sleep(10); //dorme um segundo. Se não disparar essa função vai ser mais rápido
-                return null;
-            });
 
+            double total, sucess, fail, time;
+            Console.WriteLine("=====================================");
+            Console.WriteLine(chromosome.Id);
             try
             {
-                scriptRunning.Run(new FileInfo(_scriptTestPtah));
+                _engine = new ScriptEngine();
+                LoadQunitAndTests();
+                _engine.ExecuteFile(fileName);
+                _engine.Execute(@"QUnit.start();");
+
+                total = _engine.GetGlobalValue<double>("total");
+                sucess = _engine.GetGlobalValue<double>("sucess");
+                fail = _engine.GetGlobalValue<double>("fail");
+                time = _engine.GetGlobalValue<double>("time");
+
             }
-            catch (Exception)
+            catch (JavaScriptException ex)
             {
+                Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
                 return fitness;
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return fitness;
+            }
+
 
             sw.Stop();
             
             //Console.WriteLine("Fitness {0} segundos", sw.Elapsed.Seconds);
 
-            int totalTestok = 0;
+            double totalTestok = 207;// 39287;
 
-            if (scriptRunning.GetGlobalVariable("stringData1") != null && "3/5/2015" == scriptRunning["stringData1"].ToString())
-                totalTestok += 1;
-            if (scriptRunning.GetGlobalVariable("stringData2") != null && "4/5/2015" == scriptRunning["stringData2"].ToString())
-                totalTestok += 1;
-            if (scriptRunning.GetGlobalVariable("stringData3") != null && "5/5/2015" == scriptRunning["stringData3"].ToString())
-                totalTestok += 1;
-            if (scriptRunning.GetGlobalVariable("stringData4") != null && "6/5/2015" == scriptRunning["stringData4"].ToString())
-                totalTestok += 1;
-            if (scriptRunning.GetGlobalVariable("stringData5") != null && "7/5/2015" == scriptRunning["stringData5"].ToString())
-                totalTestok += 1;
-
-            if(totalTestok == 5)
+            if (totalTestok.Equals(total))
                 fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
 
             #endregion
             
-            //Console.WriteLine("Fitness {0}", fitness);
+            Console.WriteLine("Fitness={0}", fitness);
             return fitness;
         }
 
