@@ -3,6 +3,8 @@ using System.IO;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using ConsoleApplication1;
+using Jurassic;
+using Jurassic.Library;
 using NUnit.Framework;
 using Xebic.Parsers.ES3;
 
@@ -82,52 +84,93 @@ namespace Tests
         [Test]
         public void RunTestsFromMomentJs()
         {
-            const string localeFile = "locales.js";
             const string jsTestFile = "tests.js";
-            const string envJs = "";
             const string qunitFile = "qunit-1.18.0.js";
-            const string fileMomentPath = "moment.js";
+            const string fileMomentPath = "moment-with-locales.js";
             
             var engine = new Jurassic.ScriptEngine();
-            
             engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
 
-            //engine.ExecuteFile(envJs);
             engine.ExecuteFile(fileMomentPath);
-            engine.ExecuteFile(localeFile);
             engine.ExecuteFile(qunitFile);
-            //engine.ExecuteFile(jsTestFile);
+            engine.ExecuteFile(jsTestFile);
+
+            #region Debug of tests
+
+//            try
+//            {
+//                engine.Execute(@"   moment.locale('af');
+//                                module('unit tests');
+//
+//                test('long years', function (assert) {
+//                    assert.equal(moment.utc().year(2).format('YYYYYY'), '+000002', 'small year with YYYYYY');
+//                    assert.equal(moment.utc().year(2012).format('YYYYYY'), '+002012', 'regular year with YYYYYY');
+//                    assert.equal(moment.utc().year(20123).format('YYYYYY'), '+020123', 'big year with YYYYYY');
+//            /*
+//                    assert.equal(moment.utc().year(-1).format('YYYYYY'), '-000001', 'small negative year with YYYYYY');
+//                    assert.equal(moment.utc().year(-2012).format('YYYYYY'), '-002012', 'negative year with YYYYYY');
+//                    assert.equal(moment.utc().year(-20123).format('YYYYYY'), '-020123', 'big negative year with YYYYYY');
+//            */	
+//                });
+//
+//            ");
 
 
+//            }
+//            catch (JavaScriptException ex)
+//            {
+//                Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
+//            }
+            
+            #endregion
 
-            engine.Execute(@"moment.locale('af');");
+            try
+            {
+                
+                
+                
+                #region registra os retornos dos testes
+                engine.Execute(@"   QUnit.done(function( details ) {
+                                    alert('=============================================');
+                                    alert('Total:' + details.total);
+                                    alert('Falha:' + details.failed);
+                                    alert('Sucesso:' + details.passed);
+                                    alert('Tempo:' + details.runtime);
+                                });
 
 
-            engine.Execute(@"   QUnit.done(function( details ) {
-                                    alert(details.total);
-                                    alert(details.failed);
-                                    alert(details.passed);
-                                    alert(details.runtime);
+                                QUnit.testDone(function( details ) {
+                                    alert('Modulo:' + details.module);
+                                    alert('Teste:' + details.name);
+                                    alert(' Falha:' + details.failed);
+                                    alert(' Total:' + details.total);
+                                    alert(' Tempo:' + details.duration);
                                 });
 
                                 QUnit.config.autostart = false;
-
+                                QUnit.config.ignoreGlobalErrors = true;
                         ");
+                #endregion
+
+                engine.Execute(@"   //moment.locale('pt-br'); 
+                                    //alert(moment('Maio', 'MMM').month());
+                                    QUnit.load();
+                                    QUnit.start();
+                ");
+            }
+            catch (JavaScriptException ex)
+            {
+                Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
 
 
-            engine.Execute(@"   
-                                test('parse', function (assert) {
-                                        assert.equal(moment([2011, 0, 1]).format('DDDo'), '1ste');
-                                   
-                                });
 
-                                QUnit.load();
-                                QUnit.start();
-                                
-                            ");
 
-            
-            
         }
         
         private delegate void DAlertDelegate(string message);

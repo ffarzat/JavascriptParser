@@ -29,3 +29,5 @@ D:\GitHub\JavascriptParser\Tests\bin\Debug\Jurassic.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\qunit-1.18.0.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\core-test.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\tests.js
+D:\GitHub\JavascriptParser\Tests\bin\Debug\moment-with-locales.js
+D:\GitHub\JavascriptParser\Tests\bin\Debug\global.js
