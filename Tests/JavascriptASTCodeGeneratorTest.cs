@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using ConsoleApplication1;
@@ -81,33 +82,57 @@ namespace Tests
         [Test]
         public void RunTestsFromMomentJs()
         {
-            var fileToParse = File.ReadAllText("moment.Js"); //momentNoComments
-            var localeFile = "locales.js";
-            var jsTestFile = "tests.js";
-            string fileMomentPath = "momentgeneratedJsCodeForTests.js";
+            const string localeFile = "locales.js";
+            const string jsTestFile = "tests.js";
+            const string envJs = "";
+            const string qunitFile = "qunit-1.18.0.js";
+            const string fileMomentPath = "moment.js";
             
-            #region Build the AST from Js
-            var stream = new ANTLRStringStream(fileToParse);
-            var lexer = new ES3Lexer(stream);
-            var tokenStream = new CommonTokenStream(lexer);
-            var parser = new ES3Parser(tokenStream);
-            ES3Parser.program_return programReturn = parser.program();
-            var tree = programReturn.Tree as CommonTree;
-            #endregion
-
-            #region Generates the target code
-            var codeGenerator = new JavascriptAstCodeGenerator(tree);
-            var generatedJsCode = codeGenerator.DoCodeTransformation();
-            File.WriteAllText(fileMomentPath, generatedJsCode);
-            #endregion
-
             var engine = new Jurassic.ScriptEngine();
+            
+            engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
+
+            //engine.ExecuteFile(envJs);
             engine.ExecuteFile(fileMomentPath);
             engine.ExecuteFile(localeFile);
-            engine.ExecuteFile("qunit-1.18.0.js");
-            engine.ExecuteFile(jsTestFile);
+            engine.ExecuteFile(qunitFile);
+            //engine.ExecuteFile(jsTestFile);
 
+
+
+            engine.Execute(@"moment.locale('af');");
+
+
+            engine.Execute(@"   QUnit.done(function( details ) {
+                                    alert(details.total);
+                                    alert(details.failed);
+                                    alert(details.passed);
+                                    alert(details.runtime);
+                                });
+
+                                QUnit.config.autostart = false;
+
+                        ");
+
+
+            engine.Execute(@"   
+                                test('parse', function (assert) {
+                                        assert.equal(moment([2011, 0, 1]).format('DDDo'), '1ste');
+                                   
+                                });
+
+                                QUnit.load();
+                                QUnit.start();
+                                
+                            ");
+
+            
+            
         }
         
+        private delegate void DAlertDelegate(string message);
     }
+
+
+
 }
