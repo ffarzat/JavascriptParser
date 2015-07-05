@@ -17,9 +17,9 @@ namespace ConsoleApplication1
     /// </summary>
     public class Program
     {
-        private const string JsFile = @"scriptData.js";
-        private const string JsFileTest = @"scriptDataTest.js";
-        private const string NomeFuncaoOtimizar = "AvancaDias";
+        private const string JsFile = @"moment.js";
+        private const string JsFileTest = @"tests.js";
+        private const string NomeFuncaoOtimizar = "diff"; //escolhi pelo número de linhas numa rapida olhada
         private static DirectoryInfo _dirinfo = null;
 
         private const int PopulationSize = 10;

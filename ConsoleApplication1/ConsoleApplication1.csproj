@@ -36,6 +36,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Jurassic">
+      <HintPath>..\Refs\Jurassic.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />

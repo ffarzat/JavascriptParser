@@ -1181,14 +1181,21 @@ namespace ConsoleApplication1
         /// <returns></returns>
         public static ITree FindFunctionTree(CommonTree tree, string nomeFuncaoOtimizar)
         {
-
             for (int i = 0; i < tree.ChildCount; i++)
             {
-                var funcaoAtual = tree.GetChild(i);
-                var nome = funcaoAtual.GetChild(0) == null ? "" : funcaoAtual.GetChild(0).Text;
+                ITree funcaoAtual = tree.GetChild(i);
+                bool tipo = funcaoAtual.Type == 17 ;
+                string nome = funcaoAtual.GetChild(0) == null ? "" : funcaoAtual.GetChild(0).Text;
+                
 
-                if (nome == nomeFuncaoOtimizar)
+                if (tipo && nome == nomeFuncaoOtimizar) 
                     return funcaoAtual;
+                
+                var neto = FindFunctionTree(funcaoAtual as CommonTree, nomeFuncaoOtimizar);
+
+                if (neto != null)
+                    return neto;
+
             }
 
             return null;
