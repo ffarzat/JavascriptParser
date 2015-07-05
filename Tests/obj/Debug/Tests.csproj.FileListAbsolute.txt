@@ -21,13 +21,6 @@ D:\GitHub\JavascriptParser\Tests\bin\Debug\nunit.framework.xml
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.dll
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.pdb
-D:\GitHub\JavascriptParser\Tests\bin\Debug\jquery.min.js
-D:\GitHub\JavascriptParser\Tests\bin\Debug\locales.js
-D:\GitHub\JavascriptParser\Tests\bin\Debug\require.js
-D:\GitHub\JavascriptParser\Tests\bin\Debug\r.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\Jurassic.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\qunit-1.18.0.js
-D:\GitHub\JavascriptParser\Tests\bin\Debug\core-test.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\tests.js
-D:\GitHub\JavascriptParser\Tests\bin\Debug\moment-with-locales.js
-D:\GitHub\JavascriptParser\Tests\bin\Debug\global.js
