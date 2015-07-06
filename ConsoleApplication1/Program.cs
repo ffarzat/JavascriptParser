@@ -172,7 +172,7 @@ namespace ConsoleApplication1
 
 
             var nppDir = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Notepad++", null, null);
-            var nppExePath = Path.Combine(nppDir, "Notepad++.exe");
+            var nppExePath = Path.Combine(nppDir + "", "Notepad++.exe");
             var nppReadmePath = population.BestChromosome.File;
             var line = 20;
             var sb = new StringBuilder();
