@@ -205,9 +205,7 @@ namespace ConsoleApplication1
             
             //Console.WriteLine("Fitness {0} segundos", sw.Elapsed.Seconds);
 
-            double totalTestok = 69;// 39287;
-
-            if (totalTestok.Equals(total))
+            if (total.Equals(sucess)) //passou em todos
                 fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
 
             #endregion
