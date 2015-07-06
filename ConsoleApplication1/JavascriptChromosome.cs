@@ -289,24 +289,32 @@ namespace ConsoleApplication1
         /// <summary>
         /// Crossover operator
         /// </summary>
+        /// <remarks>
+        /// Do the crossover (function) between pair
+        /// </remarks>
         public  void Crossover(IChromosome pair)
         {
-            //var javascriptChromosomePair = (JavascriptChromosome)pair;
-            //int cutPointInstructionDad = Rand.Next(0, javascriptChromosomePair.Root.Children.Count); //at line instruction
-            //int cutPointInstructionMom = Rand.Next(0, _root.Children.Count); //at line instruction
+            var javascriptChromosomePair = (JavascriptChromosome)pair;
+            
+            bool sinal = true;
+            //Try to cross a function node
+            while (sinal)
+            {
+                int dadPoint = Rand.Next(0, _function.ChildCount); //at line instruction
+                int momPoint = Rand.Next(0, javascriptChromosomePair.Function.ChildCount); //at line instruction
 
-            //var functionNodeDad = javascriptChromosomePair.Root.Children[cutPointInstructionDad] as GPTreeNode;
-            //var functionNodeMom = javascriptChromosomePair.Root.Children[cutPointInstructionMom] as GPTreeNode;
+                var functionNodeDad = Function.GetChild(dadPoint);
+                var functionNodeMom = javascriptChromosomePair.Function.GetChild(momPoint);
 
-            //int cutPointDad = Rand.Next(0, functionNodeDad.Children.Count); //at instruction
-            //int cutPointMom = Rand.Next(0, functionNodeMom.Children.Count); //at instruction
+                if (JavascriptAstCodeGenerator.IsFunction(functionNodeDad) && (JavascriptAstCodeGenerator.IsFunction(functionNodeMom)))
+                {
+                    Function.ReplaceChildren(dadPoint, dadPoint, functionNodeMom);
+                    javascriptChromosomePair.Function.ReplaceChildren(momPoint, momPoint, functionNodeDad);
+                    sinal = false;
+                }
 
-            //var functionToCrossDad = functionNodeDad.Children[cutPointDad] as GPTreeNode;
-            //var functionToCrossMom = functionNodeMom.Children[cutPointMom] as GPTreeNode;
+            }
 
-            ////Change one per another one
-            //functionNodeDad.Children[cutPointDad] = functionToCrossMom;
-            //functionNodeMom.Children[cutPointMom] = functionToCrossDad;
         }
 
         /// <summary>
