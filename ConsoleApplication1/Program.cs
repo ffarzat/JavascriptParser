@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,14 +18,14 @@ namespace ConsoleApplication1
     /// </summary>
     public class Program
     {
-        private const string JsFile = @"moment.js";
-        private const string JsFileTest = @"TestMomentSingle.js"; //tests.js
-        private const string NomeFuncaoOtimizar = "diff"; //escolhi pelo número de linhas numa rapida olhada
-        private static DirectoryInfo _dirinfo = null;
-        private const string QunitFile = "qunit-1.18.0.js";
+        private static string JsFile = "";
+        private static string JsFileTest = ""; 
+        private static string TargetFunction = ""; 
+        private static string QunitFile = "";
+        private static int PopulationSize = 0;
+        private static int Generations = 0;
 
-        private const int PopulationSize = 10;
-        private const int Generations = 50;
+        private static DirectoryInfo _dirinfo = null;
         private static readonly string ExecutionPath = Environment.CurrentDirectory;
 
 
@@ -52,6 +53,14 @@ namespace ConsoleApplication1
         /// </summary>
         private static CommonTree Setup()
         {
+
+            JsFile = ConfigurationManager.AppSettings["JsFile"];
+            JsFileTest = ConfigurationManager.AppSettings["JsFileTest"];
+            TargetFunction = ConfigurationManager.AppSettings["TargetFunction"];
+            QunitFile = ConfigurationManager.AppSettings["QunitFile"];
+            PopulationSize = Convert.ToInt32(ConfigurationManager.AppSettings["PopulationSize"]);
+            Generations = Convert.ToInt32(ConfigurationManager.AppSettings["Generations"]);
+
             var sw = new Stopwatch();
             sw.Start();
             CommonTree tree = null;
@@ -114,16 +123,16 @@ namespace ConsoleApplication1
             sw.Start();
 
             #region Encontra a função alvo da otimização, recupera o bloco de instruções
-            var funcaoOtimizar = JavascriptAstCodeGenerator.FindFunctionTree(tree, NomeFuncaoOtimizar);
+            var funcaoOtimizar = JavascriptAstCodeGenerator.FindFunctionTree(tree, TargetFunction);
 
             if (funcaoOtimizar == null)
-                throw new ApplicationException(String.Format("Função não encontrada: {0}", NomeFuncaoOtimizar));
+                throw new ApplicationException(String.Format("Função não encontrada: {0}", TargetFunction));
 
             #endregion
 
             #region Monta o primeiro individuo
 
-            var ancestral = new JavascriptChromosome(tree, NomeFuncaoOtimizar);
+            var ancestral = new JavascriptChromosome(tree, TargetFunction);
             
             #endregion
 
