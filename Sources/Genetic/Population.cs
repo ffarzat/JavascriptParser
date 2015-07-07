@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -318,15 +319,23 @@ namespace AForge.Genetic
 	    private void ExecuteFitEvaluation(bool isFirstTime)
         {
             var sw = new Stopwatch();
-            var taskList = population.Where(c => c.Fitness.Equals(0)).Select(c=> new Task(() => c.Evaluate(fitnessFunction))).ToList();
-            Console.WriteLine("{2}valiando {0} Chromossomos na geração {1}", taskList.Count, GenerationCount, (isFirstTime == true? "A" : "Rea"));
-
+            var taskList = population.Where(c => c.Fitness.Equals(0)).ToList();
+            Console.WriteLine("{2}valiando {0} Chromossomos na geração {1}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"));
             sw.Start();
-            taskList.ForEach(t=> t.Start());
-            taskList.ForEach(t => t.Wait());
-            sw.Stop();
 
-            Console.WriteLine("{0} minutos", sw.Elapsed.Minutes);
+            var resultList = new List<Task>();
+
+            //Parallel.ForEach(taskList, chromosome => chromosome.Evaluate(fitnessFunction));
+
+            foreach (var chromosome in taskList)
+            {
+                resultList.Add(Task.Factory.StartNew(() => chromosome.Evaluate(fitnessFunction)).ContinueWith(task1 => File.WriteAllText(chromosome.File, chromosome.ToString())));
+            }
+
+            //Task.WaitAll(resultList.ToArray());
+            sw.Stop();
+            
+            Console.WriteLine("{0} minutos", sw.Elapsed.TotalMinutes);
 	    }
 
 	    /// <summary>

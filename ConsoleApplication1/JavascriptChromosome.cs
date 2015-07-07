@@ -48,6 +48,11 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
+        /// generated code for Chromosome
+        /// </summary>
+        public string Code { get; set; }
+
+        /// <summary>
         /// Parser generated file
         /// </summary>
         private const string InstructionsFile = "ES3.tokens";
@@ -162,7 +167,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         public override string ToString()
         {
-            return _function.ToStringTree();
+            return Code;
         }
 
         #region IChromosome implementation

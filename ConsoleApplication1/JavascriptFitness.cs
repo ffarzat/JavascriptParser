@@ -176,6 +176,7 @@ namespace ConsoleApplication1
             {
                 var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Tree);
                 generatedJsCode = codeGenerator.DoCodeTransformation();
+                ((JavascriptChromosome) chromosome).Code = generatedJsCode;
             }
             catch (Exception)
             {

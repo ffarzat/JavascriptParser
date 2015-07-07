@@ -113,7 +113,7 @@ namespace ConsoleApplication1
             }
             
             sw.Stop();
-            Console.WriteLine("Árvore inicial construída em {0} milisegundos", sw.ElapsedMilliseconds);
+            Console.WriteLine("Árvore inicial construída em {0} milisegundos", sw.Elapsed.TotalMilliseconds);
 
             return tree;
         }
@@ -153,7 +153,7 @@ namespace ConsoleApplication1
             #endregion
             
             sw.Stop();
-            Console.WriteLine("Setup da população em {0} minutos", sw.Elapsed.Minutes);
+            Console.WriteLine("Setup da população em {0} minutos", sw.Elapsed.TotalMinutes);
 
             sw.Reset();
             sw.Start();
@@ -176,7 +176,7 @@ namespace ConsoleApplication1
             #endregion
 
             sw.Stop();
-            Console.WriteLine("Processo executado em {0} minutos", sw.Elapsed.Minutes);
+            Console.WriteLine("Processo executado em {0} minutos", sw.Elapsed.TotalMinutes);
 
             #region Results
 
