@@ -298,9 +298,11 @@ namespace ConsoleApplication1
         /// </remarks>
         public  void Crossover(IChromosome pair)
         {
-            Fitness = 0;
             var javascriptChromosomePair = (JavascriptChromosome)pair;
             
+            Fitness = 0;
+            javascriptChromosomePair.Fitness = 0;
+
             bool sinal = true;
             //Try to cross a function node
             while (sinal)

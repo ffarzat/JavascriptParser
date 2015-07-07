@@ -143,7 +143,7 @@ namespace AForge.Genetic
 			}
 
             //Fit Evaluation in as multiThreading
-            ExecuteFitEvaluation();
+            ExecuteFitEvaluation(true);
 
 		}
 
@@ -180,7 +180,7 @@ namespace AForge.Genetic
 			}
 
             //Fit Evaluation in as multiThreading
-            ExecuteFitEvaluation();
+            ExecuteFitEvaluation(false);
 
 		}
 
@@ -300,13 +300,13 @@ namespace AForge.Genetic
             #endregion
 
             //Fit Evaluation in as multiThreading
-		    ExecuteFitEvaluation();
+		    ExecuteFitEvaluation(true);
             
             //Selection method
             Selection();
 
             //Selection Method regenarates a lot od Chromosomes
-            ExecuteFitEvaluation();
+            ExecuteFitEvaluation(false);
 
             //Finalize run
             FindBestChromosomeOfRun();	    
@@ -315,13 +315,12 @@ namespace AForge.Genetic
         /// <summary>
         /// Start and synchronize Fits Evaluations 
         /// </summary>
-	    private void ExecuteFitEvaluation()
+	    private void ExecuteFitEvaluation(bool isFirstTime)
         {
-            Console.WriteLine("Avaliando {0} Chromossomos na geração {1}", population.Count, GenerationCount);
             var sw = new Stopwatch();
+            var taskList = population.Where(c => c.Fitness.Equals(0)).Select(c=> new Task(() => c.Evaluate(fitnessFunction))).ToList();
+            Console.WriteLine("{2}valiando {0} Chromossomos na geração {1}", taskList.Count, GenerationCount, (isFirstTime == true? "A" : "Rea"));
 
-            var taskList = population.Select(c => new Task(() => c.Evaluate(fitnessFunction))).ToList();
-            
             sw.Start();
             taskList.ForEach(t=> t.Start());
             taskList.ForEach(t => t.Wait());

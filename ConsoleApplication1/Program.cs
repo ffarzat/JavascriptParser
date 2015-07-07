@@ -157,7 +157,7 @@ namespace ConsoleApplication1
                 swEpoch.Reset();
                 swEpoch.Start();
 
-                Console.WriteLine("Processando geração {0}... ", population.GenerationCount);
+                Console.WriteLine("Processando geração {0}... ", i+1);
                 population.RunEpoch();
                 swEpoch.Stop();
                 Console.WriteLine("Best Fit {0}", population.FitnessMax);
