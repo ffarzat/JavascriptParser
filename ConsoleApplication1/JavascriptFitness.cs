@@ -30,11 +30,6 @@ namespace ConsoleApplication1
         private string _scriptTestPtah;
 
         /// <summary>
-        /// Jurassic.ScriptEngine to run javascript
-        /// </summary>
-        private ScriptEngine _engine;
-
-        /// <summary>
         /// QUnit path
         /// </summary>
         private string _qunitPath;
@@ -52,7 +47,6 @@ namespace ConsoleApplication1
         {
             _pathToExecution = pathToExecution;
             _scriptTestPtah = scriptTestPtah;
-            _engine= new ScriptEngine();
             DirectorySetup(pathToExecution);
         }
 
@@ -65,21 +59,18 @@ namespace ConsoleApplication1
             _pathToExecution = pathToExecution;
             _scriptTestPtah = scriptTestPtah;
             _qunitPath = qunitPath;
-
-            _engine = new ScriptEngine();
             DirectorySetup(pathToExecution);
-            //LoadQunitAndTests();
         }
 
         /// <summary>
         /// Loads Once a Qunit JsFile
         /// </summary>
-        private void LoadQunitAndTests()
+        private void LoadQunitAndTests(ScriptEngine engine)
         {
-            _engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
-            _engine.ExecuteFile(_qunitPath);
+            engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
+            engine.ExecuteFile(_qunitPath);
             #region registra os retornos dos testes
-            _engine.Execute(@"   var total, sucess, fail, time;
+            engine.Execute(@"   var total, sucess, fail, time;
                                     QUnit.done(function( details ) {
                                     //alert('=============================================');
                                     //alert('Total:' + details.total);
@@ -103,14 +94,35 @@ namespace ConsoleApplication1
                                     alert(' Tempo:' + details.duration);
                                 });
                                 */
+
+                                /*
+                                QUnit.log(function( details ) {
+                                  if ( details.result ) {
+                                    return;
+                                  }
+                                  var loc = details.module + ': ' + details.name + ': ',
+                                    output = 'FAILED: ' + loc + ( details.message ? details.message + ', ' : '' );
+ 
+                                  if ( details.actual ) {
+                                    output += 'expected: ' + details.expected + ', actual: ' + details.actual;
+                                  }
+                                  if ( details.source ) {
+                                    output += ', ' + details.source;
+                                  }
+
+                                    alert('=============================================');
+                                    alert( output );
+                                });
+                                */
+
                                 QUnit.config.autostart = false;
                                 QUnit.config.ignoreGlobalErrors = true;
                         ");
             #endregion
 
-            _engine.ExecuteFile(_scriptTestPtah);
+            engine.ExecuteFile(_scriptTestPtah);
 
-            _engine.Execute(@"QUnit.load();");
+            engine.Execute(@"QUnit.load();");
         }
 
         /// <summary>
@@ -178,9 +190,10 @@ namespace ConsoleApplication1
             Console.WriteLine(chromosome.Id);
             try
             {
-                _engine = new ScriptEngine();
-                LoadQunitAndTests();
+                var _engine = new ScriptEngine();
                 _engine.ExecuteFile(fileName);
+                LoadQunitAndTests(_engine);
+                
                 _engine.Execute(@"QUnit.start();");
 
                 total = _engine.GetGlobalValue<double>("total");
