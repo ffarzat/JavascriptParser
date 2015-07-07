@@ -157,12 +157,12 @@ namespace ConsoleApplication1
                 swEpoch.Reset();
                 swEpoch.Start();
 
-                Console.WriteLine("Processing generation {0}... ", i);
+                Console.WriteLine("Processando geração {0}... ", population.GenerationCount);
                 population.RunEpoch();
                 swEpoch.Stop();
                 Console.WriteLine("Best Fit {0}", population.FitnessMax);
                 //Console.WriteLine("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", ""));
-                Console.WriteLine("{0} segundos", swEpoch.Elapsed.Seconds);
+                Console.WriteLine("{0} minutos", swEpoch.Elapsed.Minutes);
                 Console.WriteLine("--------------------------");
             }
             

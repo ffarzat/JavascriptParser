@@ -186,8 +186,8 @@ namespace ConsoleApplication1
             sw.Start();
 
             double total, sucess, fail, time;
-            Console.WriteLine("=====================================");
-            Console.WriteLine(chromosome.Id);
+            //Console.WriteLine("=====================================");
+            //Console.WriteLine(chromosome.Id);
             try
             {
                 var _engine = new ScriptEngine();
@@ -204,12 +204,12 @@ namespace ConsoleApplication1
             }
             catch (JavaScriptException ex)
             {
-                Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
+                //Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
                 return fitness;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                //Console.WriteLine(ex);
                 return fitness;
             }
 
@@ -223,7 +223,7 @@ namespace ConsoleApplication1
 
             #endregion
             
-            Console.WriteLine("Fitness={0}", fitness);
+            Console.WriteLine("{0} -> {1}",chromosome.Id, fitness);
             return fitness;
         }
 

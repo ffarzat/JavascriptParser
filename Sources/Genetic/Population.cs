@@ -5,6 +5,9 @@
 //
 
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 
 namespace AForge.Genetic
 {
@@ -121,7 +124,7 @@ namespace AForge.Genetic
             this._generationsBestChromosomes = new Dictionary<int, IChromosome>();
 
 			// add ancestor to the population
-			ancestor.Evaluate( fitnessFunction );
+			//ancestor.Evaluate( fitnessFunction );
 			population.Add( ancestor );
 			// add more chromosomes to the population
 			for ( int i = 1; i < size; i++ )
@@ -131,10 +134,16 @@ namespace AForge.Genetic
 			    c.Id = Guid.NewGuid();
 			    c.GenerationId = _generationCount;
 				// calculate it's fitness
-				c.Evaluate( fitnessFunction );
+
+                
+                //c.Evaluate( fitnessFunction ); 
 				// add it to population
 				population.Add( c );
 			}
+
+            //Fit Evaluation in as multiThreading
+            ExecuteFitEvaluation();
+
 		}
 
 		/// <summary>
@@ -164,10 +173,14 @@ namespace AForge.Genetic
 				// create new chromosome
 				IChromosome c = ancestor.CreateOffspring( );
 				// calculate it's fitness
-				c.Evaluate( fitnessFunction );
+				//c.Evaluate( fitnessFunction );
 				// add it to population
 				population.Add( c );
 			}
+
+            //Fit Evaluation in as multiThreading
+            ExecuteFitEvaluation();
+
 		}
 
 		/// <summary>
@@ -189,8 +202,8 @@ namespace AForge.Genetic
 					c1.Crossover( c2 );
 
 					// calculate fitness of these two offsprings
-					c1.Evaluate( fitnessFunction );
-					c2.Evaluate( fitnessFunction );
+					//c1.Evaluate( fitnessFunction );
+					//c2.Evaluate( fitnessFunction );
 
 					// add two new offsprings to the population
 					population.Add( c1 );
@@ -215,7 +228,7 @@ namespace AForge.Genetic
 					// mutate it
 					c.Mutate( );
 					// calculate fitness of the mutant
-					c.Evaluate( fitnessFunction );
+					//c.Evaluate( fitnessFunction );
 					// add mutant to the population
 					population.Add( c );
 				}
@@ -238,7 +251,7 @@ namespace AForge.Genetic
                     // mutate it
                     c.Delete();
                     // calculate fitness of the mutant
-                    c.Evaluate(fitnessFunction);
+                    //c.Evaluate(fitnessFunction);
                     // add mutant to the population
                     population.Add(c);
                 }
@@ -266,56 +279,97 @@ namespace AForge.Genetic
 					// create new chromosome
 					IChromosome c = ancestor.CreateOffspring( );
 					// calculate it's fitness
-					c.Evaluate( fitnessFunction );
+					//c.Evaluate( fitnessFunction );
 					// add it to population
 					population.Add( c );
 				}
             }
-
-            #region find best chromosome
-            //fitnessMax = 0;
-			fitnessSum = 0;
-
-			foreach ( IChromosome c in population )
-			{
-				double fitness = c.Fitness;
-
-				// accumulate summary value
-				fitnessSum += fitness;
-
-				// check for min
-				if ( fitness < fitnessMax )
-				{
-					fitnessMax = fitness;
-					bestChromosome = c;
-				}
-			}
-			fitnessAvg = fitnessSum / size;
-
-            #endregion
         }
 
 		/// <summary>
 		/// Run one epoch of the population - crossover, mutation and selection
 		/// </summary>
 		public void RunEpoch( )
-		{
-		    Refresh();
+        {
+            #region Apply operators
+            Refresh();
 			Crossover( );
 			//Mutate( );
 		    Delete();
-			Selection( );
+            #endregion
 
-            //Keeps the best Chromossome of run
-            //GenerationsBestChromosomes.Add(GenerationCount, bestChromosome);
-		    _generationCount++;
+            //Fit Evaluation in as multiThreading
+		    ExecuteFitEvaluation();
+            
+            //Selection method
+            Selection();
+
+            //Selection Method regenarates a lot od Chromosomes
+            ExecuteFitEvaluation();
+
+            //Finalize run
+            FindBestChromosomeOfRun();	    
 		}
 
         /// <summary>
+        /// Start and synchronize Fits Evaluations 
+        /// </summary>
+	    private void ExecuteFitEvaluation()
+        {
+            Console.WriteLine("Avaliando {0} Chromossomos na geração {1}", population.Count, GenerationCount);
+            var sw = new Stopwatch();
+
+            var tList = population.Select(c => new Thread(() => c.Evaluate(fitnessFunction)) {IsBackground = true, Priority = ThreadPriority.Highest}).ToList();
+
+            sw.Start();
+            foreach (var thread in tList)
+            {
+                thread.Start();
+                thread.Join();
+            }
+            sw.Stop();
+            Console.WriteLine("{0} minutos", sw.Elapsed.Minutes);
+	    }
+
+	    /// <summary>
+        /// Finds the best Value
+        /// </summary>
+	    private void FindBestChromosomeOfRun()
+	    {
+	        #region find best chromosome
+
+	        //fitnessMax = 0;
+	        fitnessSum = 0;
+
+	        foreach (IChromosome c in population)
+	        {
+	            double fitness = c.Fitness;
+
+	            // accumulate summary value
+	            fitnessSum += fitness;
+
+	            // check for min
+	            if (fitness < fitnessMax)
+	            {
+	                fitnessMax = fitness;
+	                bestChromosome = c;
+	            }
+	        }
+	        fitnessAvg = fitnessSum/size;
+
+	        #endregion
+
+            //Keeps the best Chromossome of run
+            //GenerationsBestChromosomes.Add(GenerationCount, bestChromosome);
+	    }
+
+	    /// <summary>
         /// Refresh Chromosomes
         /// </summary>
 	    private void Refresh()
 	    {
+            _generationCount++;
+
             foreach (IChromosome c in population)
             {
                 c.GenerationId = _generationCount;
