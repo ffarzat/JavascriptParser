@@ -139,9 +139,8 @@ namespace ConsoleApplication1
                 processors = int.Parse(processorsStr);
 
             Console.WriteLine("{0} processadores detectados", processors);
-
-
-            System.Diagnostics.Process.GetCurrentProcess().ProcessorAffinity = (System.IntPtr)1; //forço o console a ficar no CPU 1
+            //System.Diagnostics.Process.GetCurrentProcess().ProcessorAffinity = (System.IntPtr)1; //forço o console a ficar no CPU 1
+            //TODO: tratar o uso de todas as CPUS exceto uma
 
             #endregion 
 
