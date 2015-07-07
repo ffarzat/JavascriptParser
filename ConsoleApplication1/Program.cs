@@ -61,6 +61,13 @@ namespace ConsoleApplication1
             PopulationSize = Convert.ToInt32(ConfigurationManager.AppSettings["PopulationSize"]);
             Generations = Convert.ToInt32(ConfigurationManager.AppSettings["Generations"]);
 
+            Console.WriteLine("Biblioteca {0}", JsFile);
+            Console.WriteLine("Testes {0}", JsFileTest);
+            Console.WriteLine("Função alvo {0}", TargetFunction);
+            Console.WriteLine("População {0}", PopulationSize);
+            Console.WriteLine("Gerações {0}", Generations);
+
+
             var sw = new Stopwatch();
             sw.Start();
             CommonTree tree = null;
