@@ -81,12 +81,12 @@ namespace Tests
         /// <summary>
         /// Execute the tests of MomentJs
         /// </summary>
-        [Ignore]
+        [Test]
         public void RunTestsFromMomentJs()
         {
             const string jsTestFile = "tests.js";
             const string qunitFile = "qunit-1.18.0.js";
-            const string fileMomentPath = "moment-with-locales.js";
+            const string fileMomentPath = "moment.js";
             
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
@@ -126,16 +126,21 @@ namespace Tests
 
             try
             {
-                
-                
-                
                 #region registra os retornos dos testes
-                engine.Execute(@"   QUnit.done(function( details ) {
+                engine.Execute(@"   
+                                    var total, sucesso, falha;
+
+                                    QUnit.done(function( details ) {
                                     alert('=============================================');
                                     alert('Total:' + details.total);
                                     alert('Falha:' + details.failed);
                                     alert('Sucesso:' + details.passed);
                                     alert('Tempo:' + details.runtime);
+                                       
+                                    total = details.total;
+                                    sucesso = details.passed;
+                                    falha = details.failed;
+
                                 });
 
 
@@ -161,6 +166,7 @@ namespace Tests
             catch (JavaScriptException ex)
             {
                 Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
+                throw ex;
             }
             catch (Exception)
             {
@@ -168,8 +174,10 @@ namespace Tests
                 throw;
             }
 
+            var total = engine.GetGlobalValue<int>("total");
+            var sucesso = engine.GetGlobalValue<int>("sucesso");
 
-
+            Assert.AreEqual(total, sucesso);
 
         }
 
