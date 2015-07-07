@@ -34,7 +34,7 @@ namespace Tests
         }
 
         
-        [Test]
+        [Ignore]
         public void ToCodeTest()
         {
             var codeGenerator = new JavascriptAstCodeGenerator(_tree);
@@ -51,11 +51,11 @@ namespace Tests
         /// <summary>
         /// MomentJs Code regenaration
         /// </summary>
-        [Ignore]
+        [Test]
         public void ToMomentCodeTest()
         {
 
-            var momentTextWithoutComments = File.ReadAllText("moment.Js"); //momentNoComments
+            var momentTextWithoutComments = File.ReadAllText("momentNoComments.Js"); //momentNoComments
 
             #region Build the AST from Js
             var stream = new ANTLRStringStream(momentTextWithoutComments);
@@ -81,7 +81,7 @@ namespace Tests
         /// <summary>
         /// Execute the tests of MomentJs
         /// </summary>
-        [Test]
+        [Ignore]
         public void RunTestsFromMomentJs()
         {
             const string jsTestFile = "tests.js";
@@ -210,17 +210,19 @@ namespace Tests
         /// <summary>
         /// Execute the tests of MomentJs
         /// </summary>
-        [Ignore]
+        [Test]
         public void RunTestsFromGeneratedMomentJs()
         {
             const string jsTestFile = "tests.js";
             const string qunitFile = "qunit-1.18.0.js";
-            const string fileMomentPath = "moment-with-locales.js";
+            const string fileMomentPath = "moment.js";
             const string fileGeneratedCode = "target.js";
 
-            var momentTextWithoutComments = File.ReadAllText("moment.Js");
+            
 
             #region Build the AST from Js and Generate the code
+            var momentTextWithoutComments = File.ReadAllText(fileMomentPath);
+            
             var stream = new ANTLRStringStream(momentTextWithoutComments);
             var lexer = new ES3Lexer(stream);
             var tokenStream = new CommonTokenStream(lexer);
@@ -240,76 +242,84 @@ namespace Tests
             engine.ExecuteFile(qunitFile);
             engine.ExecuteFile(jsTestFile);
 
-            #region Debug of tests
-
-            //            try
-            //            {
-            //                engine.Execute(@"   moment.locale('af');
-            //                                module('unit tests');
-            //
-            //                test('long years', function (assert) {
-            //                    assert.equal(moment.utc().year(2).format('YYYYYY'), '+000002', 'small year with YYYYYY');
-            //                    assert.equal(moment.utc().year(2012).format('YYYYYY'), '+002012', 'regular year with YYYYYY');
-            //                    assert.equal(moment.utc().year(20123).format('YYYYYY'), '+020123', 'big year with YYYYYY');
-            //            /*
-            //                    assert.equal(moment.utc().year(-1).format('YYYYYY'), '-000001', 'small negative year with YYYYYY');
-            //                    assert.equal(moment.utc().year(-2012).format('YYYYYY'), '-002012', 'negative year with YYYYYY');
-            //                    assert.equal(moment.utc().year(-20123).format('YYYYYY'), '-020123', 'big negative year with YYYYYY');
-            //            */	
-            //                });
-            //
-            //            ");
-
-
-            //            }
-            //            catch (JavaScriptException ex)
-            //            {
-            //                Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
-            //            }
-
-            #endregion
-
             try
             {
-
                 #region registra os retornos dos testes
-                engine.Execute(@"   QUnit.done(function( details ) {
+                engine.Execute(@"   
+                                    var total, sucesso, falha;
+
+                                    QUnit.done(function( details ) {
                                     alert('=============================================');
                                     alert('Total:' + details.total);
                                     alert('Falha:' + details.failed);
                                     alert('Sucesso:' + details.passed);
                                     alert('Tempo:' + details.runtime);
+                                       
+                                    total = details.total;
+                                    sucesso = details.passed;
+                                    falha = details.failed;
+
                                 });
 
+/*
 
                                 QUnit.testDone(function( details ) {
-                                    alert('Modulo:' + details.module);
-                                    alert('Teste:' + details.name);
-                                    alert(' Falha:' + details.failed);
-                                    alert(' Total:' + details.total);
-                                    alert(' Tempo:' + details.duration);
+                                    if(details.failed > 0)
+                                    {
+                                        alert('=============================================');
+                                        alert('Modulo:' + details.module);
+                                        alert('Teste:' + details.name);
+                                        alert(' Falha:' + details.failed);
+                                        alert(' Total:' + details.total);
+                                        alert(' Tempo:' + details.duration);
+                                    }
                                 });
+*/
+
+                                QUnit.log(function( details ) {
+                                  if ( details.result ) {
+                                    return;
+                                  }
+                                  var loc = details.module + ': ' + details.name + ': ',
+                                    output = 'FAILED: ' + loc + ( details.message ? details.message + ', ' : '' );
+ 
+                                  if ( details.actual ) {
+                                    output += 'expected: ' + details.expected + ', actual: ' + details.actual;
+                                  }
+                                  if ( details.source ) {
+                                    output += ', ' + details.source;
+                                  }
+
+                                    alert('=============================================');
+                                    alert( output );
+                                });
+
+
 
                                 QUnit.config.autostart = false;
                                 QUnit.config.ignoreGlobalErrors = true;
                         ");
                 #endregion
 
-                engine.Execute(@"   //moment.locale('pt-br'); 
-                                    //alert(moment('Maio', 'MMM').month());
-                                    QUnit.load();
+                engine.Execute(@"   QUnit.load();
                                     QUnit.start();
                 ");
             }
             catch (JavaScriptException ex)
             {
                 Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
+                throw ex;
             }
             catch (Exception)
             {
 
                 throw;
             }
+
+            var total = engine.GetGlobalValue<int>("total");
+            var sucesso = engine.GetGlobalValue<int>("sucesso");
+
+            Assert.AreEqual(total, sucesso);
 
         }
 

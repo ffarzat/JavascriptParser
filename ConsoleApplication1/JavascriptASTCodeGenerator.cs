@@ -51,6 +51,11 @@ namespace ConsoleApplication1
             }
             else
             {
+                #region Debug
+                //var function = FindFunctionTree(_tree as CommonTree, "bs__translate");
+                //sb.AppendLine(HandleChild(function) + ";");
+                #endregion
+
                 sb.AppendLine(HandleChild(_tree) + ";");
             }
 
@@ -298,12 +303,31 @@ namespace ConsoleApplication1
                 var actualInstruction = instruction.GetChild(i);
                 
                 var textInstruction = actualInstruction.Text == "default" ? "default" : "case";
+                string conditionCase = HandleChild(actualInstruction.GetChild(0));
+                string blockCase = "";
 
-                var conditionCase = HandleChild(actualInstruction.GetChild(0));
-                var blockCase = HandleChild(actualInstruction.GetChild(1));
-                blockCase = blockCase == "" ? "" : blockCase + ";";
+
+                if (actualInstruction.ChildCount == 2)
+                {
+                    blockCase = HandleChild(actualInstruction.GetChild(1));
+                    blockCase = blockCase == "" ? "" : blockCase + ";";
+                }
+                else
+                {
+                    var block = new CommonTree();
+
+                    for (int j = 1; j < actualInstruction.ChildCount; j++)
+                    {
+                        block.AddChild(actualInstruction.GetChild(j));
+
+                    }
+
+                    blockCase += HandleBlockInstruction(block);
+                }
+
 
                 casesCode += string.Format("{0} {1} : \r\n {2}", textInstruction, conditionCase, blockCase);
+
             }
 
             casesCode += defaultCode;

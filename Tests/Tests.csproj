@@ -79,6 +79,9 @@
     <Content Include="moment.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="momentNoComments.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="qunit-1.18.0.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
