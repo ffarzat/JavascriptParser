@@ -102,16 +102,17 @@ namespace Tests
 //                engine.Execute(@"   moment.locale('af');
 //                                module('unit tests');
 //
-//                test('long years', function (assert) {
-//                    assert.equal(moment.utc().year(2).format('YYYYYY'), '+000002', 'small year with YYYYYY');
-//                    assert.equal(moment.utc().year(2012).format('YYYYYY'), '+002012', 'regular year with YYYYYY');
-//                    assert.equal(moment.utc().year(20123).format('YYYYYY'), '+020123', 'big year with YYYYYY');
-//            /*
-//                    assert.equal(moment.utc().year(-1).format('YYYYYY'), '-000001', 'small negative year with YYYYYY');
-//                    assert.equal(moment.utc().year(-2012).format('YYYYYY'), '-002012', 'negative year with YYYYYY');
-//                    assert.equal(moment.utc().year(-20123).format('YYYYYY'), '-020123', 'big negative year with YYYYYY');
-//            */	
-//                });
+//    test('creating with utc and no arguments', function (assert) {
+//        var startOfTest = new Date().valueOf(),
+//            momentDefaultUtcTime = moment.utc().valueOf(),
+//            afterMomentCreationTime = new Date().valueOf();
+//		
+//		alert('startOfTest='+startOfTest);
+//		alert('momentDefaultUtcTime='+momentDefaultUtcTime);
+//			
+//        assert.ok(startOfTest <= momentDefaultUtcTime, 'moment UTC default time should be now, not in the past');
+//        assert.ok(momentDefaultUtcTime <= afterMomentCreationTime, 'moment UTC default time should be now, not in the future');
+//    });
 //
 //            ");
 
@@ -143,18 +144,40 @@ namespace Tests
 
                                 });
 
+/*
 
                                 QUnit.testDone(function( details ) {
                                     if(details.failed > 0)
                                     {
                                         alert('=============================================');
                                         alert('Modulo:' + details.module);
-                                        lert('Teste:' + details.name);
+                                        alert('Teste:' + details.name);
                                         alert(' Falha:' + details.failed);
                                         alert(' Total:' + details.total);
                                         alert(' Tempo:' + details.duration);
                                     }
                                 });
+*/
+
+                                QUnit.log(function( details ) {
+                                  if ( details.result ) {
+                                    return;
+                                  }
+                                  var loc = details.module + ': ' + details.name + ': ',
+                                    output = 'FAILED: ' + loc + ( details.message ? details.message + ', ' : '' );
+ 
+                                  if ( details.actual ) {
+                                    output += 'expected: ' + details.expected + ', actual: ' + details.actual;
+                                  }
+                                  if ( details.source ) {
+                                    output += ', ' + details.source;
+                                  }
+
+                                    alert('=============================================');
+                                    alert( output );
+                                });
+
+
 
                                 QUnit.config.autostart = false;
                                 QUnit.config.ignoreGlobalErrors = true;
