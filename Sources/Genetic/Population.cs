@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace AForge.Genetic
 {
@@ -319,15 +320,13 @@ namespace AForge.Genetic
             Console.WriteLine("Avaliando {0} Chromossomos na geração {1}", population.Count, GenerationCount);
             var sw = new Stopwatch();
 
-            var tList = population.Select(c => new Thread(() => c.Evaluate(fitnessFunction)) {IsBackground = true, Priority = ThreadPriority.Highest}).ToList();
-
+            var taskList = population.Select(c => new Task(() => c.Evaluate(fitnessFunction))).ToList();
+            
             sw.Start();
-            foreach (var thread in tList)
-            {
-                thread.Start();
-                thread.Join();
-            }
+            taskList.ForEach(t=> t.Start());
+            taskList.ForEach(t => t.Wait());
             sw.Stop();
+
             Console.WriteLine("{0} minutos", sw.Elapsed.Minutes);
 	    }
 
