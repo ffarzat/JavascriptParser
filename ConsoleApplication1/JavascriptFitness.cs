@@ -155,6 +155,7 @@ namespace ConsoleApplication1
 
             DirectoryInfo directoryForIndividual = null;
             double fitness = double.MaxValue;
+            string generatedJsCode = "";
             
             #region setup a directory for this individual?
             var createNewDirectoryForGeneration = _dirOfRun.GetDirectories().FirstOrDefault(d => d.Name == chromosome.GenerationId.ToString(CultureInfo.InvariantCulture)) == null;
@@ -174,8 +175,7 @@ namespace ConsoleApplication1
             try
             {
                 var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Tree);
-                string generatedJsCode = codeGenerator.DoCodeTransformation();
-                File.WriteAllText(fileName, generatedJsCode);
+                generatedJsCode = codeGenerator.DoCodeTransformation();
             }
             catch (Exception)
             {
@@ -195,7 +195,7 @@ namespace ConsoleApplication1
             try
             {
                 var _engine = new ScriptEngine();
-                _engine.ExecuteFile(fileName);
+                _engine.Execute(generatedJsCode);
                 LoadQunitAndTests(_engine);
                 
                 _engine.Execute(@"QUnit.start();");
@@ -227,7 +227,7 @@ namespace ConsoleApplication1
 
             fitness = total - sucess; //quanto mais testes matar melhor!
             fitness = fitness + double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
-
+            File.WriteAllText(fileName, generatedJsCode);
             #endregion
             
             Console.WriteLine("{0} -> {1}",chromosome.Id, fitness);
