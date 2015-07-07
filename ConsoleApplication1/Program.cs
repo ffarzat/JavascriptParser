@@ -146,7 +146,7 @@ namespace ConsoleApplication1
             #endregion
             
             sw.Stop();
-            Console.WriteLine("Setup da população em {0} segundos", sw.Elapsed.Seconds);
+            Console.WriteLine("Setup da população em {0} minutos", sw.Elapsed.Minutes);
 
             sw.Reset();
             sw.Start();

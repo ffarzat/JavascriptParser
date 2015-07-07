@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
@@ -214,10 +215,11 @@ namespace Tests
         public void RunTestsFromGeneratedMomentJs()
         {
             const string jsTestFile = "tests.js";
-            const string qunitFile = "qunit-1.18.0.js";
+            //const string qunitFile = "qunit-1.18.0.js";
+            const string qunitFile = "core-test.js";
             const string fileMomentPath = "moment.js";
             const string fileGeneratedCode = "target.js";
-
+            var sw = new Stopwatch(); 
             
 
             #region Build the AST from Js and Generate the code
@@ -238,9 +240,12 @@ namespace Tests
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
 
+            sw.Start();
             engine.ExecuteFile(fileGeneratedCode);
             engine.ExecuteFile(qunitFile);
             engine.ExecuteFile(jsTestFile);
+            sw.Stop();
+            //Console.WriteLine("{0} - {1} segundos", qunitFile, sw.Elapsed.TotalSeconds);
 
             try
             {
@@ -304,6 +309,9 @@ namespace Tests
                 engine.Execute(@"   QUnit.load();
                                     QUnit.start();
                 ");
+                
+
+                
             }
             catch (JavaScriptException ex)
             {
