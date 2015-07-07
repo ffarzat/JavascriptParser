@@ -1,6 +1,5 @@
 'use strict';
 function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
-  var ndiasmes = '';
   var ltDia,ltMes,ltAno;
   ltDia = ldDia;
   ltMes = ldMes;
@@ -23,6 +22,7 @@ function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
   }
   var resultado = ltDia + '/' + ltMes + '/' + ltAno;
   escreverNaTela(resultado);
+  return resultado;
 }
 function DeterminarQuantidadeDeDias(ldMes, ldAno) {
   var ndiasmes = 0;

@@ -185,7 +185,7 @@ namespace Tests
         /// <summary>
         /// Execute the tests of MomentJs
         /// </summary>
-        [Test]
+        [Ignore]
         public void RunTestsFromGeneratedMomentJs()
         {
             const string jsTestFile = "tests.js";

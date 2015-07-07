@@ -3,8 +3,8 @@ function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
   var ndiasmes = '';
   var ltDia,ltMes,ltAno;
   ltDia = ldDia;
-  ltMesINC;
-  ltAno = ldAno;
+  ltMes = ldMes;
+  ltAno ADDASS ldAno;
   ndiasmes = DeterminarQuantidadeDeDias(ldMes, ldAno);
   if (ldDia + lnDias <= ndiasmes) {
     ltDia = ldDia + lnDias;
