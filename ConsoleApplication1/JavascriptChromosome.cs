@@ -86,6 +86,7 @@ namespace ConsoleApplication1
         /// <param name="functionName"></param>
         public JavascriptChromosome(CommonTree tree, string functionName)
         {
+            Fitness = 0;
             _tree = DeepClone(tree);
             _functionName = functionName;
             _possibleFunctions = BuildFunctionList(); //TODO: rever isso aqui. Pool mais forte de funções tipadas para substituição na mutação
@@ -190,7 +191,7 @@ namespace ConsoleApplication1
         public IChromosome CreateOffspring()
         {
             var newChromosome = this.Clone();
-            newChromosome.Mutate();
+            newChromosome.Delete();
             return newChromosome;
         }
 
@@ -199,7 +200,7 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome Clone()
         {
-            return new JavascriptChromosome(DeepClone(this._tree), _functionName ){ Fitness = this.Fitness, Id = Guid.NewGuid(), GenerationId = this.GenerationId};
+            return new JavascriptChromosome(DeepClone(this._tree), _functionName ){ Fitness = 0, Id = Guid.NewGuid(), GenerationId = this.GenerationId};
         }
 
         /// <summary>
@@ -207,6 +208,8 @@ namespace ConsoleApplication1
         /// </summary>
         public void Mutate()
         {
+            Fitness = 0;
+
             #region Defines Target Function to Mutate
             int indexTargetFunction = Rand.Next(0, _possibleFunctions.Count);          //target mutation function
             var targetFunction = _possibleFunctions.ElementAt(indexTargetFunction);
@@ -263,6 +266,7 @@ namespace ConsoleApplication1
         /// </summary>
         public void Delete()
         {
+            Fitness = 0;
             bool sinal = true;
 
             while (sinal)
@@ -294,6 +298,7 @@ namespace ConsoleApplication1
         /// </remarks>
         public  void Crossover(IChromosome pair)
         {
+            Fitness = 0;
             var javascriptChromosomePair = (JavascriptChromosome)pair;
             
             bool sinal = true;

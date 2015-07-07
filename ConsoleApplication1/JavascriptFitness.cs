@@ -149,6 +149,10 @@ namespace ConsoleApplication1
         /// </summary>
         public double Evaluate(IChromosome chromosome)
         {
+
+            if (!chromosome.Fitness.Equals(0)) //alredy evaluated
+                return chromosome.Fitness;
+
             DirectoryInfo directoryForIndividual = null;
             double fitness = double.MaxValue;
             
@@ -218,8 +222,11 @@ namespace ConsoleApplication1
             
             //Console.WriteLine("Fitness {0} segundos", sw.Elapsed.Seconds);
 
-            if (total.Equals(sucess)) //passou em todos
-                fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
+            //if (total.Equals(sucess)) //passou em todos
+                //fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
+
+            fitness = total - sucess; //quanto mais testes matar melhor!
+            fitness = fitness + double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
 
             #endregion
             
