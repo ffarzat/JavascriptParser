@@ -332,7 +332,7 @@ namespace AForge.Genetic
                 resultList.Add(Task.Factory.StartNew(() => chromosome.Evaluate(fitnessFunction)).ContinueWith(task1 => File.WriteAllText(chromosome.File, chromosome.ToString())));
             }
 
-            //Task.WaitAll(resultList.ToArray());
+            Task.WaitAll(resultList.ToArray());
             sw.Stop();
             
             Console.WriteLine("{0} minutos", sw.Elapsed.TotalMinutes);
