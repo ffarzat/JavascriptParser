@@ -145,11 +145,15 @@ namespace Tests
 
 
                                 QUnit.testDone(function( details ) {
-                                    alert('Modulo:' + details.module);
-                                    alert('Teste:' + details.name);
-                                    alert(' Falha:' + details.failed);
-                                    alert(' Total:' + details.total);
-                                    alert(' Tempo:' + details.duration);
+                                    if(details.failed > 0)
+                                    {
+                                        alert('=============================================');
+                                        alert('Modulo:' + details.module);
+                                        lert('Teste:' + details.name);
+                                        alert(' Falha:' + details.failed);
+                                        alert(' Total:' + details.total);
+                                        alert(' Tempo:' + details.duration);
+                                    }
                                 });
 
                                 QUnit.config.autostart = false;
@@ -157,9 +161,7 @@ namespace Tests
                         ");
                 #endregion
 
-                engine.Execute(@"   //moment.locale('pt-br'); 
-                                    //alert(moment('Maio', 'MMM').month());
-                                    QUnit.load();
+                engine.Execute(@"   QUnit.load();
                                     QUnit.start();
                 ");
             }
