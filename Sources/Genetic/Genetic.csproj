@@ -142,6 +142,7 @@
     <Compile Include="Population.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ProcessorAffinity.cs" />
     <Compile Include="Selection Algorithms\EliteSelection.cs">
       <SubType>Code</SubType>
     </Compile>

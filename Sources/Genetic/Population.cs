@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +22,10 @@ namespace AForge.Genetic
 	/// </summary>
 	public class Population
 	{
+
+        [DllImport("ntdll.dll", CharSet = CharSet.Auto)]
+        public static extern uint NtGetCurrentProcessorNumber();
+
 		private IFitnessFunction    fitnessFunction;
 		private ISelectionMethod    selectionMethod;
         private List<IChromosome>   population = new List<IChromosome>();
@@ -344,18 +349,7 @@ namespace AForge.Genetic
             Console.WriteLine("{2}valiando {0} Chromossomos na geração {1}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"));
             sw.Start();
 
-            var resultList = new List<Thread>();
-            int i = new int();
-            i = 0;
-            foreach (var chromosome in taskList)
-            {
-                if (i > (_processorsCount -2))
-                    i = 0;
-
-                int i1 = i;
-                resultList.Add(new Thread(() => Start(chromosome, fitnessFunction.Clone(), i1)) { IsBackground = false, Priority = ThreadPriority.Highest});
-                i++;
-            }
+            var resultList = taskList.Select(chromosome => new Thread(() => Start(chromosome, fitnessFunction.Clone())) {IsBackground = false, Priority = ThreadPriority.Highest}).ToList();
 
             resultList.ForEach(t => t.Start());
             resultList.ForEach(t => t.Join());
@@ -368,57 +362,21 @@ namespace AForge.Genetic
 	    /// </summary>
 	    /// <param name="chromosome"></param>
 	    /// <param name="fitnessFunction1"></param>
-	    /// <param name="processorId"></param>
-	    private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1, int processorId)
+	    private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1)
 	    {
-	        var sw = new Stopwatch();
-            sw.Start();
-            Console.WriteLine("{0} no processador {1}", chromosome.Id, processorId);
-            SetThreadProcessorAffinity(processorId);
-
-	        chromosome.Evaluate(fitnessFunction1);
-	        File.WriteAllText(chromosome.File, chromosome.ToString());
-            sw.Stop();
-            Console.WriteLine("{0} segundos", sw.Elapsed.TotalSeconds);
-	    }
-
-
-        /// <summary>
-        /// Sets the processor affinity of the current thread.
-        /// </summary>
-        /// <param name="cpus">A list of CPU numbers. The values should be
-        /// between 0 and <see cref="Environment.ProcessorCount"/>.</param>
-        public static void SetThreadProcessorAffinity(params int[] cpus)
-        {
-            if (cpus == null)
-                throw new ArgumentNullException("cpus");
-            if (cpus.Length == 0)
-                throw new ArgumentException("You must specify at least one CPU.", "cpus");
-
-            // Supports up to 64 processors
-            long cpuMask = 0;
-            foreach (int cpu in cpus)
+            using (ProcessorAffinity.BeginAffinity(1, 2, 3))
             {
-                if (cpu < 0 || cpu >= Environment.ProcessorCount)
-                    throw new ArgumentException("Invalid CPU number.");
+                //Console.WriteLine("Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
+                var sw = new Stopwatch();
+                sw.Start();
 
-                cpuMask |= 1L << cpu;
+                chromosome.Evaluate(fitnessFunction1);
+                File.WriteAllText(chromosome.File, chromosome.ToString());
+                sw.Stop();
+                Console.WriteLine("{0} segundos", sw.Elapsed.TotalSeconds);
             }
-
-            // Ensure managed thread is linked to OS thread; does nothing on default host in current .Net versions
-            Thread.BeginThreadAffinity();
-
-            #pragma warning disable 618
-            // The call to BeginThreadAffinity guarantees stable results for GetCurrentThreadId,
-            // so we ignore the obsolete warning
-            int osThreadId = AppDomain.GetCurrentThreadId();
-            #pragma warning restore 618
-
-            // Find the ProcessThread for this thread.
-            ProcessThread thread = Process.GetCurrentProcess().Threads.Cast<ProcessThread>().Single(t => t.Id == osThreadId);
-            // Set the thread's processor affinity
-            thread.ProcessorAffinity = new IntPtr(cpuMask);
-        }
+	        
+	    }
 
 	    /// <summary>
         /// Finds the best Value
