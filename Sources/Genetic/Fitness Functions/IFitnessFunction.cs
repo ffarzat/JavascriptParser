@@ -47,5 +47,11 @@ namespace AForge.Genetic
 		/// object, which is supposed to represent the problem solution.</remarks>
 		///
 		object Translate( IChromosome chromosome );
+
+        /// <summary>
+        /// Deep clone of FitnessFunction Object
+        /// </summary>
+        /// <returns></returns>
+	    IFitnessFunction Clone();
 	}
 }

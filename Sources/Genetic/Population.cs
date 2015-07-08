@@ -47,6 +47,11 @@ namespace AForge.Genetic
         /// </summary>
         private IDictionary<int, IChromosome> _generationsBestChromosomes = null;
 
+        /// <summary>
+        /// #Processors
+        /// </summary>
+	    private int _processorsCount;
+
 		/// <summary>
 		/// Maximum fitness of the population
 		/// </summary>
@@ -115,17 +120,16 @@ namespace AForge.Genetic
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public Population( int size,
-							IChromosome ancestor,
-							IFitnessFunction fitnessFunction,
-							ISelectionMethod selectionMethod )
+		public Population( int size,IChromosome ancestor, IFitnessFunction fitnessFunction, ISelectionMethod selectionMethod )
 		{
 			this.fitnessFunction = fitnessFunction;
 			this.selectionMethod = selectionMethod;
 			this.size	= size;
             this._generationsBestChromosomes = new Dictionary<int, IChromosome>();
 
-			// add ancestor to the population
+            DiscoverProcessors();
+
+		    // add ancestor to the population
 			//ancestor.Evaluate( fitnessFunction );
 			population.Add( ancestor );
 			// add more chromosomes to the population
@@ -136,8 +140,6 @@ namespace AForge.Genetic
 			    c.Id = Guid.NewGuid();
 			    c.GenerationId = _generationCount;
 				// calculate it's fitness
-
-                
                 //c.Evaluate( fitnessFunction ); 
 				// add it to population
 				population.Add( c );
@@ -148,7 +150,26 @@ namespace AForge.Genetic
 
 		}
 
-		/// <summary>
+        /// <summary>
+        /// #Processors Count
+        /// </summary>
+	    private void DiscoverProcessors()
+	    {
+	        #region CPU
+
+            _processorsCount = 1;
+
+	        string processorsStr = System.Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS");
+
+	        if (processorsStr != null)
+                _processorsCount = int.Parse(processorsStr);
+
+            Console.WriteLine("{0} processadores detectados", _processorsCount);
+
+	        #endregion
+	    }
+
+	    /// <summary>
 		/// Constructor
 		/// </summary>
 		public Population( int size,
@@ -324,10 +345,17 @@ namespace AForge.Genetic
             sw.Start();
 
             var resultList = new List<Thread>();
+            int i = 1;
 
             foreach (var chromosome in taskList)
             {
-                resultList.Add(new Thread(() => Start(chromosome, fitnessFunction)) { IsBackground = true, Priority = ThreadPriority.Highest});
+                if (i > (_processorsCount -1))
+                    i = 1;
+
+                resultList.Add(new Thread(() => Start(chromosome, fitnessFunction.Clone(), i)) { IsBackground = true, Priority = ThreadPriority.Highest});
+                i++;
+                //Reset if necessary
+                
             }
 
             resultList.ForEach(t => t.Start());
@@ -337,16 +365,56 @@ namespace AForge.Genetic
             Console.WriteLine("{0} minutos", sw.Elapsed.TotalMinutes);
 	    }
 
-        /// <summary>
-        /// Do Parallel Evaluation
-        /// </summary>
-        /// <param name="chromosome"></param>
-        /// <param name="fitnessFunction1"></param>
-	    private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1)
+	    /// <summary>
+	    /// Do Parallel Evaluation
+	    /// </summary>
+	    /// <param name="chromosome"></param>
+	    /// <param name="fitnessFunction1"></param>
+	    /// <param name="processorId"></param>
+	    private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1, int processorId)
 	    {
-	        chromosome.Evaluate(fitnessFunction);
+	        chromosome.Evaluate(fitnessFunction1);
 	        File.WriteAllText(chromosome.File, chromosome.ToString());
+	        SetThreadProcessorAffinity(processorId);
 	    }
+
+
+        /// <summary>
+        /// Sets the processor affinity of the current thread.
+        /// </summary>
+        /// <param name="cpus">A list of CPU numbers. The values should be
+        /// between 0 and <see cref="Environment.ProcessorCount"/>.</param>
+        public static void SetThreadProcessorAffinity(params int[] cpus)
+        {
+            if (cpus == null)
+                throw new ArgumentNullException("cpus");
+            if (cpus.Length == 0)
+                throw new ArgumentException("You must specify at least one CPU.", "cpus");
+
+            // Supports up to 64 processors
+            long cpuMask = 0;
+            foreach (int cpu in cpus)
+            {
+                if (cpu < 0 || cpu >= Environment.ProcessorCount)
+                    throw new ArgumentException("Invalid CPU number.");
+
+                cpuMask |= 1L << cpu;
+            }
+
+            // Ensure managed thread is linked to OS thread; does nothing on default host in current .Net versions
+            Thread.BeginThreadAffinity();
+
+            #pragma warning disable 618
+            // The call to BeginThreadAffinity guarantees stable results for GetCurrentThreadId,
+            // so we ignore the obsolete warning
+            int osThreadId = AppDomain.GetCurrentThreadId();
+            #pragma warning restore 618
+
+            // Find the ProcessThread for this thread.
+            ProcessThread thread = Process.GetCurrentProcess().Threads.Cast<ProcessThread>().Single(t => t.Id == osThreadId);
+            // Set the thread's processor affinity
+            thread.ProcessorAffinity = new IntPtr(cpuMask);
+        }
 
 	    /// <summary>
         /// Finds the best Value

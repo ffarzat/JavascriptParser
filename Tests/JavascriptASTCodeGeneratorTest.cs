@@ -219,8 +219,8 @@ namespace Tests
             const string qunitFile = "core-test.js";
             const string fileMomentPath = "moment.js";
             const string fileGeneratedCode = "target.js";
-            var sw = new Stopwatch(); 
             
+            var sw = new Stopwatch(); 
 
             #region Build the AST from Js and Generate the code
             var momentTextWithoutComments = File.ReadAllText(fileMomentPath);
@@ -244,8 +244,8 @@ namespace Tests
             engine.ExecuteFile(fileGeneratedCode);
             engine.ExecuteFile(qunitFile);
             engine.ExecuteFile(jsTestFile);
-            sw.Stop();
-            //Console.WriteLine("{0} - {1} segundos", qunitFile, sw.Elapsed.TotalSeconds);
+            
+            
 
             try
             {
@@ -309,9 +309,8 @@ namespace Tests
                 engine.Execute(@"   QUnit.load();
                                     QUnit.start();
                 ");
-                
 
-                
+                sw.Stop();
             }
             catch (JavaScriptException ex)
             {
@@ -326,6 +325,8 @@ namespace Tests
 
             var total = engine.GetGlobalValue<int>("total");
             var sucesso = engine.GetGlobalValue<int>("sucesso");
+
+            Console.WriteLine("{0} - {1} segundos", qunitFile, sw.Elapsed.TotalSeconds);
 
             Assert.AreEqual(total, sucesso);
 

@@ -63,6 +63,15 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
+        /// Gets a full clone of object
+        /// </summary>
+        /// <returns></returns>
+        public IFitnessFunction Clone()
+        {
+            return  new JavascriptFitness(this._pathToExecution, this._scriptTestPtah, this._qunitPath);
+        }
+
+        /// <summary>
         /// Loads Once a Qunit JsFile
         /// </summary>
         private void LoadQunitAndTests(ScriptEngine engine)

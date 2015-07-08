@@ -130,7 +130,12 @@ namespace AForge.Genetic
 			return TranslateNative( chromosome );
 		}
 
-		/// <summary>
+	    public IFitnessFunction Clone()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		/// Translates genotype to phenotype 
 		/// </summary>
 		/// 

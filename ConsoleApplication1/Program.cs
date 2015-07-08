@@ -129,22 +129,6 @@ namespace ConsoleApplication1
             var swEpoch = new Stopwatch();
             sw.Start();
             
-            #region CPU
-            
-            int processors = 1;
-            
-            string processorsStr = System.Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS");
-            
-            if (processorsStr != null)
-                processors = int.Parse(processorsStr);
-
-            Console.WriteLine("{0} processadores detectados", processors);
-            //System.Diagnostics.Process.GetCurrentProcess().ProcessorAffinity = (System.IntPtr)1; //forço o console a ficar no CPU 1
-            //TODO: tratar o uso de todas as CPUS exceto uma
-
-            #endregion 
-
-
             #region Encontra a função alvo da otimização, recupera o bloco de instruções
             var funcaoOtimizar = JavascriptAstCodeGenerator.FindFunctionTree(tree, TargetFunction);
 
