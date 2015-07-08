@@ -353,7 +353,7 @@ namespace AForge.Genetic
                     i = 0;
 
                 int i1 = i;
-                resultList.Add(new Thread(() => Start(chromosome, fitnessFunction.Clone(), i1)) { IsBackground = true, Priority = ThreadPriority.Highest});
+                resultList.Add(new Thread(() => Start(chromosome, fitnessFunction.Clone(), i1)) { IsBackground = false, Priority = ThreadPriority.Highest});
                 i++;
             }
 
