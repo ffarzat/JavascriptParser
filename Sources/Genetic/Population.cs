@@ -345,23 +345,21 @@ namespace AForge.Genetic
             sw.Start();
 
             var resultList = new List<Thread>();
-            int i = 1;
-
+            int i = new int();
+            i = 0;
             foreach (var chromosome in taskList)
             {
-                if (i > (_processorsCount -1))
-                    i = 1;
+                if (i > (_processorsCount -2))
+                    i = 0;
 
-                resultList.Add(new Thread(() => Start(chromosome, fitnessFunction.Clone(), i)) { IsBackground = true, Priority = ThreadPriority.Highest});
+                int i1 = i;
+                resultList.Add(new Thread(() => Start(chromosome, fitnessFunction.Clone(), i1)) { IsBackground = true, Priority = ThreadPriority.Highest});
                 i++;
-                //Reset if necessary
-                
             }
 
             resultList.ForEach(t => t.Start());
             resultList.ForEach(t => t.Join());
             sw.Stop();
-            
             Console.WriteLine("{0} minutos", sw.Elapsed.TotalMinutes);
 	    }
 
@@ -373,9 +371,11 @@ namespace AForge.Genetic
 	    /// <param name="processorId"></param>
 	    private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1, int processorId)
 	    {
+            Console.WriteLine("{0} no processador {1}", chromosome.Id, processorId);
+            SetThreadProcessorAffinity(processorId);
+
 	        chromosome.Evaluate(fitnessFunction1);
 	        File.WriteAllText(chromosome.File, chromosome.ToString());
-	        SetThreadProcessorAffinity(processorId);
 	    }
 
 
