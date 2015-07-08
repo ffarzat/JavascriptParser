@@ -371,11 +371,15 @@ namespace AForge.Genetic
 	    /// <param name="processorId"></param>
 	    private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1, int processorId)
 	    {
+	        var sw = new Stopwatch();
+            sw.Start();
             Console.WriteLine("{0} no processador {1}", chromosome.Id, processorId);
             SetThreadProcessorAffinity(processorId);
 
 	        chromosome.Evaluate(fitnessFunction1);
 	        File.WriteAllText(chromosome.File, chromosome.ToString());
+            sw.Stop();
+            Console.WriteLine("{0} segundos", sw.Elapsed.TotalSeconds);
 	    }
 
 
