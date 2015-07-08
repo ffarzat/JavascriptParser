@@ -323,19 +323,29 @@ namespace AForge.Genetic
             Console.WriteLine("{2}valiando {0} Chromossomos na geração {1}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"));
             sw.Start();
 
-            var resultList = new List<Task>();
-
-            //Parallel.ForEach(taskList, chromosome => chromosome.Evaluate(fitnessFunction));
+            var resultList = new List<Thread>();
 
             foreach (var chromosome in taskList)
             {
-                resultList.Add(Task.Factory.StartNew(() => chromosome.Evaluate(fitnessFunction)).ContinueWith(task1 => File.WriteAllText(chromosome.File, chromosome.ToString())));
+                resultList.Add(new Thread(() => Start(chromosome, fitnessFunction)) { IsBackground = true, Priority = ThreadPriority.Highest});
             }
 
-            Task.WaitAll(resultList.ToArray());
+            resultList.ForEach(t => t.Start());
+            resultList.ForEach(t => t.Join());
             sw.Stop();
             
             Console.WriteLine("{0} minutos", sw.Elapsed.TotalMinutes);
+	    }
+
+        /// <summary>
+        /// Do Parallel Evaluation
+        /// </summary>
+        /// <param name="chromosome"></param>
+        /// <param name="fitnessFunction1"></param>
+	    private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1)
+	    {
+	        chromosome.Evaluate(fitnessFunction);
+	        File.WriteAllText(chromosome.File, chromosome.ToString());
 	    }
 
 	    /// <summary>
