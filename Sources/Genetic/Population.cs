@@ -26,6 +26,8 @@ namespace AForge.Genetic
         [DllImport("ntdll.dll", CharSet = CharSet.Auto)]
         public static extern uint NtGetCurrentProcessorNumber();
 
+	    private int[] processorsToUse;
+
 		private IFitnessFunction    fitnessFunction;
 		private ISelectionMethod    selectionMethod;
         private List<IChromosome>   population = new List<IChromosome>();
@@ -170,6 +172,15 @@ namespace AForge.Genetic
                 _processorsCount = int.Parse(processorsStr);
 
             Console.WriteLine("{0} processadores detectados", _processorsCount);
+
+            processorsToUse = new int[100]; 
+
+            for (int i = 0; i < _processorsCount-1; i++)
+            {
+                processorsToUse[i] = i+1;
+            }
+
+            Array.Resize(ref processorsToUse, _processorsCount -1);
 
 	        #endregion
 	    }
@@ -364,7 +375,9 @@ namespace AForge.Genetic
 	    /// <param name="fitnessFunction1"></param>
 	    private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1)
 	    {
-            using (ProcessorAffinity.BeginAffinity(1, 2, 3))
+
+
+            using (ProcessorAffinity.BeginAffinity(processorsToUse))
             {
                 Console.WriteLine("Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
                 var sw = new Stopwatch();
