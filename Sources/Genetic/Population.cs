@@ -366,7 +366,7 @@ namespace AForge.Genetic
 	    {
             using (ProcessorAffinity.BeginAffinity(1, 2, 3))
             {
-                //Console.WriteLine("Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
+                Console.WriteLine("Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
                 var sw = new Stopwatch();
                 sw.Start();
 
