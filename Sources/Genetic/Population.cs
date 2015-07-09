@@ -377,7 +377,6 @@ namespace AForge.Genetic
                 foreach (var chromosome in population)
                 {
                     chromosome.Evaluate(fitnessFunction);
-                    File.WriteAllText(chromosome.File, chromosome.ToString());
                 }
             }
 
