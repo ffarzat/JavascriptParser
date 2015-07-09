@@ -391,8 +391,8 @@ namespace AForge.Genetic
 
                     TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
 
-                    if (!result.AsyncWaitHandle.WaitOne(span)) 
-                        Console.WriteLine("Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos)", chromosome.Id, span.TotalMinutes);
+                    if (!result.AsyncWaitHandle.WaitOne(span))
+                        Console.WriteLine("Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
                 }
             }
 
@@ -422,7 +422,7 @@ namespace AForge.Genetic
                     TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
 
                     if (!result.AsyncWaitHandle.WaitOne(span))
-                        Console.WriteLine("Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos)", chromosome.Id, span.TotalMinutes);
+                        Console.WriteLine("Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
 
                 }
 	        }
