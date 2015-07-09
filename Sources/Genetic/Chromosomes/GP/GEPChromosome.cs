@@ -39,6 +39,7 @@ namespace AForge.Genetic
 		public double Fitness
 		{
 			get { return fitness; }
+            set { fitness = value; }
 		}
 		
 		/// <summary>

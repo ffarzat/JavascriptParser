@@ -31,9 +31,9 @@ namespace AForge.Genetic
 	    /// <summary>
 		/// Chromosome's fintess value
 		/// </summary>
-		double Fitness { get; }
+		double Fitness { get; set; }
 
-		/// <summary>
+	    /// <summary>
 		/// Generate random chromosome value
 		/// </summary>
 		void Generate( );

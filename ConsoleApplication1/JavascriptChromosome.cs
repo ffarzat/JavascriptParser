@@ -83,7 +83,7 @@ namespace ConsoleApplication1
         /// <summary>
         /// Chromosome's fintess value
         /// </summary>
-        public double Fitness { get; private set; }
+        public double Fitness { get; set; }
 
         /// <summary>
         /// Starts a new instance based on Tree AST
