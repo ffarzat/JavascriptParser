@@ -329,7 +329,7 @@ namespace AForge.Genetic
 			// amount of random chromosomes in the new population
 			int randomAmount = (int)( randomSelectionPortion * size );
 
-            Console.WriteLine(" {0} individuos(s) selecionados pelo metodo {0}", randomAmount, selectionMethod.ToString() );
+            Console.WriteLine(" {0} individuos(s) selecionados pelo metodo {1}", randomAmount, selectionMethod.ToString() );
 
 			// do selection
 			selectionMethod.ApplySelection( population, size - randomAmount );
@@ -414,7 +414,7 @@ namespace AForge.Genetic
             }
 
             sw.Stop();
-            Console.WriteLine(" {0} minutos - {1}", sw.Elapsed.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
+            Console.WriteLine(" Geração avaliada em {0} minutos - {1}", sw.Elapsed.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
         }
 
 	    /// <summary>

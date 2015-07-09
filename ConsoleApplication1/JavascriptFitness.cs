@@ -230,7 +230,7 @@ namespace ConsoleApplication1
 
             sw.Stop();
             
-            //Console.WriteLine("Fitness {0} segundos", sw.Elapsed.Seconds);
+            //Console.WriteLine("{0} segundos", sw.Elapsed.Seconds);
 
             //if (total.Equals(sucess)) //passou em todos
                 //fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
@@ -239,8 +239,8 @@ namespace ConsoleApplication1
             fitness = fitness + double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
             File.WriteAllText(fileName, generatedJsCode);
             #endregion
-            
-            Console.WriteLine("{0} -> {1}",chromosome.Id, fitness);
+
+            Console.WriteLine("     {0} -> {1} (em {2} minutos)", chromosome.Id, fitness, sw.Elapsed.TotalMinutes);
             return fitness;
         }
 
