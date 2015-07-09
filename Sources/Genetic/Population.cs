@@ -358,7 +358,7 @@ namespace AForge.Genetic
         {
             var sw = new Stopwatch();
             var taskList = population.Where(c => c.Fitness.Equals(0)).ToList();
-            Console.WriteLine("{2}valiando {0} Chromossomos na geração {1}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"));
+            Console.WriteLine("{2}valiando {0} Chromossomos na geração {1} - {3}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"), DateTime.Now.ToString("HH:MM:ss"));
 
             sw.Start();
             if (Parallelism)
@@ -376,12 +376,21 @@ namespace AForge.Genetic
             {
                 foreach (var chromosome in population)
                 {
-                    chromosome.Evaluate(fitnessFunction);
+                    IAsyncResult result;
+                    IChromosome chromosome1 = chromosome;
+                    Action action = () => chromosome1.Evaluate(fitnessFunction);
+
+                    result = action.BeginInvoke(null, null);
+
+                    TimeSpan span = DateTime.Now.AddMinutes(6) - DateTime.Now;
+
+                    if (!result.AsyncWaitHandle.WaitOne(span)) 
+                        Console.WriteLine("Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos)", chromosome.Id, span.TotalMinutes);
                 }
             }
 
             sw.Stop();
-            Console.WriteLine("{0} minutos", sw.Elapsed.TotalMinutes);
+            Console.WriteLine("{0} minutos - {1}", sw.Elapsed.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
         }
 
 	    /// <summary>
