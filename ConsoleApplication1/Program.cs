@@ -172,7 +172,7 @@ namespace ConsoleApplication1
             {
                 swEpoch.Reset();
                 swEpoch.Start();
-
+                Console.WriteLine("--------------------------");
                 Console.WriteLine("Processando geração {0}... ", i+1);
                 population.RunEpoch();
                 swEpoch.Stop();
@@ -188,7 +188,7 @@ namespace ConsoleApplication1
             Console.WriteLine("Processo executado em {0} minutos", sw.Elapsed.TotalMinutes);
 
             #region Results
-
+            Console.WriteLine("============================= ");
             Console.WriteLine("Max = " + population.FitnessMax);
             Console.WriteLine("Sum = " + population.FitnessSum);
             Console.WriteLine("Avg = " + population.FitnessAvg);

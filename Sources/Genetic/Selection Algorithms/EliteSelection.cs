@@ -46,8 +46,16 @@ namespace AForge.Genetic
 			this.shuffle = shuffle;
 		}
 
+        /// <summary>
+        /// Name of method
+        /// </summary>
+        /// <returns></returns>
+	    public override string ToString()
+        {
+            return "Elite";
+        }
 
-		/// <summary>
+	    /// <summary>
 		/// Apply selection to the population
 		/// </summary>
         public void ApplySelection(List<IChromosome> chromosomes, int size)

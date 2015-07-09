@@ -162,7 +162,7 @@ namespace AForge.Genetic
 			}
 
             //Fit Evaluation in as multiThreading
-            ExecuteFitEvaluation(true);
+            //ExecuteFitEvaluation(true);
 
 		}
 
@@ -236,6 +236,8 @@ namespace AForge.Genetic
 		/// </summary>
 		public virtual void Crossover( )
 		{
+		    int count = 0;
+
 			// crossover
 			for ( int i = 1; i < size; i += 2 )
 			{
@@ -256,8 +258,12 @@ namespace AForge.Genetic
 					// add two new offsprings to the population
 					population.Add( c1 );
 					population.Add( c2 );
+				    count++;
 				}
 			}
+
+            Console.WriteLine(" {0} crossover(s) : {1} novo(s) individuo(s)", count, count *2);
+
 		}
 
 		/// <summary>
@@ -265,6 +271,7 @@ namespace AForge.Genetic
 		/// </summary>
 		public virtual void Mutate( )
 		{
+		    int count = 0;
 			// mutate
 			for ( int i = 0; i < size; i++ )
 			{
@@ -279,8 +286,11 @@ namespace AForge.Genetic
 					//c.Evaluate( fitnessFunction );
 					// add mutant to the population
 					population.Add( c );
+				    count++;
 				}
 			}
+
+            Console.WriteLine(" {0} mutation(s) : {1} novo(s) individuo(s)", count, count);
 		}
 
         /// <summary>
@@ -288,6 +298,8 @@ namespace AForge.Genetic
         /// </summary>
         public virtual void Delete()
         {
+            int count = 0;
+
             // Delte
             for (int i = 0; i < size; i++)
             {
@@ -302,8 +314,11 @@ namespace AForge.Genetic
                     //c.Evaluate(fitnessFunction);
                     // add mutant to the population
                     population.Add(c);
+                    count++;
                 }
             }
+
+            Console.WriteLine(" {0} delete(s) : {1} novo(s) individuo(s)", count, count);
         }
 
 		/// <summary>
@@ -313,6 +328,8 @@ namespace AForge.Genetic
 		{
 			// amount of random chromosomes in the new population
 			int randomAmount = (int)( randomSelectionPortion * size );
+
+            Console.WriteLine(" {0} individuos(s) selecionados pelo metodo {0}", randomAmount, selectionMethod.ToString() );
 
 			// do selection
 			selectionMethod.ApplySelection( population, size - randomAmount );
@@ -366,7 +383,7 @@ namespace AForge.Genetic
         {
             var sw = new Stopwatch();
             var taskList = population.Where(c => c.Fitness.Equals(0)).ToList();
-            Console.WriteLine("{2}valiando {0} Chromossomos na geração {1} - {3}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"), DateTime.Now.ToString("HH:MM:ss"));
+            Console.WriteLine(" {2}valiando {0} Chromossomos na geração {1} - {3}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"), DateTime.Now.ToString("HH:MM:ss"));
 
             sw.Start();
             if (Parallelism)
@@ -392,12 +409,12 @@ namespace AForge.Genetic
                     TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
 
                     if (!result.AsyncWaitHandle.WaitOne(span))
-                        Console.WriteLine("Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
+                        Console.WriteLine("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
                 }
             }
 
             sw.Stop();
-            Console.WriteLine("{0} minutos - {1}", sw.Elapsed.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
+            Console.WriteLine(" {0} minutos - {1}", sw.Elapsed.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
         }
 
 	    /// <summary>
@@ -412,17 +429,14 @@ namespace AForge.Genetic
 	        {
                 using (ProcessorAffinity.BeginAffinity(processorsToUse))
                 {
-                    Console.WriteLine("Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
-                    IAsyncResult result;
-                    IChromosome chromosome1 = chromosome;
-                    Action action = () => chromosome1.Evaluate(fitnessFunction);
-
-                    result = action.BeginInvoke(null, null);
+                    Console.WriteLine("     Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
+                    Action action = () => chromosome.Evaluate(fitnessFunction);
+                    IAsyncResult result = action.BeginInvoke(null, null);
 
                     TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
 
                     if (!result.AsyncWaitHandle.WaitOne(span))
-                        Console.WriteLine("Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
+                        Console.WriteLine("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
 
                 }
 	        }
