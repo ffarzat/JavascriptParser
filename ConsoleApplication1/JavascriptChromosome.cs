@@ -304,14 +304,20 @@ namespace ConsoleApplication1
         public  void Crossover(IChromosome pair)
         {
             var javascriptChromosomePair = (JavascriptChromosome)pair;
-            
+            int tries = 100;
             Fitness = 0;
             javascriptChromosomePair.Fitness = 0;
 
             bool sinal = true;
+            int count = 0;
             //Try to cross a function node
             while (sinal)
             {
+                if (count >= tries)
+                {
+                    sinal = false; 
+                }
+
                 int dadPoint = Rand.Next(0, _function.ChildCount); //at line instruction
                 int momPoint = Rand.Next(0, javascriptChromosomePair.Function.ChildCount); //at line instruction
 
@@ -325,6 +331,7 @@ namespace ConsoleApplication1
                     sinal = false;
                 }
 
+                count++;
             }
 
         }
