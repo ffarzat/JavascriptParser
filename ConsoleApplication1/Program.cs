@@ -25,7 +25,8 @@ namespace ConsoleApplication1
         private static int PopulationSize = 0;
         private static int Generations = 0;
         private static bool Parallelism = false;
-
+        private static int EvaluateTimeOutMinutes = 0;
+        
         private static DirectoryInfo _dirinfo = null;
         private static readonly string ExecutionPath = Environment.CurrentDirectory;
 
@@ -62,6 +63,7 @@ namespace ConsoleApplication1
             PopulationSize = Convert.ToInt32(ConfigurationManager.AppSettings["PopulationSize"]);
             Generations = Convert.ToInt32(ConfigurationManager.AppSettings["Generations"]);
             Parallelism = Convert.ToBoolean(ConfigurationManager.AppSettings["Parallelism"]);
+            EvaluateTimeOutMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["EvaluateTimeOutMinutes"]);
 
             Console.WriteLine("Biblioteca {0}", JsFile);
             Console.WriteLine("Testes {0}", JsFileTest);
@@ -71,6 +73,8 @@ namespace ConsoleApplication1
             Console.WriteLine("População {0}", PopulationSize);
             Console.WriteLine("Gerações {0}", Generations);
             Console.WriteLine("Paralelismo {0}", Parallelism);
+            Console.WriteLine("TimeOut para Fitness {0}", EvaluateTimeOutMinutes);
+            
 
 
             var sw = new Stopwatch();
@@ -150,11 +154,10 @@ namespace ConsoleApplication1
 
             #region Faz o setup da população inicial
             IFitnessFunction fitness = new JavascriptFitness(ExecutionPath, JsFileTest, QunitFile);
-
+            
             ISelectionMethod metodoSelecao = new EliteSelection();
 
-            Population population = new Population(PopulationSize, ancestral, fitness, metodoSelecao);
-            population.Parallelism = Parallelism;
+            Population population = new Population(PopulationSize, ancestral, fitness, metodoSelecao, Parallelism, EvaluateTimeOutMinutes);
 
             #endregion
             

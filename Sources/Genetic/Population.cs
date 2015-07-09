@@ -28,6 +28,11 @@ namespace AForge.Genetic
 
 	    private int[] processorsToUse;
         public bool Parallelism { get; set; }
+        
+        /// <summary>
+        /// Timeout for evaluate an indivudual
+        /// </summary>
+        public int TimeOut { get; set; }
 
 
 	    private IFitnessFunction    fitnessFunction;
@@ -128,11 +133,14 @@ namespace AForge.Genetic
 	    /// <summary>
 		/// Constructor
 		/// </summary>
-		public Population( int size,IChromosome ancestor, IFitnessFunction fitnessFunction, ISelectionMethod selectionMethod )
+		public Population( int size,IChromosome ancestor, IFitnessFunction fitnessFunction, ISelectionMethod selectionMethod, bool parallel, int timeout)
 		{
 			this.fitnessFunction = fitnessFunction;
 			this.selectionMethod = selectionMethod;
 			this.size	= size;
+	        this.Parallelism = parallel;
+	        this.TimeOut = timeout;
+
             this._generationsBestChromosomes = new Dictionary<int, IChromosome>();
 
             DiscoverProcessors();
@@ -193,7 +201,7 @@ namespace AForge.Genetic
 			IChromosome ancestor,
 			IFitnessFunction fitnessFunction,
 			ISelectionMethod selectionMethod,
-			double randomSelectionPortion ) : this ( size, ancestor, fitnessFunction, selectionMethod )
+			double randomSelectionPortion ) : this ( size, ancestor, fitnessFunction, selectionMethod, false, 1 )
 		{
 			this.randomSelectionPortion = Math.Max( 0, Math.Min( 0.5, randomSelectionPortion ) );
 		}
@@ -376,13 +384,12 @@ namespace AForge.Genetic
             {
                 foreach (var chromosome in population)
                 {
-                    IAsyncResult result;
                     IChromosome chromosome1 = chromosome;
                     Action action = () => chromosome1.Evaluate(fitnessFunction);
 
-                    result = action.BeginInvoke(null, null);
+                    IAsyncResult result = action.BeginInvoke(null, null);
 
-                    TimeSpan span = DateTime.Now.AddMinutes(6) - DateTime.Now;
+                    TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
 
                     if (!result.AsyncWaitHandle.WaitOne(span)) 
                         Console.WriteLine("Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos)", chromosome.Id, span.TotalMinutes);
@@ -406,13 +413,17 @@ namespace AForge.Genetic
                 using (ProcessorAffinity.BeginAffinity(processorsToUse))
                 {
                     Console.WriteLine("Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
-                    var sw = new Stopwatch();
-                    sw.Start();
+                    IAsyncResult result;
+                    IChromosome chromosome1 = chromosome;
+                    Action action = () => chromosome1.Evaluate(fitnessFunction);
 
-                    chromosome.Evaluate(fitnessFunction1);
-                    File.WriteAllText(chromosome.File, chromosome.ToString());
-                    sw.Stop();
-                    Console.WriteLine("{0} segundos", sw.Elapsed.TotalSeconds);
+                    result = action.BeginInvoke(null, null);
+
+                    TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
+
+                    if (!result.AsyncWaitHandle.WaitOne(span))
+                        Console.WriteLine("Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos)", chromosome.Id, span.TotalMinutes);
+
                 }
 	        }
 	        catch (Exception ex)

@@ -1,4 +1,6 @@
+D:\Github\JavascriptParser\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
 D:\Github\JavascriptParser\Tests\bin\Debug\angular.js
+D:\Github\JavascriptParser\Tests\bin\Debug\core-test.js
 D:\Github\JavascriptParser\Tests\bin\Debug\jquery-ui-1.8.24.js
 D:\Github\JavascriptParser\Tests\bin\Debug\jquery-ui-1.8.24.min.js
 D:\Github\JavascriptParser\Tests\bin\Debug\moment.js
@@ -23,7 +25,5 @@ D:\Github\JavascriptParser\Tests\bin\Debug\ConsoleApplication1.pdb
 D:\Github\JavascriptParser\Tests\bin\Debug\AForge.pdb
 D:\Github\JavascriptParser\Tests\bin\Debug\AForge.Genetic.pdb
 D:\Github\JavascriptParser\Tests\bin\Debug\nunit.framework.xml
-D:\Github\JavascriptParser\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
 D:\Github\JavascriptParser\Tests\obj\Debug\Tests.dll
 D:\Github\JavascriptParser\Tests\obj\Debug\Tests.pdb
-D:\Github\JavascriptParser\Tests\bin\Debug\core-test.js

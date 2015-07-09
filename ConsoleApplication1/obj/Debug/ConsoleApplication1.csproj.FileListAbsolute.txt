@@ -23,7 +23,9 @@ C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\m
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\Problem.java
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\scriptData.js
 C:\Users\Fabio\Documents\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\scriptDataTest.js
+D:\Github\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
 D:\Github\JavascriptParser\ConsoleApplication1\bin\Debug\angular.js
+D:\Github\JavascriptParser\ConsoleApplication1\bin\Debug\core-test.js
 D:\Github\JavascriptParser\ConsoleApplication1\bin\Debug\jquery-ui-1.8.24.js
 D:\Github\JavascriptParser\ConsoleApplication1\bin\Debug\jquery-ui-1.8.24.min.js
 D:\Github\JavascriptParser\ConsoleApplication1\bin\Debug\moment.js
@@ -43,7 +45,5 @@ D:\Github\JavascriptParser\ConsoleApplication1\bin\Debug\Jurassic.dll
 D:\Github\JavascriptParser\ConsoleApplication1\bin\Debug\unvell.ReoScript.dll
 D:\Github\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.pdb
 D:\Github\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.Genetic.pdb
-D:\Github\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
 D:\Github\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
 D:\Github\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
-D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\core-test.js
