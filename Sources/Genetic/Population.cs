@@ -27,8 +27,10 @@ namespace AForge.Genetic
         public static extern uint NtGetCurrentProcessorNumber();
 
 	    private int[] processorsToUse;
+        public bool Parallelism { get; set; }
 
-		private IFitnessFunction    fitnessFunction;
+
+	    private IFitnessFunction    fitnessFunction;
 		private ISelectionMethod    selectionMethod;
         private List<IChromosome>   population = new List<IChromosome>();
 		private int			size;
@@ -358,15 +360,31 @@ namespace AForge.Genetic
             var sw = new Stopwatch();
             var taskList = population.Where(c => c.Fitness.Equals(0)).ToList();
             Console.WriteLine("{2}valiando {0} Chromossomos na geração {1}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"));
+
             sw.Start();
+            if (Parallelism)
+            {
+                var resultList = taskList.Select(chromosome => new Thread(() => Start(chromosome, fitnessFunction.Clone()))
+                            {
+                                IsBackground = false,
+                                Priority = ThreadPriority.Highest
+                            }).ToList();
 
-            var resultList = taskList.Select(chromosome => new Thread(() => Start(chromosome, fitnessFunction.Clone())) {IsBackground = false, Priority = ThreadPriority.Highest}).ToList();
+                resultList.ForEach(t => t.Start());
+                resultList.ForEach(t => t.Join());
+            }
+            else
+            {
+                foreach (var chromosome in population)
+                {
+                    chromosome.Evaluate(fitnessFunction);
+                    File.WriteAllText(chromosome.File, chromosome.ToString());
+                }
+            }
 
-            resultList.ForEach(t => t.Start());
-            resultList.ForEach(t => t.Join());
             sw.Stop();
             Console.WriteLine("{0} minutos", sw.Elapsed.TotalMinutes);
-	    }
+        }
 
 	    /// <summary>
 	    /// Do Parallel Evaluation

@@ -24,6 +24,7 @@ namespace ConsoleApplication1
         private static string QunitFile = "";
         private static int PopulationSize = 0;
         private static int Generations = 0;
+        private static bool Parallelism = false;
 
         private static DirectoryInfo _dirinfo = null;
         private static readonly string ExecutionPath = Environment.CurrentDirectory;
@@ -60,12 +61,16 @@ namespace ConsoleApplication1
             QunitFile = ConfigurationManager.AppSettings["QunitFile"];
             PopulationSize = Convert.ToInt32(ConfigurationManager.AppSettings["PopulationSize"]);
             Generations = Convert.ToInt32(ConfigurationManager.AppSettings["Generations"]);
+            Parallelism = Convert.ToBoolean(ConfigurationManager.AppSettings["Parallelism"]);
 
             Console.WriteLine("Biblioteca {0}", JsFile);
             Console.WriteLine("Testes {0}", JsFileTest);
             Console.WriteLine("Função alvo {0}", TargetFunction);
+            Console.WriteLine("Qunit {0}", QunitFile);
+            
             Console.WriteLine("População {0}", PopulationSize);
             Console.WriteLine("Gerações {0}", Generations);
+            Console.WriteLine("Paralelismo {0}", Parallelism);
 
 
             var sw = new Stopwatch();
@@ -149,6 +154,7 @@ namespace ConsoleApplication1
             ISelectionMethod metodoSelecao = new EliteSelection();
 
             Population population = new Population(PopulationSize, ancestral, fitness, metodoSelecao);
+            population.Parallelism = Parallelism;
 
             #endregion
             
