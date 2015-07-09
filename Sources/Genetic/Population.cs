@@ -383,7 +383,7 @@ namespace AForge.Genetic
         {
             var sw = new Stopwatch();
             var taskList = population.Where(c => c.Fitness.Equals(0)).ToList();
-            Console.WriteLine(" {2}valiando {0} Chromossomos na geração {1} - {3}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"), DateTime.Now.ToString("HH:MM:ss"));
+            Console.WriteLine(" {2}valiando {0} Chromossomos na geração {1} - {3}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"), DateTime.Now.ToString("HH:mm:ss"));
 
             sw.Start();
             if (Parallelism)
@@ -409,12 +409,12 @@ namespace AForge.Genetic
                     TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
 
                     if (!result.AsyncWaitHandle.WaitOne(span))
-                        Console.WriteLine("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
+                        Console.WriteLine("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:mm:ss"));
                 }
             }
 
             sw.Stop();
-            Console.WriteLine(" Geração avaliada em {0} minutos - {1}", sw.Elapsed.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
+            Console.WriteLine(" Geração avaliada em {0} minutos - {1}", sw.Elapsed.TotalMinutes, DateTime.Now.ToString("HH:mm:ss"));
         }
 
 	    /// <summary>
@@ -436,7 +436,7 @@ namespace AForge.Genetic
                     TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
 
                     if (!result.AsyncWaitHandle.WaitOne(span))
-                        Console.WriteLine("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:MM:ss"));
+                        Console.WriteLine("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:mm:ss"));
 
                 }
 	        }
