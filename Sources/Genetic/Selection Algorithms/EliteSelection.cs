@@ -57,8 +57,10 @@ namespace AForge.Genetic
 			
 			// remove bad chromosomes
             ordered.RemoveRange(size, chromosomes.Count - size);
-
-			// shuffle chromosomes
+            
+            chromosomes = ordered;
+			
+            // shuffle chromosomes
 			if ( shuffle )
 			{
 				for ( int i = 0, n = size / 2; i < n; i++ )

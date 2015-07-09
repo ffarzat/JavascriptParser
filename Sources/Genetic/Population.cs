@@ -35,7 +35,7 @@ namespace AForge.Genetic
         private List<IChromosome>   population = new List<IChromosome>();
 		private int			size;
 	    private int         _generationCount = 0;
-		private double		randomSelectionPortion = 0.0;
+		private double		randomSelectionPortion = 0.75;
 
 		// population parameters
 		private double		crossOverRate	= 0.75;
@@ -125,8 +125,7 @@ namespace AForge.Genetic
 			get { return (IChromosome) population[index]; }
 		}
 
-
-		/// <summary>
+	    /// <summary>
 		/// Constructor
 		/// </summary>
 		public Population( int size,IChromosome ancestor, IFitnessFunction fitnessFunction, ISelectionMethod selectionMethod )
