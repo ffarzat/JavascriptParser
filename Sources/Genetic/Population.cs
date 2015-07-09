@@ -376,18 +376,27 @@ namespace AForge.Genetic
 	    private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1)
 	    {
 
+	        try
+	        {
+                using (ProcessorAffinity.BeginAffinity(processorsToUse))
+                {
+                    Console.WriteLine("Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
+                    var sw = new Stopwatch();
+                    sw.Start();
 
-            using (ProcessorAffinity.BeginAffinity(processorsToUse))
-            {
-                Console.WriteLine("Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
-                var sw = new Stopwatch();
-                sw.Start();
+                    chromosome.Evaluate(fitnessFunction1);
+                    File.WriteAllText(chromosome.File, chromosome.ToString());
+                    sw.Stop();
+                    Console.WriteLine("{0} segundos", sw.Elapsed.TotalSeconds);
+                }
+	        }
+	        catch (Exception ex)
+	        {
+                Console.WriteLine("{0}", ex);
+	            throw;
+	        }
 
-                chromosome.Evaluate(fitnessFunction1);
-                File.WriteAllText(chromosome.File, chromosome.ToString());
-                sw.Stop();
-                Console.WriteLine("{0} segundos", sw.Elapsed.TotalSeconds);
-            }
+	        
 	        
 	    }
 
