@@ -418,7 +418,7 @@ namespace AForge.Genetic
             }
 
             sw.Stop();
-            Console.WriteLine(" Geração avaliada em {0} minutos - {1}", sw.Elapsed.TotalMinutes, DateTime.Now.ToString("HH:mm:ss"));
+            Console.WriteLine(" Geração avaliada em {0} minutos - {1}", sw.Elapsed.ToString(@"m\:ss"), DateTime.Now.ToString("HH:mm:ss"));
         }
 
 	    /// <summary>
@@ -434,7 +434,7 @@ namespace AForge.Genetic
                 using (ProcessorAffinity.BeginAffinity(processorsToUse))
                 {
                     Console.WriteLine("     Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
-                    Action action = () => chromosome.Evaluate(fitnessFunction);
+                    Action action = () => chromosome.Evaluate(fitnessFunction1);
                     IAsyncResult result = action.BeginInvoke(null, null);
 
                     TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;

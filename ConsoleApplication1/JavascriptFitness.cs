@@ -240,7 +240,7 @@ namespace ConsoleApplication1
             File.WriteAllText(fileName, generatedJsCode);
             #endregion
 
-            Console.WriteLine("     {0} -> {1} (em {2} minutos)", chromosome.Id, fitness, sw.Elapsed.TotalMinutes);
+            Console.WriteLine("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString(@"m\:ss"));
             return fitness;
         }
 
