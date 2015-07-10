@@ -384,6 +384,7 @@ namespace AForge.Genetic
             var sw = new Stopwatch();
             var taskList = population.Where(c => c.Fitness.Equals(0)).ToList();
             Console.WriteLine(" {2}valiando {0} Chromossomos na geração {1} - {3}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"), DateTime.Now.ToString("HH:mm:ss"));
+            TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
 
             sw.Start();
             if (Parallelism)
@@ -395,7 +396,7 @@ namespace AForge.Genetic
                             }).ToList();
 
                 resultList.ForEach(t => t.Start());
-                resultList.ForEach(t => t.Join());
+                resultList.ForEach(t => t.Join(span));
             }
             else
             {
@@ -405,9 +406,7 @@ namespace AForge.Genetic
                     Action action = () => chromosome1.Evaluate(fitnessFunction);
 
                     IAsyncResult result = action.BeginInvoke(null, null);
-
-                    TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
-
+                    
                     if (!result.AsyncWaitHandle.WaitOne(span))
                     {
                         chromosome1.Fitness = double.MaxValue;
@@ -434,13 +433,7 @@ namespace AForge.Genetic
                 using (ProcessorAffinity.BeginAffinity(processorsToUse))
                 {
                     Console.WriteLine("     Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
-                    Action action = () => chromosome.Evaluate(fitnessFunction1);
-                    IAsyncResult result = action.BeginInvoke(null, null);
-
-                    TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
-
-                    if (!result.AsyncWaitHandle.WaitOne(span))
-                        Console.WriteLine("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:mm:ss"));
+                    chromosome.Evaluate(fitnessFunction1);
 
                 }
 	        }
