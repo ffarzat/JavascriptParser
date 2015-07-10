@@ -215,13 +215,13 @@ namespace Tests
         public void RunTestsFromGeneratedMomentJs()
         {
             const string jsTestFile = "tests.js";
-            //const string qunitFile = "qunit-1.18.0.js";
-            const string qunitFile = "core-test.js";
+            const string qunitFile = "qunit-1.18.0.js";
+            //const string qunitFile = "core-test.js";
             const string fileMomentPath = "moment.js";
             const string fileGeneratedCode = "target.js";
             
-            var sw = new Stopwatch(); 
-
+            var sw = new Stopwatch();
+            sw.Start();
             #region Build the AST from Js and Generate the code
             var momentTextWithoutComments = File.ReadAllText(fileMomentPath);
             
@@ -236,14 +236,23 @@ namespace Tests
             var generatedJsCode = codeGenerator.DoCodeTransformation();
             File.WriteAllText(fileGeneratedCode, generatedJsCode);
             #endregion
+            sw.Stop();
+            Console.WriteLine("{0} - {1}", "AST criada", sw.Elapsed.ToString(@"m\:ss"));
 
+            sw.Reset();
+            sw.Start();
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
+            //engine.EnableDebugging = false;
+            //engine.EnableILAnalysis = false;
+            sw.Stop();
+            Console.WriteLine("{0} - {1}", "Engine criada e configurada", sw.Elapsed.ToString(@"m\:ss"));
 
+            sw.Reset();
             sw.Start();
             engine.ExecuteFile(fileGeneratedCode);
             sw.Stop();
-            Console.WriteLine("{0} - {1}", fileGeneratedCode, sw.Elapsed.ToString(@"m\:ss"));
+            Console.WriteLine("{0} - {1}", "Individuo novo carregado", sw.Elapsed.ToString(@"m\:ss"));
             
             sw.Reset();
             sw.Start();
@@ -317,7 +326,7 @@ namespace Tests
 
                                 QUnit.config.autostart = false;
                                 QUnit.config.ignoreGlobalErrors = true;
-                                //QUnit.config.moduleFilter = 'string prototype';
+                                QUnit.config.moduleFilter = 'zones';
                         ");
 
                 sw.Stop();
@@ -332,7 +341,7 @@ namespace Tests
                 ");
                 sw.Stop();
                 sw.Stop();
-                Console.WriteLine("{0} - {1}", "execução total", sw.Elapsed.ToString(@"m\:ss"));
+                Console.WriteLine("{0} - {1}", "Execução dos testes", sw.Elapsed.ToString(@"m\:ss"));
             }
             catch (JavaScriptException ex)
             {
