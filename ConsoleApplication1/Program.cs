@@ -122,7 +122,7 @@ namespace ConsoleApplication1
             }
             
             sw.Stop();
-            Console.WriteLine("Árvore inicial construída em {0} milisegundos", sw.Elapsed.TotalMilliseconds);
+            Console.WriteLine("Árvore inicial construída em {0} milisegundos", sw.Elapsed.ToString("mm\\:ss\\.ff"));
 
             return tree;
         }
@@ -162,7 +162,7 @@ namespace ConsoleApplication1
             #endregion
             
             sw.Stop();
-            Console.WriteLine("Setup da população em {0} minutos", sw.Elapsed.TotalMinutes);
+            Console.WriteLine("Setup da população em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff")); 
 
             sw.Reset();
             sw.Start();
@@ -178,14 +178,14 @@ namespace ConsoleApplication1
                 swEpoch.Stop();
                 Console.WriteLine("Best Fit {0}", population.FitnessMax);
                 //Console.WriteLine("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", ""));
-                Console.WriteLine("{0} minutos", swEpoch.Elapsed.Minutes);
+                Console.WriteLine("{0} minutos", swEpoch.Elapsed.ToString(@"m\:ss.ff"));
                 Console.WriteLine("--------------------------");
             }
             
             #endregion
 
             sw.Stop();
-            Console.WriteLine("Processo executado em {0} minutos", sw.Elapsed.TotalMinutes);
+            Console.WriteLine("Processo executado em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff"));
 
             #region Results
             Console.WriteLine("============================= ");

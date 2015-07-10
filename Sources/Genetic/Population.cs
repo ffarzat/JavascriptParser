@@ -417,7 +417,7 @@ namespace AForge.Genetic
             }
 
             sw.Stop();
-            Console.WriteLine(" Geração avaliada em {0} minutos - {1}", sw.Elapsed.ToString(@"m\:ss"), DateTime.Now.ToString("HH:mm:ss"));
+            Console.WriteLine(" Geração avaliada em {0} minutos - {1}", sw.Elapsed.ToString("mm\\:ss\\.ff"), DateTime.Now.ToString("HH:mm:ss"));
         }
 
 	    /// <summary>

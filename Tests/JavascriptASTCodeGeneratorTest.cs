@@ -214,10 +214,11 @@ namespace Tests
         [Test]
         public void RunTestsFromGeneratedMomentJs()
         {
-            const string jsTestFile = "tests.js";
+            const string jsTestFile = "testsNoLocation.js";
             const string qunitFile = "qunit-1.18.0.js";
             //const string qunitFile = "core-test.js";
-            const string fileMomentPath = "moment.js";
+            //const string fileMomentPath = "moment.js";
+            const string fileMomentPath = "momentNoLocation.js";
             const string fileGeneratedCode = "target.js";
             
             var sw = new Stopwatch();
@@ -241,7 +242,7 @@ namespace Tests
             File.WriteAllText(fileGeneratedCode, generatedJsCode);
             #endregion
             sw.Stop();
-            Console.WriteLine("{0} - {1}", "AST criada", sw.Elapsed.ToString(@"m\:ss"));
+            Console.WriteLine("{0} - {1}", "AST criada", sw.Elapsed.ToString("mm\\:ss\\.ff"));
 
             sw.Reset();
             sw.Start();
@@ -250,25 +251,25 @@ namespace Tests
             //engine.EnableDebugging = false;
             //engine.EnableILAnalysis = false;
             sw.Stop();
-            Console.WriteLine("{0} - {1}", "Engine criada e configurada", sw.Elapsed.ToString(@"m\:ss"));
+            Console.WriteLine("{0} - {1}", "Engine criada e configurada", sw.Elapsed.ToString("mm\\:ss\\.ff"));
 
             sw.Reset();
             sw.Start();
             engine.ExecuteFile(fileGeneratedCode);
             sw.Stop();
-            Console.WriteLine("{0} - {1}", "Individuo novo carregado", sw.Elapsed.ToString(@"m\:ss"));
+            Console.WriteLine("{0} - {1}", "Individuo novo carregado", sw.Elapsed.ToString("mm\\:ss\\.ff"));
             
             sw.Reset();
             sw.Start();
             engine.ExecuteFile(qunitFile);
-            Console.WriteLine("{0} - {1}", qunitFile, sw.Elapsed.ToString(@"m\:ss"));
+            Console.WriteLine("{0} - {1}", qunitFile, sw.Elapsed.ToString("mm\\:ss\\.ff"));
             sw.Stop();
 
             sw.Reset();
             sw.Start();
             engine.ExecuteFile(jsTestFile);
             sw.Stop();
-            Console.WriteLine("{0} - {1}", jsTestFile, sw.Elapsed.ToString(@"m\:ss"));
+            Console.WriteLine("{0} - {1}", jsTestFile, sw.Elapsed.ToString("mm\\:ss\\.ff"));
             
 
             try
@@ -286,11 +287,11 @@ namespace Tests
                                     var total, sucesso, falha;
 
                                     QUnit.done(function( details ) {
-                                    //alert('=============================================');
-                                    //alert('Total:' + details.total);
-                                    //alert('Falha:' + details.failed);
-                                    //alert('Sucesso:' + details.passed);
-                                    //alert('Tempo:' + details.runtime);
+                                    alert('=============================================');
+                                    alert('Total:' + details.total);
+                                    alert('Falha:' + details.failed);
+                                    alert('Sucesso:' + details.passed);
+                                    alert('Tempo:' + details.runtime);
                                        
                                     total = details.total;
                                     sucesso = details.passed;
@@ -299,7 +300,21 @@ namespace Tests
                                 });
 
 
-/*
+                                QUnit.moduleDone(function( details ) {
+                                    if(details.failed > 0)
+                                    {
+                                        alert('=============================================');
+                                        alert('Modulo:' + details.name);
+                                        alert('Testes:' + details.tests);
+                                        alert('Falha:' + details.failed);
+                                        alert('Sucesso:' + details.passed);
+                                        alert('Total:' + details.total);
+                                        alert('Tempo:' + details.runtime);
+                                    }
+                                });
+
+
+
                                 QUnit.testDone(function( details ) {
                                     if(details.failed > 0)
                                     {
@@ -311,9 +326,9 @@ namespace Tests
                                         alert(' Tempo:' + details.duration);
                                     }
                                 });
-*/
 
-/*
+
+
                                 QUnit.log(function( details ) {
                                   if ( details.result ) {
                                     return;
@@ -331,7 +346,7 @@ namespace Tests
                                     alert('=============================================');
                                     alert( output );
                                 });
-*/
+
 
                         ");
 
@@ -342,13 +357,19 @@ namespace Tests
 
                 sw.Reset();
                 sw.Start();
-                
+
+                engine.Execute(@"   
+                                    QUnit.config.autostart = false;
+                                    QUnit.config.ignoreGlobalErrors = true;
+                                    //QUnit.config.moduleFilter = ""zones"";
+                ");
+
                 engine.Execute(@"   QUnit.load();
                                     QUnit.start();
                 ");
                 
                 sw.Stop();
-                Console.WriteLine("{0} - {1}", "Execução dos testes", sw.Elapsed.ToString(@"m\:ss"));
+                Console.WriteLine("{0} - {1}", "Execução dos testes", sw.Elapsed.ToString("mm\\:ss\\.ff"));
             }
             catch (JavaScriptException ex)
             {
@@ -366,7 +387,7 @@ namespace Tests
 
             
             swTotal.Stop();
-            Console.WriteLine("{0} - {1}", "Tempo total", swTotal.Elapsed.ToString(@"m\:ss"));
+            Console.WriteLine("{0} - {1}", "Tempo total", swTotal.Elapsed.ToString("mm\\:ss\\.ff"));
             Assert.AreEqual(total, sucesso);
 
         }

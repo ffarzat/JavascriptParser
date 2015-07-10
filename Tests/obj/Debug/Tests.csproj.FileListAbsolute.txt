@@ -27,3 +27,5 @@ D:\Github\JavascriptParser\Tests\bin\Debug\AForge.Genetic.pdb
 D:\Github\JavascriptParser\Tests\bin\Debug\nunit.framework.xml
 D:\Github\JavascriptParser\Tests\obj\Debug\Tests.dll
 D:\Github\JavascriptParser\Tests\obj\Debug\Tests.pdb
+D:\GitHub\JavascriptParser\Tests\bin\Debug\momentNoLocation.js
+D:\GitHub\JavascriptParser\Tests\bin\Debug\testsNoLocation.js
