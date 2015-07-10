@@ -242,14 +242,28 @@ namespace Tests
 
             sw.Start();
             engine.ExecuteFile(fileGeneratedCode);
-            engine.ExecuteFile(qunitFile);
-            engine.ExecuteFile(jsTestFile);
+            sw.Stop();
+            Console.WriteLine("{0} - {1}", fileGeneratedCode, sw.Elapsed.ToString(@"m\:ss"));
             
+            sw.Reset();
+            sw.Start();
+            engine.ExecuteFile(qunitFile);
+            Console.WriteLine("{0} - {1}", qunitFile, sw.Elapsed.ToString(@"m\:ss"));
+            sw.Stop();
+
+            sw.Reset();
+            sw.Start();
+            engine.ExecuteFile(jsTestFile);
+            sw.Stop();
+            Console.WriteLine("{0} - {1}", jsTestFile, sw.Elapsed.ToString(@"m\:ss"));
             
 
             try
             {
                 #region registra os retornos dos testes
+                sw.Reset();
+                sw.Start();
+                
                 engine.Execute(@"   
                                     var total, sucesso, falha;
 
@@ -266,7 +280,7 @@ namespace Tests
 
                                 });
 
-/*
+
 
                                 QUnit.testDone(function( details ) {
                                     if(details.failed > 0)
@@ -279,7 +293,7 @@ namespace Tests
                                         alert(' Tempo:' + details.duration);
                                     }
                                 });
-*/
+
 
                                 QUnit.log(function( details ) {
                                   if ( details.result ) {
@@ -303,14 +317,22 @@ namespace Tests
 
                                 QUnit.config.autostart = false;
                                 QUnit.config.ignoreGlobalErrors = true;
+                                //QUnit.config.moduleFilter = 'string prototype';
                         ");
+
+                sw.Stop();
+                Console.WriteLine("{0} - {1}", "Qunit config", sw.Elapsed.ToString(@"m\:ss"));
                 #endregion
 
+
+                sw.Reset();
+                sw.Start();
                 engine.Execute(@"   QUnit.load();
                                     QUnit.start();
                 ");
-
                 sw.Stop();
+                sw.Stop();
+                Console.WriteLine("{0} - {1}", "execução total", sw.Elapsed.ToString(@"m\:ss"));
             }
             catch (JavaScriptException ex)
             {
@@ -326,7 +348,7 @@ namespace Tests
             var total = engine.GetGlobalValue<int>("total");
             var sucesso = engine.GetGlobalValue<int>("sucesso");
 
-            Console.WriteLine("{0} - {1} segundos", qunitFile, sw.Elapsed.TotalSeconds);
+            
 
             Assert.AreEqual(total, sucesso);
 
