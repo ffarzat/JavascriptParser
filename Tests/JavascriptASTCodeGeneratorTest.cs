@@ -274,14 +274,19 @@ namespace Tests
                 sw.Start();
                 
                 engine.Execute(@"   
+
+                                    QUnit.config.autostart = false;
+                                    QUnit.config.ignoreGlobalErrors = true;
+                                    QUnit.config.moduleFilter = 'zones';
+
                                     var total, sucesso, falha;
 
                                     QUnit.done(function( details ) {
-                                    alert('=============================================');
-                                    alert('Total:' + details.total);
-                                    alert('Falha:' + details.failed);
-                                    alert('Sucesso:' + details.passed);
-                                    alert('Tempo:' + details.runtime);
+                                    //alert('=============================================');
+                                    //alert('Total:' + details.total);
+                                    //alert('Falha:' + details.failed);
+                                    //alert('Sucesso:' + details.passed);
+                                    //alert('Tempo:' + details.runtime);
                                        
                                     total = details.total;
                                     sucesso = details.passed;
@@ -290,7 +295,7 @@ namespace Tests
                                 });
 
 
-
+/*
                                 QUnit.testDone(function( details ) {
                                     if(details.failed > 0)
                                     {
@@ -302,8 +307,9 @@ namespace Tests
                                         alert(' Tempo:' + details.duration);
                                     }
                                 });
+*/
 
-
+/*
                                 QUnit.log(function( details ) {
                                   if ( details.result ) {
                                     return;
@@ -321,12 +327,8 @@ namespace Tests
                                     alert('=============================================');
                                     alert( output );
                                 });
+*/
 
-
-
-                                QUnit.config.autostart = false;
-                                QUnit.config.ignoreGlobalErrors = true;
-                                QUnit.config.moduleFilter = 'zones';
                         ");
 
                 sw.Stop();
