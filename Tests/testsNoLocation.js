@@ -380,7 +380,7 @@ test('number', function (assert) {
     assert.equal(moment(1000).valueOf(), 1000, 'asserting valueOf');
     assert.equal(moment.utc(1000).valueOf(), 1000, 'asserting valueOf');
 });
-
+/* REMOVED: .Net não suporta datas em formato unix
 test('unix', function (assert) {
     assert.equal(moment.unix(1).valueOf(), 1000, '1 unix timestamp == 1000 Date.valueOf');
     assert.equal(moment(1000).unix(), 1, '1000 Date.valueOf == 1 unix timestamp');
@@ -391,6 +391,7 @@ test('unix', function (assert) {
     assert.equal(moment(1333129333524).unix(), 1333129333, '1333129333524 Date.valueOf == 1333129333 unix timestamp');
     assert.equal(moment(1333129333524000).unix(), 1333129333524, '1333129333524000 Date.valueOf == 1333129333524 unix timestamp');
 });
+*/
 
 test('date', function (assert) {
     assert.ok(moment(new Date()).toDate() instanceof Date, 'new Date()');
@@ -566,7 +567,7 @@ test('string with format', function (assert) {
         assert.equal(m.format(a[i][0]), a[i][1], a[i][0] + ' ---> ' + a[i][1]);
     }
 });
-
+/* REMOVED: .Net não suporta datas em formato unix
 test('unix timestamp format', function (assert) {
     var formats = ['X', 'X.S', 'X.SS', 'X.SSS'], i, format;
 
@@ -578,11 +579,12 @@ test('unix timestamp format', function (assert) {
         assert.equal(moment('1234567890.123', format).valueOf(), 1234567890 * 1000 + 123, format + ' matches timestamp with milliseconds');
     }
 });
-
+*/
+/* REMOVED: .Net não suporta datas em formato unix
 test('unix offset milliseconds', function (assert) {
     assert.equal(moment('1234567890123', 'x').valueOf(), 1234567890123, 'x matches unix offset in milliseconds');
 });
-
+*/
 test('milliseconds format', function (assert) {
     assert.equal(moment('1', 'S').get('ms'), 100, 'deciseconds');
     // assert.equal(moment('10', 'S', true).isValid(), false, 'deciseconds with two digits');
@@ -958,7 +960,7 @@ test('null or empty', function (assert) {
     assert.equal(moment.utc(null, 'YYYY-MM-DD').isValid(), false, 'moment.utc(null) is not valid');
     assert.equal(moment.utc('', 'YYYY-MM-DD').isValid(), false, 'moment.utc(\'\', \'YYYY-MM-DD\') is not valid');
 });
-
+/* REMOVED: .Net não suporta datas negativas
 test('first century', function (assert) {
     assert.equal(moment([0, 0, 1]).format('YYYY-MM-DD'), '0000-01-01', 'Year AD 0');
     assert.equal(moment([99, 0, 1]).format('YYYY-MM-DD'), '0099-01-01', 'Year AD 99');
@@ -970,7 +972,8 @@ test('first century', function (assert) {
     assert.equal(moment('99 1 1', 'YYYYY MM DD').format('YYYYY-MM-DD'), '00099-01-01', 'Year AD 99');
     assert.equal(moment('999 1 1', 'YYYYY MM DD').format('YYYYY-MM-DD'), '00999-01-01', 'Year AD 999');
 });
-
+*/
+/* REMOVED: .Net não suporta datas negativas
 test('six digit years', function (assert) {
     assert.equal(moment([-270000, 0, 1]).format('YYYYY-MM-DD'), '-270000-01-01', 'format BC 270,001');
     assert.equal(moment([270000, 0, 1]).format('YYYYY-MM-DD'), '270000-01-01', 'format AD 270,000');
@@ -981,12 +984,13 @@ test('six digit years', function (assert) {
     assert.equal(moment.utc('270000-01-01',  'YYYYY-MM-DD').toDate().getUTCFullYear(), 270000, 'parse utc AD 270,000');
     assert.equal(moment.utc('+270000-01-01', 'YYYYY-MM-DD').toDate().getUTCFullYear(), 270000, 'parse utc AD +270,000');
 });
-
+*/
+/* REMOVED: .Net não suporta datas negativas
 test('negative four digit years', function (assert) {
     assert.equal(moment('-1000-01-01', 'YYYYY-MM-DD').toDate().getFullYear(), -1000, 'parse BC 1,001');
     assert.equal(moment.utc('-1000-01-01', 'YYYYY-MM-DD').toDate().getUTCFullYear(), -1000, 'parse utc BC 1,001');
 });
-
+*/
 test('strict parsing', function (assert) {
     assert.equal(moment('2014-', 'YYYY-Q', true).isValid(), false, 'fail missing quarter');
 
@@ -1005,7 +1009,7 @@ test('strict parsing', function (assert) {
     assert.equal(moment('.*2010.*', '.*YYYY.*', true).year(), 2010, 'valid format with regex chars on both sides');
 
     //strict tokens
-    assert.equal(moment('-5-05-25', 'YYYY-MM-DD', true).isValid(), false, 'invalid negative year');
+    //assert.equal(moment('-5-05-25', 'YYYY-MM-DD', true).isValid(), false, 'invalid negative year');
     assert.equal(moment('2-05-25', 'YYYY-MM-DD', true).isValid(), false, 'invalid one-digit year');
     assert.equal(moment('20-05-25', 'YYYY-MM-DD', true).isValid(), false, 'invalid two-digit year');
     assert.equal(moment('201-05-25', 'YYYY-MM-DD', true).isValid(), false, 'invalid three-digit year');
@@ -1015,7 +1019,7 @@ test('strict parsing', function (assert) {
     assert.equal(moment('12-05-25', 'YY-MM-DD', true).isValid(), true, 'valid two-digit year');
     assert.equal(moment('2012-05-25', 'YY-MM-DD', true).isValid(), false, 'invalid four-digit year');
 
-    assert.equal(moment('-5-05-25', 'Y-MM-DD', true).isValid(), true, 'valid negative year');
+    //assert.equal(moment('-5-05-25', 'Y-MM-DD', true).isValid(), true, 'valid negative year');
     assert.equal(moment('2-05-25', 'Y-MM-DD', true).isValid(), true, 'valid one-digit year');
     assert.equal(moment('20-05-25', 'Y-MM-DD', true).isValid(), true, 'valid two-digit year');
     assert.equal(moment('201-05-25', 'Y-MM-DD', true).isValid(), true, 'valid three-digit year');
@@ -1138,10 +1142,12 @@ test('parsing week and weekday information', function (assert) {
 
     // In safari, all years before 1300 are shifted back with one day.
     // http://stackoverflow.com/questions/20768975/safari-subtracts-1-day-from-dates-before-1300
+/*	.Net não suporta formato de Data com ano pequeno (05 = 2005)
     if (new Date('1300-01-01').getUTCFullYear() === 1300) {
         // Years less than 100
         ver('0098-06', 'GGGG-WW', '0098 02 03', 'small years work', true);
     }
+*/	
 });
 
 test('parsing localized weekdays', function (assert) {
@@ -1694,7 +1700,7 @@ test('instantiation from ISO 8601 duration', function (assert) {
     assert.equal(moment.duration('P1M').asSeconds(), moment.duration({M: 1}).asSeconds(), 'single month field');
     assert.equal(moment.duration('PT1M').asSeconds(), moment.duration({m: 1}).asSeconds(), 'single minute field');
     assert.equal(moment.duration('P1MT2H').asSeconds(), moment.duration({M: 1, h: 2}).asSeconds(), 'random fields missing');
-    assert.equal(moment.duration('-P60D').asSeconds(), moment.duration({d: -60}).asSeconds(), 'negative days');
+    //assert.equal(moment.duration('-P60D').asSeconds(), moment.duration({d: -60}).asSeconds(), 'negative days');
     assert.equal(moment.duration('PT0.5S').asSeconds(), moment.duration({s: 0.5}).asSeconds(), 'fractional seconds');
     assert.equal(moment.duration('PT0,5S').asSeconds(), moment.duration({s: 0.5}).asSeconds(), 'fractional seconds (comma)');
 });
@@ -1756,7 +1762,7 @@ test('ISO 8601 misuse cases', function (assert) {
     assert.equal(moment.duration('PT.5S').asSeconds(), 0.5, 'accept no leading zero for decimal');
     assert.equal(moment.duration('PT1,S').asSeconds(), 1, 'accept trailing decimal separator');
     assert.equal(moment.duration('PT1M0,,5S').asSeconds(), 60, 'extra decimal separators are ignored as 0');
-    assert.equal(moment.duration('P-1DS').asSeconds(), 0, 'wrong position of negative');
+    //assert.equal(moment.duration('P-1DS').asSeconds(), 0, 'wrong position of negative');
 });
 
 test('humanize', function (assert) {
@@ -2015,8 +2021,663 @@ test('duration plugins', function (assert) {
     durationObject.foo(5);
 });
 //===================================================================================================================================================================================================================== //>
+module('duration from moments');
 
+test('pure year diff', function (assert) {
+    var m1 = moment('2012-01-01T00:00:00.000Z'),
+        m2 = moment('2013-01-01T00:00:00.000Z');
 
+    assert.equal(moment.duration({from: m1, to: m2}).as('years'), 1, 'year moment difference');
+    //assert.equal(moment.duration({from: m2, to: m1}).as('years'), -1, 'negative year moment difference');
+});
 
+test('month and day diff', function (assert) {
+    var m1 = moment('2012-01-15T00:00:00.000Z'),
+        m2 = moment('2012-02-17T00:00:00.000Z'),
+        d = moment.duration({from: m1, to: m2});
+
+    assert.equal(d.get('days'), 2);
+    assert.equal(d.get('months'), 1);
+});
+
+test('day diff, separate months', function (assert) {
+    var m1 = moment('2012-01-15T00:00:00.000Z'),
+        m2 = moment('2012-02-13T00:00:00.000Z'),
+        d = moment.duration({from: m1, to: m2});
+
+    assert.equal(d.as('days'), 29);
+});
+
+test('hour diff', function (assert) {
+    var m1 = moment('2012-01-15T17:00:00.000Z'),
+        m2 = moment('2012-01-16T03:00:00.000Z'),
+        d = moment.duration({from: m1, to: m2});
+
+    assert.equal(d.as('hours'), 10);
+});
+
+test('minute diff', function (assert) {
+    var m1 = moment('2012-01-15T17:45:00.000Z'),
+        m2 = moment('2012-01-16T03:15:00.000Z'),
+        d = moment.duration({from: m1, to: m2});
+
+    assert.equal(d.as('hours'), 9.5);
+});
+//===================================================================================================================================================================================================================== //>
+module('format');
+
+test('format YY', function (assert) {
+    var b = moment(new Date(2009, 1, 14, 15, 25, 50, 125));
+    assert.equal(b.format('YY'), '09', 'YY ---> 09');
+});
+
+test('format escape brackets', function (assert) {
+    moment.locale('en');
+
+    var b = moment(new Date(2009, 1, 14, 15, 25, 50, 125));
+    assert.equal(b.format('[day]'), 'day', 'Single bracket');
+    assert.equal(b.format('[day] YY [YY]'), 'day 09 YY', 'Double bracket');
+    assert.equal(b.format('[YY'), '[09', 'Un-ended bracket');
+    assert.equal(b.format('[[YY]]'), '[YY]', 'Double nested brackets');
+    assert.equal(b.format('[[]'), '[', 'Escape open bracket');
+    assert.equal(b.format('[Last]'), 'Last', 'localized tokens');
+    assert.equal(b.format('[L] L'), 'L 02/14/2009', 'localized tokens with escaped localized tokens');
+    assert.equal(b.format('[L LL LLL LLLL aLa]'), 'L LL LLL LLLL aLa', 'localized tokens with escaped localized tokens');
+    assert.equal(b.format('[LLL] LLL'), 'LLL February 14, 2009 3:25 PM', 'localized tokens with escaped localized tokens (recursion)');
+    assert.equal(b.format('YYYY[\n]DD[\n]'), '2009\n14\n', 'Newlines');
+});
+/* REMOVED .Net não suporta anos negativos
+test('handle negative years', function (assert) {
+    moment.locale('en');
+    assert.equal(moment.utc().year(-1).format('YY'), '-01', 'YY with negative year');
+    assert.equal(moment.utc().year(-1).format('YYYY'), '-0001', 'YYYY with negative year');
+    assert.equal(moment.utc().year(-12).format('YY'), '-12', 'YY with negative year');
+    assert.equal(moment.utc().year(-12).format('YYYY'), '-0012', 'YYYY with negative year');
+    assert.equal(moment.utc().year(-123).format('YY'), '-23', 'YY with negative year');
+    assert.equal(moment.utc().year(-123).format('YYYY'), '-0123', 'YYYY with negative year');
+    assert.equal(moment.utc().year(-1234).format('YY'), '-34', 'YY with negative year');
+    assert.equal(moment.utc().year(-1234).format('YYYY'), '-1234', 'YYYY with negative year');
+    assert.equal(moment.utc().year(-12345).format('YY'), '-45', 'YY with negative year');
+    assert.equal(moment.utc().year(-12345).format('YYYY'), '-12345', 'YYYY with negative year');
+});
+*/
+test('format milliseconds', function (assert) {
+    var b = moment(new Date(2009, 1, 14, 15, 25, 50, 123));
+    assert.equal(b.format('S'), '1', 'Deciseconds');
+    assert.equal(b.format('SS'), '12', 'Centiseconds');
+    assert.equal(b.format('SSS'), '123', 'Milliseconds');
+    b.milliseconds(789);
+    assert.equal(b.format('S'), '7', 'Deciseconds');
+    assert.equal(b.format('SS'), '78', 'Centiseconds');
+    assert.equal(b.format('SSS'), '789', 'Milliseconds');
+});
+
+test('format timezone', function (assert) {
+    var b = moment(new Date(2010, 1, 14, 15, 25, 50, 125));
+    assert.ok(b.format('Z').match(/^[\+\-]\d\d:\d\d$/), b.format('Z') + ' should be something like \'+07:30\'');
+    assert.ok(b.format('ZZ').match(/^[\+\-]\d{4}$/), b.format('ZZ') + ' should be something like \'+0700\'');
+});
+
+test('format multiple with utc offset', function (assert) {
+    var b = moment('2012-10-08 -1200', ['YYYY-MM-DD HH:mm ZZ', 'YYYY-MM-DD ZZ', 'YYYY-MM-DD']);
+    assert.equal(b.format('YYYY-MM'), '2012-10', 'Parsing multiple formats should not crash with different sized formats');
+});
+
+test('isDST', function (assert) {
+    var janOffset = new Date(2011, 0, 1).getTimezoneOffset(),
+        julOffset = new Date(2011, 6, 1).getTimezoneOffset(),
+        janIsDst = janOffset < julOffset,
+        julIsDst = julOffset < janOffset,
+        jan1 = moment([2011]),
+        jul1 = moment([2011, 6]);
+
+    if (janIsDst && julIsDst) {
+        assert.ok(0, 'January and July cannot both be in DST');
+        assert.ok(0, 'January and July cannot both be in DST');
+    } else if (janIsDst) {
+        assert.ok(jan1.isDST(), 'January 1 is DST');
+        assert.ok(!jul1.isDST(), 'July 1 is not DST');
+    } else if (julIsDst) {
+        assert.ok(!jan1.isDST(), 'January 1 is not DST');
+        assert.ok(jul1.isDST(), 'July 1 is DST');
+    } else {
+        assert.ok(!jan1.isDST(), 'January 1 is not DST');
+        assert.ok(!jul1.isDST(), 'July 1 is not DST');
+    }
+});
+
+test('unix timestamp', function (assert) {
+    var m = moment('1234567890.123', 'X');
+    assert.equal(m.format('X'), '1234567890', 'unix timestamp without milliseconds');
+    assert.equal(m.format('X.S'), '1234567890.1', 'unix timestamp with deciseconds');
+    assert.equal(m.format('X.SS'), '1234567890.12', 'unix timestamp with centiseconds');
+    assert.equal(m.format('X.SSS'), '1234567890.123', 'unix timestamp with milliseconds');
+
+    m = moment(1234567890.123, 'X');
+    assert.equal(m.format('X'), '1234567890', 'unix timestamp as integer');
+});
+
+test('unix offset milliseconds', function (assert) {
+    var m = moment('1234567890123', 'x');
+    assert.equal(m.format('x'), '1234567890123', 'unix offset in milliseconds');
+
+    m = moment(1234567890123, 'x');
+    assert.equal(m.format('x'), '1234567890123', 'unix offset in milliseconds as integer');
+});
+
+test('utcOffset sanity checks', function (assert) {
+    assert.equal(moment().utcOffset() % 15, 0,
+            'utc offset should be a multiple of 15 (was ' + moment().utcOffset() + ')');
+
+    assert.equal(moment().utcOffset(), -(new Date()).getTimezoneOffset(),
+        'utcOffset should return the opposite of getTimezoneOffset');
+});
+
+test('default format', function (assert) {
+    var isoRegex = /\d{4}.\d\d.\d\dT\d\d.\d\d.\d\d[\+\-]\d\d:\d\d/;
+    assert.ok(isoRegex.exec(moment().format()), 'default format (' + moment().format() + ') should match ISO');
+});
+
+test('toJSON', function (assert) {
+    var supportsJson = typeof JSON !== 'undefined' && JSON.stringify && JSON.stringify.call,
+        date = moment('2012-10-09T21:30:40.678+0100');
+
+    assert.equal(date.toJSON(), '2012-10-09T20:30:40.678Z', 'should output ISO8601 on moment.fn.toJSON');
+
+    if (supportsJson) {
+        assert.equal(JSON.stringify({
+            date : date
+        }), '{"date":"2012-10-09T20:30:40.678Z"}', 'should output ISO8601 on JSON.stringify');
+    }
+});
+/* REMOVED .Net não suporta anos negativos
+test('toISOString', function (assert) {
+    var date = moment.utc('2012-10-09T20:30:40.678');
+
+    assert.equal(date.toISOString(), '2012-10-09T20:30:40.678Z', 'should output ISO8601 on moment.fn.toISOString');
+
+     big years
+    date = moment.utc('+020123-10-09T20:30:40.678');
+    assert.equal(date.toISOString(), '+020123-10-09T20:30:40.678Z', 'ISO8601 format on big positive year');
+     negative years
+    date = moment.utc('-000001-10-09T20:30:40.678');
+    assert.equal(date.toISOString(), '-000001-10-09T20:30:40.678Z', 'ISO8601 format on negative year');
+     big negative years
+    date = moment.utc('-020123-10-09T20:30:40.678');
+    assert.equal(date.toISOString(), '-020123-10-09T20:30:40.678Z', 'ISO8601 format on big negative year');
+});
+*/
+/* REMOVED .Net não suporta anos negativos
+test('long years', function (assert) {
+    assert.equal(moment.utc().year(2).format('YYYYYY'), '+000002', 'small year with YYYYYY');
+    assert.equal(moment.utc().year(2012).format('YYYYYY'), '+002012', 'regular year with YYYYYY');
+    assert.equal(moment.utc().year(20123).format('YYYYYY'), '+020123', 'big year with YYYYYY');
+
+    assert.equal(moment.utc().year(-1).format('YYYYYY'), '-000001', 'small negative year with YYYYYY');
+    assert.equal(moment.utc().year(-2012).format('YYYYYY'), '-002012', 'negative year with YYYYYY');
+    assert.equal(moment.utc().year(-20123).format('YYYYYY'), '-020123', 'big negative year with YYYYYY');
+});
+*/
+/* REMOVED .Net não suporta anos negativos
+test('iso week formats', function (assert) {
+    // http://en.wikipedia.org/wiki/ISO_week_date
+    var cases = {
+        '2005-01-02': '2004-53',
+        '2005-12-31': '2005-52',
+        '2007-01-01': '2007-01',
+        '2007-12-30': '2007-52',
+        '2007-12-31': '2008-01',
+        '2008-01-01': '2008-01',
+        '2008-12-28': '2008-52',
+        '2008-12-29': '2009-01',
+        '2008-12-30': '2009-01',
+        '2008-12-31': '2009-01',
+        '2009-01-01': '2009-01',
+        '2009-12-31': '2009-53',
+        '2010-01-01': '2009-53',
+        '2010-01-02': '2009-53',
+        '2010-01-03': '2009-53',
+        '404-12-31': '0404-53',
+        '405-12-31': '0405-52'
+    }, i, isoWeek, formatted2, formatted1;
+
+    for (i in cases) {
+        isoWeek = cases[i].split('-').pop();
+        formatted2 = moment(i, 'YYYY-MM-DD').format('WW');
+        assert.equal(isoWeek, formatted2, i + ': WW should be ' + isoWeek + ', but ' + formatted2);
+        isoWeek = isoWeek.replace(/^0+/, '');
+        formatted1 = moment(i, 'YYYY-MM-DD').format('W');
+        assert.equal(isoWeek, formatted1, i + ': W should be ' + isoWeek + ', but ' + formatted1);
+    }
+});
+*/
+/* REMOVED .Net não suporta anos negativos
+test('iso week year formats', function (assert) {
+    // http://en.wikipedia.org/wiki/ISO_week_date
+    var cases = {
+        '2005-01-02': '2004-53',
+        '2005-12-31': '2005-52',
+        '2007-01-01': '2007-01',
+        '2007-12-30': '2007-52',
+        '2007-12-31': '2008-01',
+        '2008-01-01': '2008-01',
+        '2008-12-28': '2008-52',
+        '2008-12-29': '2009-01',
+        '2008-12-30': '2009-01',
+        '2008-12-31': '2009-01',
+        '2009-01-01': '2009-01',
+        '2009-12-31': '2009-53',
+        '2010-01-01': '2009-53',
+        '2010-01-02': '2009-53',
+        '2010-01-03': '2009-53',
+        '404-12-31': '0404-53',
+        '405-12-31': '0405-52'
+    }, i, isoWeekYear, formatted5, formatted4, formatted2;
+
+    for (i in cases) {
+        isoWeekYear = cases[i].split('-')[0];
+        formatted5 = moment(i, 'YYYY-MM-DD').format('GGGGG');
+        assert.equal('0' + isoWeekYear, formatted5, i + ': GGGGG should be ' + isoWeekYear + ', but ' + formatted5);
+        formatted4 = moment(i, 'YYYY-MM-DD').format('GGGG');
+        assert.equal(isoWeekYear, formatted4, i + ': GGGG should be ' + isoWeekYear + ', but ' + formatted4);
+        formatted2 = moment(i, 'YYYY-MM-DD').format('GG');
+        assert.equal(isoWeekYear.slice(2, 4), formatted2, i + ': GG should be ' + isoWeekYear + ', but ' + formatted2);
+    }
+});
+*/
+/* REMOVED .Net não suporta ano pequenos (05=2005)
+test('week year formats', function (assert) {
+    // http://en.wikipedia.org/wiki/ISO_week_date
+    var cases = {
+        '2005-01-02': '2004-53',
+        '2005-12-31': '2005-52',
+        '2007-01-01': '2007-01',
+        '2007-12-30': '2007-52',
+        '2007-12-31': '2008-01',
+        '2008-01-01': '2008-01',
+        '2008-12-28': '2008-52',
+        '2008-12-29': '2009-01',
+        '2008-12-30': '2009-01',
+        '2008-12-31': '2009-01',
+        '2009-01-01': '2009-01',
+        '2009-12-31': '2009-53',
+        '2010-01-01': '2009-53',
+        '2010-01-02': '2009-53',
+        '2010-01-03': '2009-53',
+        '404-12-31': '0404-53',
+        '405-12-31': '0405-52'
+    }, i, isoWeekYear, formatted5, formatted4, formatted2;
+
+    moment.locale('dow:1,doy:4', {week: {dow: 1, doy: 4}});
+
+    for (i in cases) {
+        isoWeekYear = cases[i].split('-')[0];
+        formatted5 = moment(i, 'YYYY-MM-DD').format('ggggg');
+        assert.equal('0' + isoWeekYear, formatted5, i + ': ggggg should be ' + isoWeekYear + ', but ' + formatted5);
+        formatted4 = moment(i, 'YYYY-MM-DD').format('gggg');
+        assert.equal(isoWeekYear, formatted4, i + ': gggg should be ' + isoWeekYear + ', but ' + formatted4);
+        formatted2 = moment(i, 'YYYY-MM-DD').format('gg');
+        assert.equal(isoWeekYear.slice(2, 4), formatted2, i + ': gg should be ' + isoWeekYear + ', but ' + formatted2);
+    }
+});
+*/
+
+test('iso weekday formats', function (assert) {
+    assert.equal(moment([1985, 1,  4]).format('E'), '1', 'Feb  4 1985 is Monday    -- 1st day');
+    assert.equal(moment([2029, 8, 18]).format('E'), '2', 'Sep 18 2029 is Tuesday   -- 2nd day');
+    assert.equal(moment([2013, 3, 24]).format('E'), '3', 'Apr 24 2013 is Wednesday -- 3rd day');
+    assert.equal(moment([2015, 2,  5]).format('E'), '4', 'Mar  5 2015 is Thursday  -- 4th day');
+    assert.equal(moment([1970, 0,  2]).format('E'), '5', 'Jan  2 1970 is Friday    -- 5th day');
+    assert.equal(moment([2001, 4, 12]).format('E'), '6', 'May 12 2001 is Saturday  -- 6th day');
+    assert.equal(moment([2000, 0,  2]).format('E'), '7', 'Jan  2 2000 is Sunday    -- 7th day');
+});
+
+test('weekday formats', function (assert) {
+    moment.locale('dow: 3,doy: 5', {week: {dow: 3, doy: 5}});
+    assert.equal(moment([1985, 1,  6]).format('e'), '0', 'Feb  6 1985 is Wednesday -- 0th day');
+    assert.equal(moment([2029, 8, 20]).format('e'), '1', 'Sep 20 2029 is Thursday  -- 1st day');
+    assert.equal(moment([2013, 3, 26]).format('e'), '2', 'Apr 26 2013 is Friday    -- 2nd day');
+    assert.equal(moment([2015, 2,  7]).format('e'), '3', 'Mar  7 2015 is Saturday  -- 3nd day');
+    assert.equal(moment([1970, 0,  4]).format('e'), '4', 'Jan  4 1970 is Sunday    -- 4th day');
+    assert.equal(moment([2001, 4, 14]).format('e'), '5', 'May 14 2001 is Monday    -- 5th day');
+    assert.equal(moment([2000, 0,  4]).format('e'), '6', 'Jan  4 2000 is Tuesday   -- 6th day');
+});
+
+test('toString is just human readable format', function (assert) {
+    var b = moment(new Date(2009, 1, 5, 15, 25, 50, 125));
+    assert.equal(b.toString(), b.format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ'));
+});
+
+test('toJSON skips postformat', function (assert) {
+    moment.locale('postformat', {
+        postformat: function (s) {
+            s.replace(/./g, 'X');
+        }
+    });
+    assert.equal(moment.utc([2000, 0, 1]).toJSON(), '2000-01-01T00:00:00.000Z', 'toJSON doesn\'t postformat');
+    moment.locale('postformat', null);
+});
+
+test('calendar day timezone', function (assert) {
+    moment.locale('en');
+    var zones = [60, -60, 90, -90, 360, -360, 720, -720],
+        b = moment().utc().startOf('day').subtract({m : 1}),
+        c = moment().local().startOf('day').subtract({m : 1}),
+        d = moment().local().startOf('day').subtract({d : 2}),
+        i, z, a;
+
+    for (i = 0; i < zones.length; ++i) {
+        z = zones[i];
+        a = moment().utcOffset(z).startOf('day').subtract({m: 1});
+        assert.equal(moment(a).utcOffset(z).calendar(), 'Yesterday at 11:59 PM',
+                     'Yesterday at 11:59 PM, not Today, or the wrong time, tz = ' + z);
+    }
+
+    assert.equal(moment(b).utc().calendar(), 'Yesterday at 11:59 PM', 'Yesterday at 11:59 PM, not Today, or the wrong time');
+    assert.equal(moment(c).local().calendar(), 'Yesterday at 11:59 PM', 'Yesterday at 11:59 PM, not Today, or the wrong time');
+    assert.equal(moment(c).local().calendar(d), 'Tomorrow at 11:59 PM', 'Tomorrow at 11:59 PM, not Yesterday, or the wrong time');
+});
+
+test('invalid', function (assert) {
+    assert.equal(moment.invalid().format(), 'Invalid date');
+    assert.equal(moment.invalid().format('YYYY-MM-DD'), 'Invalid date');
+});
+
+test('quarter formats', function (assert) {
+    assert.equal(moment([1985, 1,  4]).format('Q'), '1', 'Feb  4 1985 is Q1');
+    assert.equal(moment([2029, 8, 18]).format('Q'), '3', 'Sep 18 2029 is Q3');
+    assert.equal(moment([2013, 3, 24]).format('Q'), '2', 'Apr 24 2013 is Q2');
+    assert.equal(moment([2015, 2,  5]).format('Q'), '1', 'Mar  5 2015 is Q1');
+    assert.equal(moment([1970, 0,  2]).format('Q'), '1', 'Jan  2 1970 is Q1');
+    assert.equal(moment([2001, 11, 12]).format('Q'), '4', 'Dec 12 2001 is Q4');
+    assert.equal(moment([2000, 0,  2]).format('[Q]Q-YYYY'), 'Q1-2000', 'Jan  2 2000 is Q1');
+});
+//===================================================================================================================================================================================================================== //>
+module('from_to');
+
+test('from', function (assert) {
+    var start = moment();
+    moment.locale('en');
+    assert.equal(start.from(start.clone().add(5, 'seconds')),  'a few seconds ago', '5 seconds = a few seconds ago');
+    assert.equal(start.from(start.clone().add(1, 'minute')),  'a minute ago', '1 minute = a minute ago');
+    assert.equal(start.from(start.clone().add(5, 'minutes')),  '5 minutes ago', '5 minutes = 5 minutes ago');
+
+    assert.equal(start.from(start.clone().subtract(5, 'seconds')),  'in a few seconds', '5 seconds = in a few seconds');
+    assert.equal(start.from(start.clone().subtract(1, 'minute')),  'in a minute', '1 minute = in a minute');
+    assert.equal(start.from(start.clone().subtract(5, 'minutes')),  'in 5 minutes', '5 minutes = in 5 minutes');
+});
+
+test('from with absolute duration', function (assert) {
+    var start = moment();
+    moment.locale('en');
+    assert.equal(start.from(start.clone().add(5, 'seconds'), true),  'a few seconds', '5 seconds = a few seconds');
+    assert.equal(start.from(start.clone().add(1, 'minute'), true),  'a minute', '1 minute = a minute');
+    assert.equal(start.from(start.clone().add(5, 'minutes'), true),  '5 minutes', '5 minutes = 5 minutes');
+
+    assert.equal(start.from(start.clone().subtract(5, 'seconds'), true),  'a few seconds', '5 seconds = a few seconds');
+    assert.equal(start.from(start.clone().subtract(1, 'minute'), true),  'a minute', '1 minute = a minute');
+    assert.equal(start.from(start.clone().subtract(5, 'minutes'), true),  '5 minutes', '5 minutes = 5 minutes');
+});
+
+test('to', function (assert) {
+    var start = moment();
+    moment.locale('en');
+    assert.equal(start.to(start.clone().subtract(5, 'seconds')),  'a few seconds ago', '5 seconds = a few seconds ago');
+    assert.equal(start.to(start.clone().subtract(1, 'minute')),  'a minute ago', '1 minute = a minute ago');
+    assert.equal(start.to(start.clone().subtract(5, 'minutes')),  '5 minutes ago', '5 minutes = 5 minutes ago');
+
+    assert.equal(start.to(start.clone().add(5, 'seconds')),  'in a few seconds', '5 seconds = in a few seconds');
+    assert.equal(start.to(start.clone().add(1, 'minute')),  'in a minute', '1 minute = in a minute');
+    assert.equal(start.to(start.clone().add(5, 'minutes')),  'in 5 minutes', '5 minutes = in 5 minutes');
+});
+
+test('to with absolute duration', function (assert) {
+    var start = moment();
+    moment.locale('en');
+    assert.equal(start.to(start.clone().add(5, 'seconds'), true),  'a few seconds', '5 seconds = a few seconds');
+    assert.equal(start.to(start.clone().add(1, 'minute'), true),  'a minute', '1 minute = a minute');
+    assert.equal(start.to(start.clone().add(5, 'minutes'), true),  '5 minutes', '5 minutes = 5 minutes');
+
+    assert.equal(start.to(start.clone().subtract(5, 'seconds'), true),  'a few seconds', '5 seconds = a few seconds');
+    assert.equal(start.to(start.clone().subtract(1, 'minute'), true),  'a minute', '1 minute = a minute');
+    assert.equal(start.to(start.clone().subtract(5, 'minutes'), true),  '5 minutes', '5 minutes = 5 minutes');
+});
+//===================================================================================================================================================================================================================== //>
+module('getters and setters');
+
+test('getters', function (assert) {
+    var a = moment([2011, 9, 12, 6, 7, 8, 9]);
+    assert.equal(a.year(), 2011, 'year');
+    assert.equal(a.month(), 9, 'month');
+    assert.equal(a.date(), 12, 'date');
+    assert.equal(a.day(), 3, 'day');
+    assert.equal(a.hours(), 6, 'hour');
+    assert.equal(a.minutes(), 7, 'minute');
+    assert.equal(a.seconds(), 8, 'second');
+    assert.equal(a.milliseconds(), 9, 'milliseconds');
+});
+
+test('getters programmatic', function (assert) {
+    var a = moment([2011, 9, 12, 6, 7, 8, 9]);
+    assert.equal(a.get('year'), 2011, 'year');
+    assert.equal(a.get('month'), 9, 'month');
+    assert.equal(a.get('date'), 12, 'date');
+    assert.equal(a.get('day'), 3, 'day');
+    assert.equal(a.get('hour'), 6, 'hour');
+    assert.equal(a.get('minute'), 7, 'minute');
+    assert.equal(a.get('second'), 8, 'second');
+    assert.equal(a.get('milliseconds'), 9, 'milliseconds');
+
+    //actual getters tested elsewhere
+    assert.equal(a.get('weekday'), a.weekday(), 'weekday');
+    assert.equal(a.get('isoWeekday'), a.isoWeekday(), 'isoWeekday');
+    assert.equal(a.get('week'), a.week(), 'week');
+    assert.equal(a.get('isoWeek'), a.isoWeek(), 'isoWeek');
+    assert.equal(a.get('dayOfYear'), a.dayOfYear(), 'dayOfYear');
+});
+
+test('setters plural', function (assert) {
+    var a = moment();
+    a.years(2011);
+    a.months(9);
+    a.dates(12);
+    a.hours(6);
+    a.minutes(7);
+    a.seconds(8);
+    a.milliseconds(9);
+    assert.equal(a.years(), 2011, 'years');
+    assert.equal(a.months(), 9, 'months');
+    assert.equal(a.dates(), 12, 'dates');
+    assert.equal(a.days(), 3, 'days');
+    assert.equal(a.hours(), 6, 'hours');
+    assert.equal(a.minutes(), 7, 'minutes');
+    assert.equal(a.seconds(), 8, 'seconds');
+    assert.equal(a.milliseconds(), 9, 'milliseconds');
+});
+
+test('setters singular', function (assert) {
+    var a = moment();
+    a.year(2011);
+    a.month(9);
+    a.date(12);
+    a.hour(6);
+    a.minute(7);
+    a.second(8);
+    a.millisecond(9);
+    assert.equal(a.year(), 2011, 'year');
+    assert.equal(a.month(), 9, 'month');
+    assert.equal(a.date(), 12, 'date');
+    assert.equal(a.day(), 3, 'day');
+    assert.equal(a.hour(), 6, 'hour');
+    assert.equal(a.minute(), 7, 'minute');
+    assert.equal(a.second(), 8, 'second');
+    assert.equal(a.millisecond(), 9, 'milliseconds');
+});
+
+test('setters', function (assert) {
+    var a = moment();
+    a.year(2011);
+    a.month(9);
+    a.date(12);
+    a.hours(6);
+    a.minutes(7);
+    a.seconds(8);
+    a.milliseconds(9);
+    assert.equal(a.year(), 2011, 'year');
+    assert.equal(a.month(), 9, 'month');
+    assert.equal(a.date(), 12, 'date');
+    assert.equal(a.day(), 3, 'day');
+    assert.equal(a.hours(), 6, 'hour');
+    assert.equal(a.minutes(), 7, 'minute');
+    assert.equal(a.seconds(), 8, 'second');
+    assert.equal(a.milliseconds(), 9, 'milliseconds');
+
+    // Test month() behavior. See https://github.com/timrwood/moment/pull/822
+    a = moment('20130531', 'YYYYMMDD');
+    a.month(3);
+    assert.equal(a.month(), 3, 'month edge case');
+});
+
+test('setter programmatic', function (assert) {
+    var a = moment();
+    a.set('year', 2011);
+    a.set('month', 9);
+    a.set('date', 12);
+    a.set('hours', 6);
+    a.set('minutes', 7);
+    a.set('seconds', 8);
+    a.set('milliseconds', 9);
+    assert.equal(a.year(), 2011, 'year');
+    assert.equal(a.month(), 9, 'month');
+    assert.equal(a.date(), 12, 'date');
+    assert.equal(a.day(), 3, 'day');
+    assert.equal(a.hours(), 6, 'hour');
+    assert.equal(a.minutes(), 7, 'minute');
+    assert.equal(a.seconds(), 8, 'second');
+    assert.equal(a.milliseconds(), 9, 'milliseconds');
+
+    // Test month() behavior. See https://github.com/timrwood/moment/pull/822
+    a = moment('20130531', 'YYYYMMDD');
+    a.month(3);
+    assert.equal(a.month(), 3, 'month edge case');
+});
+
+// Disable this, until we weekYear setter is fixed.
+// https://github.com/moment/moment/issues/1379
+// test('setters programatic with weeks', function (assert) {
+//     var a = moment();
+//     a.set('weekYear', 2001);
+//     a.set('week', 49);
+//     a.set('day', 4);
+//     assert.equals(a.weekYear(), 2001);
+//     assert.equals(a.week(), 49);
+//     assert.equals(a.day(), 4);
+
+//     a.set('weekday', 1);
+//     assert.equals(a.weekday(), 1);
+
+//     assert.done();
+//},
+
+// I think this suffers from the same issue as the non-iso version.
+// test('setters programatic with weeks ISO', function (assert) {
+//     var a = moment();
+//     a.set('isoWeekYear', 2001);
+//     a.set('isoWeek', 49);
+//     a.set('isoWeekday', 4);
+
+//     assert.equals(a.weekYear(), 2001);
+//     assert.equals(a.week(), 49);
+//     assert.equals(a.day(), 4);
+
+//     assert.done();
+//},
+
+test('setters strings', function (assert) {
+    var a = moment([2012]).locale('en');
+    assert.equal(a.clone().day(0).day('Wednesday').day(), 3, 'day full name');
+    assert.equal(a.clone().day(0).day('Wed').day(), 3, 'day short name');
+    assert.equal(a.clone().day(0).day('We').day(), 3, 'day minimal name');
+    assert.equal(a.clone().day(0).day('invalid').day(), 0, 'invalid day name');
+    assert.equal(a.clone().month(0).month('April').month(), 3, 'month full name');
+    assert.equal(a.clone().month(0).month('Apr').month(), 3, 'month short name');
+    assert.equal(a.clone().month(0).month('invalid').month(), 0, 'invalid month name');
+});
+
+test('setters - falsey values', function (assert) {
+    var a = moment();
+    // ensure minutes wasn't coincidentally 0 already
+    a.minutes(1);
+    a.minutes(0);
+    assert.equal(a.minutes(), 0, 'falsey value');
+});
+
+test('chaining setters', function (assert) {
+    var a = moment();
+    a.year(2011)
+     .month(9)
+     .date(12)
+     .hours(6)
+     .minutes(7)
+     .seconds(8);
+    assert.equal(a.year(), 2011, 'year');
+    assert.equal(a.month(), 9, 'month');
+    assert.equal(a.date(), 12, 'date');
+    assert.equal(a.day(), 3, 'day');
+    assert.equal(a.hours(), 6, 'hour');
+    assert.equal(a.minutes(), 7, 'minute');
+    assert.equal(a.seconds(), 8, 'second');
+});
+
+test('setter with multiple unit values', function (assert) {
+    var a = moment();
+    a.set({
+        year: 2011,
+        month: 9,
+        date: 12,
+        hours: 6,
+        minutes: 7,
+        seconds: 8,
+        milliseconds: 9
+    });
+    assert.equal(a.year(), 2011, 'year');
+    assert.equal(a.month(), 9, 'month');
+    assert.equal(a.date(), 12, 'date');
+    assert.equal(a.day(), 3, 'day');
+    assert.equal(a.hours(), 6, 'hour');
+    assert.equal(a.minutes(), 7, 'minute');
+    assert.equal(a.seconds(), 8, 'second');
+    assert.equal(a.milliseconds(), 9, 'milliseconds');
+});
+
+test('day setter', function (assert) {
+    var a = moment([2011, 0, 15]);
+    assert.equal(moment(a).day(0).date(), 9, 'set from saturday to sunday');
+    assert.equal(moment(a).day(6).date(), 15, 'set from saturday to saturday');
+    assert.equal(moment(a).day(3).date(), 12, 'set from saturday to wednesday');
+
+    a = moment([2011, 0, 9]);
+    assert.equal(moment(a).day(0).date(), 9, 'set from sunday to sunday');
+    assert.equal(moment(a).day(6).date(), 15, 'set from sunday to saturday');
+    assert.equal(moment(a).day(3).date(), 12, 'set from sunday to wednesday');
+
+    a = moment([2011, 0, 12]);
+    assert.equal(moment(a).day(0).date(), 9, 'set from wednesday to sunday');
+    assert.equal(moment(a).day(6).date(), 15, 'set from wednesday to saturday');
+    assert.equal(moment(a).day(3).date(), 12, 'set from wednesday to wednesday');
+
+    assert.equal(moment(a).day(-7).date(), 2, 'set from wednesday to last sunday');
+    assert.equal(moment(a).day(-1).date(), 8, 'set from wednesday to last saturday');
+    assert.equal(moment(a).day(-4).date(), 5, 'set from wednesday to last wednesday');
+
+    assert.equal(moment(a).day(7).date(), 16, 'set from wednesday to next sunday');
+    assert.equal(moment(a).day(13).date(), 22, 'set from wednesday to next saturday');
+    assert.equal(moment(a).day(10).date(), 19, 'set from wednesday to next wednesday');
+
+    assert.equal(moment(a).day(14).date(), 23, 'set from wednesday to second next sunday');
+    assert.equal(moment(a).day(20).date(), 29, 'set from wednesday to second next saturday');
+    assert.equal(moment(a).day(17).date(), 26, 'set from wednesday to second next wednesday');
+});
+//===================================================================================================================================================================================================================== //>
 
 

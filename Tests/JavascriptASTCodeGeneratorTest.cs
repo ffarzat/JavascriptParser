@@ -215,8 +215,8 @@ namespace Tests
         public void RunTestsFromGeneratedMomentJs()
         {
             const string jsTestFile = "testsNoLocation.js";
-            const string qunitFile = "qunit-1.18.0.js";
-            //const string qunitFile = "core-test.js";
+            //const string qunitFile = "qunit-1.18.0.js";
+            const string qunitFile = "core-test.js";
             //const string fileMomentPath = "moment.js";
             const string fileMomentPath = "momentNoLocation.js";
             const string fileGeneratedCode = "target.js";
@@ -299,7 +299,7 @@ namespace Tests
 
                                 });
 
-
+/*
                                 QUnit.moduleDone(function( details ) {
                                     if(details.failed > 0)
                                     {
@@ -312,7 +312,7 @@ namespace Tests
                                         alert('Tempo:' + details.runtime);
                                     }
                                 });
-
+*/
 
 
                                 QUnit.testDone(function( details ) {
