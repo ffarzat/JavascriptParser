@@ -217,8 +217,8 @@ namespace Tests
             const string jsTestFile = "testsNoLocation.js";
             //const string qunitFile = "qunit-1.18.0.js";
             const string qunitFile = "core-test.js";
-            //const string fileMomentPath = "moment.js";
-            const string fileMomentPath = "momentNoLocation.js";
+            const string fileMomentPath = "moment.js";
+            //const string fileMomentPath = "momentNoLocation.js";
             const string fileGeneratedCode = "target.js";
             
             var sw = new Stopwatch();
