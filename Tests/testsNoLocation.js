@@ -4240,4 +4240,562 @@ test('moment().lang with missing key doesn\'t change locale', function (assert) 
     assert.equal(moment().lang('boo').localeData(), moment.localeData(),
             'preserve global locale in case of bad locale id');
 });
+//===================================================================================================================================================================================================================== //>
+module('min max');
 
+test('min', function (assert) {
+    var now = moment(),
+        future = now.clone().add(1, 'month'),
+        past = now.clone().subtract(1, 'month');
+
+    assert.equal(moment.min(now, future, past), past, 'min(now, future, past)');
+    assert.equal(moment.min(future, now, past), past, 'min(future, now, past)');
+    assert.equal(moment.min(future, past, now), past, 'min(future, past, now)');
+    assert.equal(moment.min(past, future, now), past, 'min(past, future, now)');
+    assert.equal(moment.min(now, past), past, 'min(now, past)');
+    assert.equal(moment.min(past, now), past, 'min(past, now)');
+    assert.equal(moment.min(now), now, 'min(now, past)');
+
+    assert.equal(moment.min([now, future, past]), past, 'min([now, future, past])');
+    assert.equal(moment.min([now, past]), past, 'min(now, past)');
+    assert.equal(moment.min([now]), now, 'min(now)');
+});
+
+test('max', function (assert) {
+    var now = moment(),
+        future = now.clone().add(1, 'month'),
+        past = now.clone().subtract(1, 'month');
+
+    assert.equal(moment.max(now, future, past), future, 'max(now, future, past)');
+    assert.equal(moment.max(future, now, past), future, 'max(future, now, past)');
+    assert.equal(moment.max(future, past, now), future, 'max(future, past, now)');
+    assert.equal(moment.max(past, future, now), future, 'max(past, future, now)');
+    assert.equal(moment.max(now, past), now, 'max(now, past)');
+    assert.equal(moment.max(past, now), now, 'max(past, now)');
+    assert.equal(moment.max(now), now, 'max(now, past)');
+
+    assert.equal(moment.max([now, future, past]), future, 'max([now, future, past])');
+    assert.equal(moment.max([now, past]), now, 'max(now, past)');
+    assert.equal(moment.max([now]), now, 'max(now)');
+});
+//===================================================================================================================================================================================================================== //>
+module('mutable');
+
+test('manipulation methods', function (assert) {
+    var m = moment();
+
+    assert.equal(m, m.year(2011), 'year() should be mutable');
+    assert.equal(m, m.month(1), 'month() should be mutable');
+    assert.equal(m, m.hours(7), 'hours() should be mutable');
+    assert.equal(m, m.minutes(33), 'minutes() should be mutable');
+    assert.equal(m, m.seconds(44), 'seconds() should be mutable');
+    assert.equal(m, m.milliseconds(55), 'milliseconds() should be mutable');
+    assert.equal(m, m.day(2), 'day() should be mutable');
+    assert.equal(m, m.startOf('week'), 'startOf() should be mutable');
+    assert.equal(m, m.add(1, 'days'), 'add() should be mutable');
+    assert.equal(m, m.subtract(2, 'years'), 'subtract() should be mutable');
+    assert.equal(m, m.local(), 'local() should be mutable');
+    assert.equal(m, m.utc(), 'utc() should be mutable');
+});
+
+test('non mutable methods', function (assert) {
+    var m = moment();
+    assert.notEqual(m, m.clone(), 'clone() should not be mutable');
+});
+//===================================================================================================================================================================================================================== //>
+module('normalize units');
+
+test('normalize units', function (assert) {
+    var fullKeys = ['year', 'quarter', 'month', 'isoWeek', 'week', 'day', 'hour', 'minute', 'second', 'millisecond', 'date', 'dayOfYear', 'weekday', 'isoWeekday', 'weekYear', 'isoWeekYear'],
+        aliases = ['y', 'Q', 'M', 'W', 'w', 'd', 'h', 'm', 's', 'ms', 'D', 'DDD', 'e', 'E', 'gg', 'GG'],
+        length = fullKeys.length,
+        fullKey,
+        fullKeyCaps,
+        fullKeyPlural,
+        fullKeyCapsPlural,
+        fullKeyLower,
+        alias,
+        index;
+
+    for (index = 0; index < length; index += 1) {
+        fullKey = fullKeys[index];
+        fullKeyCaps = fullKey.toUpperCase();
+        fullKeyLower = fullKey.toLowerCase();
+        fullKeyPlural = fullKey + 's';
+        fullKeyCapsPlural = fullKeyCaps + 's';
+        alias = aliases[index];
+        assert.equal(moment.normalizeUnits(fullKey), fullKey, 'Testing full key ' + fullKey);
+        assert.equal(moment.normalizeUnits(fullKeyCaps), fullKey, 'Testing full key capitalised ' + fullKey);
+        assert.equal(moment.normalizeUnits(fullKeyPlural), fullKey, 'Testing full key plural ' + fullKey);
+        assert.equal(moment.normalizeUnits(fullKeyCapsPlural), fullKey, 'Testing full key capitalised and plural ' + fullKey);
+        assert.equal(moment.normalizeUnits(alias), fullKey, 'Testing alias ' + fullKey);
+    }
+});
+//===================================================================================================================================================================================================================== //>
+module('parsing flags');
+
+function flags () {
+    return moment.apply(null, arguments).parsingFlags();
+}
+
+test('overflow with array', function (assert) {
+    //months
+    assert.equal(flags([2010, 0]).overflow, -1, 'month 0 valid');
+    assert.equal(flags([2010, 1]).overflow, -1, 'month 1 valid');
+    assert.equal(flags([2010, -1]).overflow, 1, 'month -1 invalid');
+    assert.equal(flags([2100, 12]).overflow, 1, 'month 12 invalid');
+
+    //days
+    assert.equal(flags([2010, 1, 16]).overflow, -1, 'date valid');
+    assert.equal(flags([2010, 1, -1]).overflow, 2, 'date -1 invalid');
+    assert.equal(flags([2010, 1, 0]).overflow, 2, 'date 0 invalid');
+    assert.equal(flags([2010, 1, 32]).overflow, 2, 'date 32 invalid');
+    assert.equal(flags([2012, 1, 29]).overflow, -1, 'date leap year valid');
+    assert.equal(flags([2010, 1, 29]).overflow, 2, 'date leap year invalid');
+
+    //hours
+    assert.equal(flags([2010, 1, 1, 8]).overflow, -1, 'hour valid');
+    assert.equal(flags([2010, 1, 1, 0]).overflow, -1, 'hour 0 valid');
+    assert.equal(flags([2010, 1, 1, -1]).overflow, 3, 'hour -1 invalid');
+    assert.equal(flags([2010, 1, 1, 25]).overflow, 3, 'hour 25 invalid');
+    assert.equal(flags([2010, 1, 1, 24, 1]).overflow, 3, 'hour 24:01 invalid');
+
+    //minutes
+    assert.equal(flags([2010, 1, 1, 8, 15]).overflow, -1, 'minute valid');
+    assert.equal(flags([2010, 1, 1, 8, 0]).overflow, -1, 'minute 0 valid');
+    assert.equal(flags([2010, 1, 1, 8, -1]).overflow, 4, 'minute -1 invalid');
+    assert.equal(flags([2010, 1, 1, 8, 60]).overflow, 4, 'minute 60 invalid');
+
+    //seconds
+    assert.equal(flags([2010, 1, 1, 8, 15, 12]).overflow, -1, 'second valid');
+    assert.equal(flags([2010, 1, 1, 8, 15, 0]).overflow, -1, 'second 0 valid');
+    assert.equal(flags([2010, 1, 1, 8, 15, -1]).overflow, 5, 'second -1 invalid');
+    assert.equal(flags([2010, 1, 1, 8, 15, 60]).overflow, 5, 'second 60 invalid');
+
+    //milliseconds
+    assert.equal(flags([2010, 1, 1, 8, 15, 12, 345]).overflow, -1, 'millisecond valid');
+    assert.equal(flags([2010, 1, 1, 8, 15, 12, 0]).overflow, -1, 'millisecond 0 valid');
+    assert.equal(flags([2010, 1, 1, 8, 15, 12, -1]).overflow, 6, 'millisecond -1 invalid');
+    assert.equal(flags([2010, 1, 1, 8, 15, 12, 1000]).overflow, 6, 'millisecond 1000 invalid');
+
+    // 24 hrs
+    assert.equal(flags([2010, 1, 1, 24, 0, 0, 0]).overflow, -1, '24:00:00.000 is fine');
+    assert.equal(flags([2010, 1, 1, 24, 1, 0, 0]).overflow, 3, '24:01:00.000 is wrong hour');
+    assert.equal(flags([2010, 1, 1, 24, 0, 1, 0]).overflow, 3, '24:00:01.000 is wrong hour');
+    assert.equal(flags([2010, 1, 1, 24, 0, 0, 1]).overflow, 3, '24:00:00.001 is wrong hour');
+});
+
+test('overflow without format', function (assert) {
+    //months
+    assert.equal(flags('2001-01', 'YYYY-MM').overflow, -1, 'month 1 valid');
+    assert.equal(flags('2001-12', 'YYYY-MM').overflow, -1, 'month 12 valid');
+    assert.equal(flags('2001-13', 'YYYY-MM').overflow, 1, 'month 13 invalid');
+
+    //days
+    assert.equal(flags('2010-01-16', 'YYYY-MM-DD').overflow, -1, 'date 16 valid');
+    assert.equal(flags('2010-01-0',  'YYYY-MM-DD').overflow, 2, 'date 0 invalid');
+    assert.equal(flags('2010-01-32', 'YYYY-MM-DD').overflow, 2, 'date 32 invalid');
+    assert.equal(flags('2012-02-29', 'YYYY-MM-DD').overflow, -1, 'date leap year valid');
+    assert.equal(flags('2010-02-29', 'YYYY-MM-DD').overflow, 2, 'date leap year invalid');
+
+    //days of the year
+    assert.equal(flags('2010 300', 'YYYY DDDD').overflow, -1, 'day 300 of year valid');
+    assert.equal(flags('2010 365', 'YYYY DDDD').overflow, -1, 'day 365 of year valid');
+    assert.equal(flags('2010 366', 'YYYY DDDD').overflow, 2, 'day 366 of year invalid');
+    assert.equal(flags('2012 366', 'YYYY DDDD').overflow, -1, 'day 366 of leap year valid');
+    assert.equal(flags('2012 367', 'YYYY DDDD').overflow, 2, 'day 367 of leap year invalid');
+
+    //hours
+    assert.equal(flags('08', 'HH').overflow, -1, 'hour valid');
+    assert.equal(flags('00', 'HH').overflow, -1, 'hour 0 valid');
+    assert.equal(flags('25', 'HH').overflow, 3, 'hour 25 invalid');
+    assert.equal(flags('24:01', 'HH:mm').overflow, 3, 'hour 24:01 invalid');
+
+    //minutes
+    assert.equal(flags('08:15', 'HH:mm').overflow, -1, 'minute valid');
+    assert.equal(flags('08:00', 'HH:mm').overflow, -1, 'minute 0 valid');
+    assert.equal(flags('08:60', 'HH:mm').overflow, 4, 'minute 60 invalid');
+
+    //seconds
+    assert.equal(flags('08:15:12', 'HH:mm:ss').overflow, -1, 'second valid');
+    assert.equal(flags('08:15:00', 'HH:mm:ss').overflow, -1, 'second 0 valid');
+    assert.equal(flags('08:15:60', 'HH:mm:ss').overflow, 5, 'second 60 invalid');
+
+    //milliseconds
+    assert.equal(flags('08:15:12:345', 'HH:mm:ss:SSSS').overflow, -1, 'millisecond valid');
+    assert.equal(flags('08:15:12:000', 'HH:mm:ss:SSSS').overflow, -1, 'millisecond 0 valid');
+
+    //this is OK because we don't match the last digit, so it's 100 ms
+    assert.equal(flags('08:15:12:1000', 'HH:mm:ss:SSSS').overflow, -1, 'millisecond 1000 actually valid');
+});
+
+test('extra tokens', function (assert) {
+    assert.deepEqual(flags('1982-05-25', 'YYYY-MM-DD').unusedTokens, [], 'nothing extra');
+    assert.deepEqual(flags('1982-05', 'YYYY-MM-DD').unusedTokens, ['DD'], 'extra formatting token');
+    assert.deepEqual(flags('1982', 'YYYY-MM-DD').unusedTokens, ['MM', 'DD'], 'multiple extra formatting tokens');
+    assert.deepEqual(flags('1982-05', 'YYYY-MM-').unusedTokens, [], 'extra non-formatting token');
+    assert.deepEqual(flags('1982-05-', 'YYYY-MM-DD').unusedTokens, ['DD'], 'non-extra non-formatting token');
+    assert.deepEqual(flags('1982 05 1982', 'YYYY-MM-DD').unusedTokens, [], 'different non-formatting token');
+});
+
+test('extra tokens strict', function (assert) {
+    assert.deepEqual(flags('1982-05-25', 'YYYY-MM-DD', true).unusedTokens, [], 'nothing extra');
+    assert.deepEqual(flags('1982-05', 'YYYY-MM-DD', true).unusedTokens, ['-', 'DD'], 'extra formatting token');
+    assert.deepEqual(flags('1982', 'YYYY-MM-DD', true).unusedTokens, ['-', 'MM', '-', 'DD'], 'multiple extra formatting tokens');
+    assert.deepEqual(flags('1982-05', 'YYYY-MM-', true).unusedTokens, ['-'], 'extra non-formatting token');
+    assert.deepEqual(flags('1982-05-', 'YYYY-MM-DD', true).unusedTokens, ['DD'], 'non-extra non-formatting token');
+    assert.deepEqual(flags('1982 05 1982', 'YYYY-MM-DD', true).unusedTokens, ['-', '-'], 'different non-formatting token');
+});
+
+test('unused input', function (assert) {
+    assert.deepEqual(flags('1982-05-25', 'YYYY-MM-DD').unusedInput, [], 'normal input');
+    assert.deepEqual(flags('1982-05-25 this is more stuff', 'YYYY-MM-DD').unusedInput, [' this is more stuff'], 'trailing nonsense');
+    assert.deepEqual(flags('1982-05-25 09:30', 'YYYY-MM-DD').unusedInput, [' 09:30'], ['trailing legit-looking input']);
+    assert.deepEqual(flags('1982-05-25 some junk', 'YYYY-MM-DD [some junk]').unusedInput, [], 'junk that actually gets matched');
+    assert.deepEqual(flags('stuff at beginning 1982-05-25', 'YYYY-MM-DD').unusedInput, ['stuff at beginning '], 'leading junk');
+    assert.deepEqual(flags('junk 1982 more junk 05 yet more junk25', 'YYYY-MM-DD').unusedInput, ['junk ', ' more junk ', ' yet more junk'], 'interstitial junk');
+});
+
+test('unused input strict', function (assert) {
+    assert.deepEqual(flags('1982-05-25', 'YYYY-MM-DD', true).unusedInput, [], 'normal input');
+    assert.deepEqual(flags('1982-05-25 this is more stuff', 'YYYY-MM-DD', true).unusedInput, [' this is more stuff'], 'trailing nonsense');
+    assert.deepEqual(flags('1982-05-25 09:30', 'YYYY-MM-DD', true).unusedInput, [' 09:30'], ['trailing legit-looking input']);
+    assert.deepEqual(flags('1982-05-25 some junk', 'YYYY-MM-DD [some junk]', true).unusedInput, [], 'junk that actually gets matched');
+    assert.deepEqual(flags('stuff at beginning 1982-05-25', 'YYYY-MM-DD', true).unusedInput, ['stuff at beginning '], 'leading junk');
+    assert.deepEqual(flags('junk 1982 more junk 05 yet more junk25', 'YYYY-MM-DD', true).unusedInput, ['junk ', ' more junk ', ' yet more junk'], 'interstitial junk');
+});
+
+test('chars left over', function (assert) {
+    assert.equal(flags('1982-05-25', 'YYYY-MM-DD').charsLeftOver, 0, 'normal input');
+    assert.equal(flags('1982-05-25 this is more stuff', 'YYYY-MM-DD').charsLeftOver, ' this is more stuff'.length, 'trailing nonsense');
+    assert.equal(flags('1982-05-25 09:30', 'YYYY-MM-DD').charsLeftOver, ' 09:30'.length, 'trailing legit-looking input');
+    assert.equal(flags('stuff at beginning 1982-05-25', 'YYYY-MM-DD').charsLeftOver, 'stuff at beginning '.length, 'leading junk');
+    assert.equal(flags('1982 junk 05 more junk25', 'YYYY-MM-DD').charsLeftOver, [' junk ', ' more junk'].join('').length, 'interstitial junk');
+    assert.equal(flags('stuff at beginning 1982 junk 05 more junk25', 'YYYY-MM-DD').charsLeftOver, ['stuff at beginning ', ' junk ', ' more junk'].join('').length, 'leading and interstitial junk');
+});
+
+test('empty', function (assert) {
+    assert.equal(flags('1982-05-25', 'YYYY-MM-DD').empty, false, 'normal input');
+    assert.equal(flags('nothing here', 'YYYY-MM-DD').empty, true, 'pure garbage');
+    assert.equal(flags('junk but has the number 2000 in it', 'YYYY-MM-DD').empty, false, 'only mostly garbage');
+    assert.equal(flags('', 'YYYY-MM-DD').empty, true, 'empty string');
+    assert.equal(flags('', 'YYYY-MM-DD').empty, true, 'blank string');
+});
+
+test('null', function (assert) {
+    assert.equal(flags('1982-05-25', 'YYYY-MM-DD').nullInput, false, 'normal input');
+    assert.equal(flags(null).nullInput, true, 'just null');
+    assert.equal(flags(null, 'YYYY-MM-DD').nullInput, true, 'null with format');
+});
+
+test('invalid month', function (assert) {
+    assert.equal(flags('1982 May', 'YYYY MMMM').invalidMonth, null, 'normal input');
+    assert.equal(flags('1982 Laser', 'YYYY MMMM').invalidMonth, 'Laser', 'bad month name');
+});
+
+test('empty format array', function (assert) {
+    assert.equal(flags('1982 May', ['YYYY MMM']).invalidFormat, false, 'empty format array');
+    assert.equal(flags('1982 May', []).invalidFormat, true, 'empty format array');
+});
+//===================================================================================================================================================================================================================== //>
+var symbolMap = {
+        '1': '!',
+        '2': '@',
+        '3': '#',
+        '4': '$',
+        '5': '%',
+        '6': '^',
+        '7': '&',
+        '8': '*',
+        '9': '(',
+        '0': ')'
+    },
+    numberMap = {
+        '!': '1',
+        '@': '2',
+        '#': '3',
+        '$': '4',
+        '%': '5',
+        '^': '6',
+        '&': '7',
+        '*': '8',
+        '(': '9',
+        ')': '0'
+    };
+
+module('preparse and postformat', {
+    setup: function () {
+        moment.locale('symbol', {
+            preparse: function (string) {
+                return string.replace(/[!@#$%\^&*()]/g, function (match) {
+                    return numberMap[match];
+                });
+            },
+
+            postformat: function (string) {
+                return string.replace(/\d/g, function (match) {
+                    return symbolMap[match];
+                });
+            }
+        });
+    }
+});
+
+test('transform', function (assert) {
+    assert.equal(moment.utc('@)!@-)*-@&', 'YYYY-MM-DD').unix(), 1346025600, 'preparse string + format');
+    assert.equal(moment.utc('@)!@-)*-@&').unix(), 1346025600, 'preparse ISO8601 string');
+    assert.equal(moment.unix(1346025600).utc().format('YYYY-MM-DD'), '@)!@-)*-@&', 'postformat');
+});
+
+test('transform from', function (assert) {
+    var start = moment([2007, 1, 28]);
+
+    assert.equal(start.from(moment([2007, 1, 28]).add({s: 90}), true), '@ minutes', 'postformat should work on moment.fn.from');
+    assert.equal(moment().add(6, 'd').fromNow(true), '^ days', 'postformat should work on moment.fn.fromNow');
+    assert.equal(moment.duration(10, 'h').humanize(), '!) hours', 'postformat should work on moment.duration.fn.humanize');
+});
+
+test('calendar day', function (assert) {
+    var a = moment().hours(2).minutes(0).seconds(0);
+
+    assert.equal(moment(a).calendar(),                   'Today at @:)) AM',     'today at the same time');
+    assert.equal(moment(a).add({m: 25}).calendar(),      'Today at @:@% AM',     'Now plus 25 min');
+    assert.equal(moment(a).add({h: 1}).calendar(),       'Today at #:)) AM',     'Now plus 1 hour');
+    assert.equal(moment(a).add({d: 1}).calendar(),       'Tomorrow at @:)) AM',  'tomorrow at the same time');
+    assert.equal(moment(a).subtract({h: 1}).calendar(),  'Today at !:)) AM',     'Now minus 1 hour');
+    assert.equal(moment(a).subtract({d: 1}).calendar(),  'Yesterday at @:)) AM', 'yesterday at the same time');
+});
+//===================================================================================================================================================================================================================== //>
+module('quarter');
+
+test('library quarter getter', function (assert) {
+    assert.equal(moment([1985,  1,  4]).quarter(), 1, 'Feb  4 1985 is Q1');
+    assert.equal(moment([2029,  8, 18]).quarter(), 3, 'Sep 18 2029 is Q3');
+    assert.equal(moment([2013,  3, 24]).quarter(), 2, 'Apr 24 2013 is Q2');
+    assert.equal(moment([2015,  2,  5]).quarter(), 1, 'Mar  5 2015 is Q1');
+    assert.equal(moment([1970,  0,  2]).quarter(), 1, 'Jan  2 1970 is Q1');
+    assert.equal(moment([2001, 11, 12]).quarter(), 4, 'Dec 12 2001 is Q4');
+    assert.equal(moment([2000,  0,  2]).quarter(), 1, 'Jan  2 2000 is Q1');
+});
+
+test('quarter setter singular', function (assert) {
+    var m = moment([2014, 4, 11]);
+    assert.equal(m.quarter(2).month(), 4, 'set same quarter');
+    assert.equal(m.quarter(3).month(), 7, 'set 3rd quarter');
+    assert.equal(m.quarter(1).month(), 1, 'set 1st quarter');
+    assert.equal(m.quarter(4).month(), 10, 'set 4th quarter');
+});
+
+test('quarter setter plural', function (assert) {
+    var m = moment([2014, 4, 11]);
+    assert.equal(m.quarters(2).month(), 4, 'set same quarter');
+    assert.equal(m.quarters(3).month(), 7, 'set 3rd quarter');
+    assert.equal(m.quarters(1).month(), 1, 'set 1st quarter');
+    assert.equal(m.quarters(4).month(), 10, 'set 4th quarter');
+});
+
+test('quarter setter programmatic', function (assert) {
+    var m = moment([2014, 4, 11]);
+    assert.equal(m.set('quarter', 2).month(), 4, 'set same quarter');
+    assert.equal(m.set('quarter', 3).month(), 7, 'set 3rd quarter');
+    assert.equal(m.set('quarter', 1).month(), 1, 'set 1st quarter');
+    assert.equal(m.set('quarter', 4).month(), 10, 'set 4th quarter');
+});
+
+test('quarter setter programmatic plural', function (assert) {
+    var m = moment([2014, 4, 11]);
+    assert.equal(m.set('quarters', 2).month(), 4, 'set same quarter');
+    assert.equal(m.set('quarters', 3).month(), 7, 'set 3rd quarter');
+    assert.equal(m.set('quarters', 1).month(), 1, 'set 1st quarter');
+    assert.equal(m.set('quarters', 4).month(), 10, 'set 4th quarter');
+});
+
+test('quarter setter programmatic abbr', function (assert) {
+    var m = moment([2014, 4, 11]);
+    assert.equal(m.set('Q', 2).month(), 4, 'set same quarter');
+    assert.equal(m.set('Q', 3).month(), 7, 'set 3rd quarter');
+    assert.equal(m.set('Q', 1).month(), 1, 'set 1st quarter');
+    assert.equal(m.set('Q', 4).month(), 10, 'set 4th quarter');
+});
+
+test('quarter setter only month changes', function (assert) {
+    var m = moment([2014, 4, 11, 1, 2, 3, 4]).quarter(4);
+    assert.equal(m.year(), 2014, 'keep year');
+    assert.equal(m.month(), 10, 'set month');
+    assert.equal(m.date(), 11, 'keep date');
+    assert.equal(m.hour(), 1, 'keep hour');
+    assert.equal(m.minute(), 2, 'keep minutes');
+    assert.equal(m.second(), 3, 'keep seconds');
+    assert.equal(m.millisecond(), 4, 'keep milliseconds');
+});
+
+test('quarter setter bubble to next year', function (assert) {
+    var m = moment([2014, 4, 11, 1, 2, 3, 4]).quarter(7);
+    assert.equal(m.year(), 2015, 'year bubbled');
+    assert.equal(m.month(), 7, 'set month');
+    assert.equal(m.date(), 11, 'keep date');
+    assert.equal(m.hour(), 1, 'keep hour');
+    assert.equal(m.minute(), 2, 'keep minutes');
+    assert.equal(m.second(), 3, 'keep seconds');
+    assert.equal(m.millisecond(), 4, 'keep milliseconds');
+});
+
+test('quarter diff', function (assert) {
+    assert.equal(moment('2014-01-01').diff(moment('2014-04-01'), 'quarter'),
+            -1, 'diff -1 quarter');
+    assert.equal(moment('2014-04-01').diff(moment('2014-01-01'), 'quarter'),
+            1, 'diff 1 quarter');
+    assert.equal(moment('2014-05-01').diff(moment('2014-01-01'), 'quarter'),
+            1, 'diff 1 quarter');
+    assert.ok(Math.abs((4 / 3) - moment('2014-05-01').diff(
+                    moment('2014-01-01'), 'quarter', true)) < 0.00001,
+            'diff 1 1/3 quarter');
+    assert.equal(moment('2015-01-01').diff(moment('2014-01-01'), 'quarter'),
+            4, 'diff 4 quarters');
+});
+
+test('quarter setter bubble to previous year', function (assert) {
+    var m = moment([2014, 4, 11, 1, 2, 3, 4]).quarter(-3);
+    assert.equal(m.year(), 2013, 'year bubbled');
+    assert.equal(m.month(), 1, 'set month');
+    assert.equal(m.date(), 11, 'keep date');
+    assert.equal(m.hour(), 1, 'keep hour');
+    assert.equal(m.minute(), 2, 'keep minutes');
+    assert.equal(m.second(), 3, 'keep seconds');
+    assert.equal(m.millisecond(), 4, 'keep milliseconds');
+});
+//===================================================================================================================================================================================================================== //>
+module('relative time');
+
+test('default thresholds fromNow', function (assert) {
+    var a = moment();
+
+    // Seconds to minutes threshold
+    a.subtract(44, 'seconds');
+    assert.equal(a.fromNow(), 'a few seconds ago', 'Below default seconds to minutes threshold');
+    a.subtract(1, 'seconds');
+    assert.equal(a.fromNow(), 'a minute ago', 'Above default seconds to minutes threshold');
+
+    // Minutes to hours threshold
+    a = moment();
+    a.subtract(44, 'minutes');
+    assert.equal(a.fromNow(), '44 minutes ago', 'Below default minute to hour threshold');
+    a.subtract(1, 'minutes');
+    assert.equal(a.fromNow(), 'an hour ago', 'Above default minute to hour threshold');
+
+    // Hours to days threshold
+    a = moment();
+    a.subtract(21, 'hours');
+    assert.equal(a.fromNow(), '21 hours ago', 'Below default hours to day threshold');
+    a.subtract(1, 'hours');
+    assert.equal(a.fromNow(), 'a day ago', 'Above default hours to day threshold');
+
+    // Days to month threshold
+    a = moment();
+    a.subtract(25, 'days');
+    assert.equal(a.fromNow(), '25 days ago', 'Below default days to month (singular) threshold');
+    a.subtract(1, 'days');
+    assert.equal(a.fromNow(), 'a month ago', 'Above default days to month (singular) threshold');
+
+    // months to year threshold
+    a = moment();
+    a.subtract(10, 'months');
+    assert.equal(a.fromNow(), '10 months ago', 'Below default days to years threshold');
+    a.subtract(1, 'month');
+    assert.equal(a.fromNow(), 'a year ago', 'Above default days to years threshold');
+});
+
+test('default thresholds toNow', function (assert) {
+    var a = moment();
+
+    // Seconds to minutes threshold
+    a.subtract(44, 'seconds');
+    assert.equal(a.toNow(), 'in a few seconds', 'Below default seconds to minutes threshold');
+    a.subtract(1, 'seconds');
+    assert.equal(a.toNow(), 'in a minute', 'Above default seconds to minutes threshold');
+
+    // Minutes to hours threshold
+    a = moment();
+    a.subtract(44, 'minutes');
+    assert.equal(a.toNow(), 'in 44 minutes', 'Below default minute to hour threshold');
+    a.subtract(1, 'minutes');
+    assert.equal(a.toNow(), 'in an hour', 'Above default minute to hour threshold');
+
+    // Hours to days threshold
+    a = moment();
+    a.subtract(21, 'hours');
+    assert.equal(a.toNow(), 'in 21 hours', 'Below default hours to day threshold');
+    a.subtract(1, 'hours');
+    assert.equal(a.toNow(), 'in a day', 'Above default hours to day threshold');
+
+    // Days to month threshold
+    a = moment();
+    a.subtract(25, 'days');
+    assert.equal(a.toNow(), 'in 25 days', 'Below default days to month (singular) threshold');
+    a.subtract(1, 'days');
+    assert.equal(a.toNow(), 'in a month', 'Above default days to month (singular) threshold');
+
+    // months to year threshold
+    a = moment();
+    a.subtract(10, 'months');
+    assert.equal(a.toNow(), 'in 10 months', 'Below default days to years threshold');
+    a.subtract(1, 'month');
+    assert.equal(a.toNow(), 'in a year', 'Above default days to years threshold');
+});
+
+test('custom thresholds', function (assert) {
+    // Seconds to minutes threshold
+    moment.relativeTimeThreshold('s', 55);
+
+    var a = moment();
+    a.subtract(54, 'seconds');
+    assert.equal(a.fromNow(), 'a few seconds ago', 'Below custom seconds to minutes threshold');
+    a.subtract(1, 'seconds');
+    assert.equal(a.fromNow(), 'a minute ago', 'Above custom seconds to minutes threshold');
+
+    moment.relativeTimeThreshold('s', 45);
+
+    // Minutes to hours threshold
+    moment.relativeTimeThreshold('m', 55);
+    a = moment();
+    a.subtract(54, 'minutes');
+    assert.equal(a.fromNow(), '54 minutes ago', 'Below custom minutes to hours threshold');
+    a.subtract(1, 'minutes');
+    assert.equal(a.fromNow(), 'an hour ago', 'Above custom minutes to hours threshold');
+    moment.relativeTimeThreshold('m', 45);
+
+    // Hours to days threshold
+    moment.relativeTimeThreshold('h', 24);
+    a = moment();
+    a.subtract(23, 'hours');
+    assert.equal(a.fromNow(), '23 hours ago', 'Below custom hours to days threshold');
+    a.subtract(1, 'hours');
+    assert.equal(a.fromNow(), 'a day ago', 'Above custom hours to days threshold');
+    moment.relativeTimeThreshold('h', 22);
+
+    // Days to month threshold
+    moment.relativeTimeThreshold('d', 28);
+    a = moment();
+    a.subtract(27, 'days');
+    assert.equal(a.fromNow(), '27 days ago', 'Below custom days to month (singular) threshold');
+    a.subtract(1, 'days');
+    assert.equal(a.fromNow(), 'a month ago', 'Above custom days to month (singular) threshold');
+    moment.relativeTimeThreshold('d', 26);
+
+    // months to years threshold
+    moment.relativeTimeThreshold('M', 9);
+    a = moment();
+    a.subtract(8, 'months');
+    assert.equal(a.fromNow(), '8 months ago', 'Below custom days to years threshold');
+    a.subtract(1, 'months');
+    assert.equal(a.fromNow(), 'a year ago', 'Above custom days to years threshold');
+    moment.relativeTimeThreshold('M', 11);
+});
+
+test('retrive threshold settings', function (assert) {
+    moment.relativeTimeThreshold('m', 45);
+    var minuteThreshold = moment.relativeTimeThreshold('m');
+
+    assert.equal(minuteThreshold, 45, 'Can retrieve minute setting');
+});
+//===================================================================================================================================================================================================================== //>
