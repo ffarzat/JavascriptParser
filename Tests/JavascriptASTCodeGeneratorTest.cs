@@ -248,8 +248,7 @@ namespace Tests
             sw.Start();
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
-            //engine.EnableDebugging = false;
-            //engine.EnableILAnalysis = false;
+            
             sw.Stop();
             Console.WriteLine("{0} - {1}", "Engine criada e configurada", sw.Elapsed.ToString("mm\\:ss\\.ff"));
 

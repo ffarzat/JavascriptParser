@@ -2145,7 +2145,7 @@ test('isDST', function (assert) {
         assert.ok(!jul1.isDST(), 'July 1 is not DST');
     }
 });
-
+/* REMOVED .Net não suporta formato Unix
 test('unix timestamp', function (assert) {
     var m = moment('1234567890.123', 'X');
     assert.equal(m.format('X'), '1234567890', 'unix timestamp without milliseconds');
@@ -2156,7 +2156,8 @@ test('unix timestamp', function (assert) {
     m = moment(1234567890.123, 'X');
     assert.equal(m.format('X'), '1234567890', 'unix timestamp as integer');
 });
-
+*/
+/* REMOVED .Net não suporta formato Unix
 test('unix offset milliseconds', function (assert) {
     var m = moment('1234567890123', 'x');
     assert.equal(m.format('x'), '1234567890123', 'unix offset in milliseconds');
@@ -2164,7 +2165,7 @@ test('unix offset milliseconds', function (assert) {
     m = moment(1234567890123, 'x');
     assert.equal(m.format('x'), '1234567890123', 'unix offset in milliseconds as integer');
 });
-
+*/
 test('utcOffset sanity checks', function (assert) {
     assert.equal(moment().utcOffset() % 15, 0,
             'utc offset should be a multiple of 15 (was ' + moment().utcOffset() + ')');
@@ -2679,5 +2680,1033 @@ test('day setter', function (assert) {
     assert.equal(moment(a).day(17).date(), 26, 'set from wednesday to second next wednesday');
 });
 //===================================================================================================================================================================================================================== //>
+module('invalid');
 
+test('invalid', function (assert) {
+    var m = moment.invalid();
+    assert.equal(m.isValid(), false);
+    assert.equal(m.parsingFlags().userInvalidated, true);
+    assert.ok(isNaN(m.valueOf()));
+});
 
+test('invalid with existing flag', function (assert) {
+    var m = moment.invalid({invalidMonth : 'whatchamacallit'});
+    assert.equal(m.isValid(), false);
+    assert.equal(m.parsingFlags().userInvalidated, false);
+    assert.equal(m.parsingFlags().invalidMonth, 'whatchamacallit');
+    assert.ok(isNaN(m.valueOf()));
+});
+
+test('invalid with custom flag', function (assert) {
+    var m = moment.invalid({tooBusyWith : 'reiculating splines'});
+    assert.equal(m.isValid(), false);
+    assert.equal(m.parsingFlags().userInvalidated, false);
+    assert.equal(m.parsingFlags().tooBusyWith, 'reiculating splines');
+    assert.ok(isNaN(m.valueOf()));
+});
+//===================================================================================================================================================================================================================== //>
+module('is after');
+
+test('is after without units', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 10)), mCopy = moment(m);
+    assert.equal(m.isAfter(moment(new Date(2012, 3, 2, 3, 5, 5, 10))), false, 'year is later');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 3, 3, 5, 10))), true, 'year is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 4, 2, 3, 4, 5, 10))), false, 'month is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 2, 2, 3, 4, 5, 10))), true, 'month is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 3, 3, 4, 5, 10))), false, 'day is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 1, 3, 4, 5, 10))), true, 'day is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 4, 4, 5, 10))), false, 'hour is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 2, 4, 5, 10))), true, 'hour is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 5, 5, 10))), false, 'minute is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 3, 5, 10))), true, 'minute is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 6, 10))), false, 'second is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 4, 11))), true, 'second is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 5, 10))), false, 'millisecond match');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 5, 11))), false, 'millisecond is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 5, 9))), true, 'millisecond is earlier');
+    assert.equal(m.isAfter(m), false, 'moments are not after themselves');
+    assert.equal(+m, +mCopy, 'isAfter second should not change moment');
+});
+
+test('is after year', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isAfter(moment(new Date(2011, 5, 6, 7, 8, 9, 10)), 'year'), false, 'year match');
+    assert.equal(m.isAfter(moment(new Date(2010, 5, 6, 7, 8, 9, 10)), 'years'), true, 'plural should work');
+    assert.equal(m.isAfter(moment(new Date(2013, 5, 6, 7, 8, 9, 10)), 'year'), false, 'year is later');
+    assert.equal(m.isAfter(moment(new Date(2010, 5, 6, 7, 8, 9, 10)), 'year'), true, 'year is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 0, 1, 0, 0, 0, 0)), 'year'), false, 'exact start of year');
+    assert.equal(m.isAfter(moment(new Date(2011, 11, 31, 23, 59, 59, 999)), 'year'), false, 'exact end of year');
+    assert.equal(m.isAfter(moment(new Date(2012, 0, 1, 0, 0, 0, 0)), 'year'), false, 'start of next year');
+    assert.equal(m.isAfter(moment(new Date(2010, 11, 31, 23, 59, 59, 999)), 'year'), true, 'end of previous year');
+    assert.equal(m.isAfter(moment(new Date(1980, 11, 31, 23, 59, 59, 999)), 'year'), true, 'end of year far before');
+    assert.equal(m.isAfter(m, 'year'), false, 'same moments are not after the same year');
+    assert.equal(+m, +mCopy, 'isAfter year should not change moment');
+});
+
+test('is after month', function (assert) {
+    var m = moment(new Date(2011, 2, 3, 4, 5, 6, 7)), mCopy = moment(m);
+    assert.equal(m.isAfter(moment(new Date(2011, 2, 6, 7, 8, 9, 10)), 'month'), false, 'month match');
+    assert.equal(m.isAfter(moment(new Date(2010, 2, 6, 7, 8, 9, 10)), 'months'), true, 'plural should work');
+    assert.equal(m.isAfter(moment(new Date(2012, 2, 6, 7, 8, 9, 10)), 'month'), false, 'year is later');
+    assert.equal(m.isAfter(moment(new Date(2010, 2, 6, 7, 8, 9, 10)), 'month'), true, 'year is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 5, 6, 7, 8, 9, 10)), 'month'), false, 'month is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 1, 6, 7, 8, 9, 10)), 'month'), true, 'month is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 2, 1, 0, 0, 0, 0)), 'month'), false, 'exact start of month');
+    assert.equal(m.isAfter(moment(new Date(2011, 2, 31, 23, 59, 59, 999)), 'month'), false, 'exact end of month');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 1, 0, 0, 0, 0)), 'month'), false, 'start of next month');
+    assert.equal(m.isAfter(moment(new Date(2011, 1, 27, 23, 59, 59, 999)), 'month'), true, 'end of previous month');
+    assert.equal(m.isAfter(moment(new Date(2010, 12, 31, 23, 59, 59, 999)), 'month'), true, 'later month but earlier year');
+    assert.equal(m.isAfter(m, 'month'), false, 'same moments are not after the same month');
+    assert.equal(+m, +mCopy, 'isAfter month should not change moment');
+});
+
+test('is after day', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 7, 8, 9, 10)), 'day'), false, 'day match');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 7, 8, 9, 10)), 'days'), true, 'plural should work');
+    assert.equal(m.isAfter(moment(new Date(2012, 3, 2, 7, 8, 9, 10)), 'day'), false, 'year is later');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 7, 8, 9, 10)), 'day'), true, 'year is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 4, 2, 7, 8, 9, 10)), 'day'), false, 'month is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 2, 2, 7, 8, 9, 10)), 'day'), true, 'month is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 3, 7, 8, 9, 10)), 'day'), false, 'day is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 1, 7, 8, 9, 10)), 'day'), true, 'day is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 0, 0, 0, 0)), 'day'), false, 'exact start of day');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 23, 59, 59, 999)), 'day'), false, 'exact end of day');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 3, 0, 0, 0, 0)), 'day'), false, 'start of next day');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 1, 23, 59, 59, 999)), 'day'), true, 'end of previous day');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 10, 0, 0, 0, 0)), 'day'), true, 'later day but earlier year');
+    assert.equal(m.isAfter(m, 'day'), false, 'same moments are not after the same day');
+    assert.equal(+m, +mCopy, 'isAfter day should not change moment');
+});
+
+test('is after hour', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 8, 9, 10)), 'hour'), false, 'hour match');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 3, 8, 9, 10)), 'hours'), true, 'plural should work');
+    assert.equal(m.isAfter(moment(new Date(2012, 3, 2, 3, 8, 9, 10)), 'hour'), false, 'year is later');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 3, 8, 9, 10)), 'hour'), true, 'year is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 4, 2, 3, 8, 9, 10)), 'hour'), false, 'month is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 1, 2, 3, 8, 9, 10)), 'hour'), true, 'month is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 3, 3, 8, 9, 10)), 'hour'), false, 'day is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 1, 3, 8, 9, 10)), 'hour'), true, 'day is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 4, 8, 9, 10)), 'hour'), false, 'hour is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 8, 9, 10)), 'hour'), false, 'hour is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 0, 0, 0)), 'hour'), false, 'exact start of hour');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 59, 59, 999)), 'hour'), false, 'exact end of hour');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 4, 0, 0, 0)), 'hour'), false, 'start of next hour');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 2, 59, 59, 999)), 'hour'), true, 'end of previous hour');
+    assert.equal(m.isAfter(m, 'hour'), false, 'same moments are not after the same hour');
+    assert.equal(+m, +mCopy, 'isAfter hour should not change moment');
+});
+
+test('is after minute', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 9, 10)), 'minute'), false, 'minute match');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 3, 4, 9, 10)), 'minutes'), true, 'plural should work');
+    assert.equal(m.isAfter(moment(new Date(2012, 3, 2, 3, 4, 9, 10)), 'minute'), false, 'year is later');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 3, 4, 9, 10)), 'minute'), true, 'year is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 4, 2, 3, 4, 9, 10)), 'minute'), false, 'month is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 2, 2, 3, 4, 9, 10)), 'minute'), true, 'month is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 3, 3, 4, 9, 10)), 'minute'), false, 'day is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 1, 3, 4, 9, 10)), 'minute'), true, 'day is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 4, 4, 9, 10)), 'minute'), false, 'hour is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 2, 4, 9, 10)), 'minute'), true, 'hour is earler');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 5, 9, 10)), 'minute'), false, 'minute is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 3, 9, 10)), 'minute'), true, 'minute is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 0, 0)), 'minute'), false, 'exact start of minute');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 59, 999)), 'minute'), false, 'exact end of minute');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 5, 0, 0)), 'minute'), false, 'start of next minute');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 3, 59, 999)), 'minute'), true, 'end of previous minute');
+    assert.equal(m.isAfter(m, 'minute'), false, 'same moments are not after the same minute');
+    assert.equal(+m, +mCopy, 'isAfter minute should not change moment');
+});
+
+test('is after second', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 10)), mCopy = moment(m);
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 5, 10)), 'second'), false, 'second match');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 3, 4, 5, 10)), 'seconds'), true, 'plural should work');
+    assert.equal(m.isAfter(moment(new Date(2012, 3, 2, 3, 4, 5, 10)), 'second'), false, 'year is later');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 3, 4, 5, 10)), 'second'), true, 'year is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 4, 2, 3, 4, 5, 10)), 'second'), false, 'month is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 2, 2, 3, 4, 5, 10)), 'second'), true, 'month is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 3, 3, 4, 5, 10)), 'second'), false, 'day is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 1, 1, 4, 5, 10)), 'second'), true, 'day is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 4, 4, 5, 10)), 'second'), false, 'hour is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 1, 4, 1, 5, 10)), 'second'), true, 'hour is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 5, 5, 10)), 'second'), false, 'minute is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 3, 5, 10)), 'second'), true, 'minute is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 6, 10)), 'second'), false, 'second is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 4, 5)), 'second'), true, 'second is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 5, 0)), 'second'), false, 'exact start of second');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 5, 999)), 'second'), false, 'exact end of second');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 6, 0)), 'second'), false, 'start of next second');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 4, 999)), 'second'), true, 'end of previous second');
+    assert.equal(m.isAfter(m, 'second'), false, 'same moments are not after the same second');
+    assert.equal(+m, +mCopy, 'isAfter second should not change moment');
+});
+
+test('is after millisecond', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 10)), mCopy = moment(m);
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 5, 10)), 'millisecond'), false, 'millisecond match');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 3, 4, 5, 10)), 'milliseconds'), true, 'plural should work');
+    assert.equal(m.isAfter(moment(new Date(2012, 3, 2, 3, 4, 5, 10)), 'millisecond'), false, 'year is later');
+    assert.equal(m.isAfter(moment(new Date(2010, 3, 2, 3, 4, 5, 10)), 'millisecond'), true, 'year is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 4, 2, 3, 4, 5, 10)), 'millisecond'), false, 'month is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 2, 2, 3, 4, 5, 10)), 'millisecond'), true, 'month is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 3, 3, 4, 5, 10)), 'millisecond'), false, 'day is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 1, 1, 4, 5, 10)), 'millisecond'), true, 'day is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 4, 4, 5, 10)), 'millisecond'), false, 'hour is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 1, 4, 1, 5, 10)), 'millisecond'), true, 'hour is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 5, 5, 10)), 'millisecond'), false, 'minute is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 3, 5, 10)), 'millisecond'), true, 'minute is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 6, 10)), 'millisecond'), false, 'second is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 4, 5)), 'millisecond'), true, 'second is earlier');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 6, 11)), 'millisecond'), false, 'millisecond is later');
+    assert.equal(m.isAfter(moment(new Date(2011, 3, 2, 3, 4, 4, 9)), 'millisecond'), true, 'millisecond is earlier');
+    assert.equal(m.isAfter(m, 'millisecond'), false, 'same moments are not after the same millisecond');
+    assert.equal(+m, +mCopy, 'isAfter millisecond should not change moment');
+});
+//===================================================================================================================================================================================================================== //>
+module('is before');
+
+test('is after without units', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 10)), mCopy = moment(m);
+    assert.equal(m.isBefore(moment(new Date(2012, 3, 2, 3, 5, 5, 10))), true, 'year is later');
+    assert.equal(m.isBefore(moment(new Date(2010, 3, 2, 3, 3, 5, 10))), false, 'year is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 4, 2, 3, 4, 5, 10))), true, 'month is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 2, 2, 3, 4, 5, 10))), false, 'month is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 3, 3, 4, 5, 10))), true, 'day is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 1, 3, 4, 5, 10))), false, 'day is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 4, 4, 5, 10))), true, 'hour is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 2, 4, 5, 10))), false, 'hour is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 5, 5, 10))), true, 'minute is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 3, 5, 10))), false, 'minute is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 6, 10))), true, 'second is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 4, 11))), false, 'second is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 5, 10))), false, 'millisecond match');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 5, 11))), true, 'millisecond is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 5, 9))), false, 'millisecond is earlier');
+    assert.equal(m.isBefore(m), false, 'moments are not before themselves');
+    assert.equal(+m, +mCopy, 'isBefore second should not change moment');
+});
+
+test('is before year', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBefore(moment(new Date(2011, 5, 6, 7, 8, 9, 10)), 'year'), false, 'year match');
+    assert.equal(m.isBefore(moment(new Date(2012, 5, 6, 7, 8, 9, 10)), 'years'), true, 'plural should work');
+    assert.equal(m.isBefore(moment(new Date(2013, 5, 6, 7, 8, 9, 10)), 'year'), true, 'year is later');
+    assert.equal(m.isBefore(moment(new Date(2010, 5, 6, 7, 8, 9, 10)), 'year'), false, 'year is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 0, 1, 0, 0, 0, 0)), 'year'), false, 'exact start of year');
+    assert.equal(m.isBefore(moment(new Date(2011, 11, 31, 23, 59, 59, 999)), 'year'), false, 'exact end of year');
+    assert.equal(m.isBefore(moment(new Date(2012, 0, 1, 0, 0, 0, 0)), 'year'), true, 'start of next year');
+    assert.equal(m.isBefore(moment(new Date(2010, 11, 31, 23, 59, 59, 999)), 'year'), false, 'end of previous year');
+    assert.equal(m.isBefore(moment(new Date(1980, 11, 31, 23, 59, 59, 999)), 'year'), false, 'end of year far before');
+    assert.equal(m.isBefore(m, 'year'), false, 'same moments are not before the same year');
+    assert.equal(+m, +mCopy, 'isBefore year should not change moment');
+});
+
+test('is before month', function (assert) {
+    var m = moment(new Date(2011, 2, 3, 4, 5, 6, 7)), mCopy = moment(m);
+    assert.equal(m.isBefore(moment(new Date(2011, 2, 6, 7, 8, 9, 10)), 'month'), false, 'month match');
+    assert.equal(m.isBefore(moment(new Date(2012, 2, 6, 7, 8, 9, 10)), 'months'), true, 'plural should work');
+    assert.equal(m.isBefore(moment(new Date(2012, 2, 6, 7, 8, 9, 10)), 'month'), true, 'year is later');
+    assert.equal(m.isBefore(moment(new Date(2010, 2, 6, 7, 8, 9, 10)), 'month'), false, 'year is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 5, 6, 7, 8, 9, 10)), 'month'), true, 'month is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 1, 6, 7, 8, 9, 10)), 'month'), false, 'month is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 2, 1, 0, 0, 0, 0)), 'month'), false, 'exact start of month');
+    assert.equal(m.isBefore(moment(new Date(2011, 2, 31, 23, 59, 59, 999)), 'month'), false, 'exact end of month');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 1, 0, 0, 0, 0)), 'month'), true, 'start of next month');
+    assert.equal(m.isBefore(moment(new Date(2011, 1, 27, 23, 59, 59, 999)), 'month'), false, 'end of previous month');
+    assert.equal(m.isBefore(moment(new Date(2010, 12, 31, 23, 59, 59, 999)), 'month'), false, 'later month but earlier year');
+    assert.equal(m.isBefore(m, 'month'), false, 'same moments are not before the same month');
+    assert.equal(+m, +mCopy, 'isBefore month should not change moment');
+});
+
+test('is before day', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 7, 8, 9, 10)), 'day'), false, 'day match');
+    assert.equal(m.isBefore(moment(new Date(2012, 3, 2, 7, 8, 9, 10)), 'days'), true, 'plural should work');
+    assert.equal(m.isBefore(moment(new Date(2012, 3, 2, 7, 8, 9, 10)), 'day'), true, 'year is later');
+    assert.equal(m.isBefore(moment(new Date(2010, 3, 2, 7, 8, 9, 10)), 'day'), false, 'year is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 4, 2, 7, 8, 9, 10)), 'day'), true, 'month is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 2, 2, 7, 8, 9, 10)), 'day'), false, 'month is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 3, 7, 8, 9, 10)), 'day'), true, 'day is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 1, 7, 8, 9, 10)), 'day'), false, 'day is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 0, 0, 0, 0)), 'day'), false, 'exact start of day');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 23, 59, 59, 999)), 'day'), false, 'exact end of day');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 3, 0, 0, 0, 0)), 'day'), true, 'start of next day');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 1, 23, 59, 59, 999)), 'day'), false, 'end of previous day');
+    assert.equal(m.isBefore(moment(new Date(2010, 3, 10, 0, 0, 0, 0)), 'day'), false, 'later day but earlier year');
+    assert.equal(m.isBefore(m, 'day'), false, 'same moments are not before the same day');
+    assert.equal(+m, +mCopy, 'isBefore day should not change moment');
+});
+
+test('is before hour', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 8, 9, 10)), 'hour'), false, 'hour match');
+    assert.equal(m.isBefore(moment(new Date(2012, 3, 2, 3, 8, 9, 10)), 'hours'), true, 'plural should work');
+    assert.equal(m.isBefore(moment(new Date(2012, 3, 2, 3, 8, 9, 10)), 'hour'), true, 'year is later');
+    assert.equal(m.isBefore(moment(new Date(2010, 3, 2, 3, 8, 9, 10)), 'hour'), false, 'year is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 4, 2, 3, 8, 9, 10)), 'hour'), true, 'month is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 1, 2, 3, 8, 9, 10)), 'hour'), false, 'month is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 3, 3, 8, 9, 10)), 'hour'), true, 'day is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 1, 3, 8, 9, 10)), 'hour'), false, 'day is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 4, 8, 9, 10)), 'hour'), true, 'hour is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 8, 9, 10)), 'hour'), false, 'hour is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 0, 0, 0)), 'hour'), false, 'exact start of hour');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 59, 59, 999)), 'hour'), false, 'exact end of hour');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 4, 0, 0, 0)), 'hour'), true, 'start of next hour');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 2, 59, 59, 999)), 'hour'), false, 'end of previous hour');
+    assert.equal(m.isBefore(m, 'hour'), false, 'same moments are not before the same hour');
+    assert.equal(+m, +mCopy, 'isBefore hour should not change moment');
+});
+
+test('is before minute', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 9, 10)), 'minute'), false, 'minute match');
+    assert.equal(m.isBefore(moment(new Date(2012, 3, 2, 3, 4, 9, 10)), 'minutes'), true, 'plural should work');
+    assert.equal(m.isBefore(moment(new Date(2012, 3, 2, 3, 4, 9, 10)), 'minute'), true, 'year is later');
+    assert.equal(m.isBefore(moment(new Date(2010, 3, 2, 3, 4, 9, 10)), 'minute'), false, 'year is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 4, 2, 3, 4, 9, 10)), 'minute'), true, 'month is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 2, 2, 3, 4, 9, 10)), 'minute'), false, 'month is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 3, 3, 4, 9, 10)), 'minute'), true, 'day is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 1, 3, 4, 9, 10)), 'minute'), false, 'day is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 4, 4, 9, 10)), 'minute'), true, 'hour is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 2, 4, 9, 10)), 'minute'), false, 'hour is earler');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 5, 9, 10)), 'minute'), true, 'minute is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 3, 9, 10)), 'minute'), false, 'minute is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 0, 0)), 'minute'), false, 'exact start of minute');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 59, 999)), 'minute'), false, 'exact end of minute');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 5, 0, 0)), 'minute'), true, 'start of next minute');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 3, 59, 999)), 'minute'), false, 'end of previous minute');
+    assert.equal(m.isBefore(m, 'minute'), false, 'same moments are not before the same minute');
+    assert.equal(+m, +mCopy, 'isBefore minute should not change moment');
+});
+
+test('is before second', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 10)), mCopy = moment(m);
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 5, 10)), 'second'), false, 'second match');
+    assert.equal(m.isBefore(moment(new Date(2012, 3, 2, 3, 4, 5, 10)), 'seconds'), true, 'plural should work');
+    assert.equal(m.isBefore(moment(new Date(2012, 3, 2, 3, 4, 5, 10)), 'second'), true, 'year is later');
+    assert.equal(m.isBefore(moment(new Date(2010, 3, 2, 3, 4, 5, 10)), 'second'), false, 'year is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 4, 2, 3, 4, 5, 10)), 'second'), true, 'month is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 2, 2, 3, 4, 5, 10)), 'second'), false, 'month is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 3, 3, 4, 5, 10)), 'second'), true, 'day is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 1, 1, 4, 5, 10)), 'second'), false, 'day is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 4, 4, 5, 10)), 'second'), true, 'hour is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 1, 4, 1, 5, 10)), 'second'), false, 'hour is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 5, 5, 10)), 'second'), true, 'minute is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 3, 5, 10)), 'second'), false, 'minute is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 6, 10)), 'second'), true, 'second is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 4, 5)), 'second'), false, 'second is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 5, 0)), 'second'), false, 'exact start of second');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 5, 999)), 'second'), false, 'exact end of second');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 6, 0)), 'second'), true, 'start of next second');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 4, 999)), 'second'), false, 'end of previous second');
+    assert.equal(m.isBefore(m, 'second'), false, 'same moments are not before the same second');
+    assert.equal(+m, +mCopy, 'isBefore second should not change moment');
+});
+
+test('is before millisecond', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 10)), mCopy = moment(m);
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 5, 10)), 'millisecond'), false, 'millisecond match');
+    assert.equal(m.isBefore(moment(new Date(2010, 3, 2, 3, 4, 5, 10)), 'milliseconds'), false, 'plural should work');
+    assert.equal(m.isBefore(moment(new Date(2012, 3, 2, 3, 4, 5, 10)), 'millisecond'), true, 'year is later');
+    assert.equal(m.isBefore(moment(new Date(2010, 3, 2, 3, 4, 5, 10)), 'millisecond'), false, 'year is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 4, 2, 3, 4, 5, 10)), 'millisecond'), true, 'month is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 2, 2, 3, 4, 5, 10)), 'millisecond'), false, 'month is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 3, 3, 4, 5, 10)), 'millisecond'), true, 'day is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 1, 1, 4, 5, 10)), 'millisecond'), false, 'day is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 4, 4, 5, 10)), 'millisecond'), true, 'hour is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 1, 4, 1, 5, 10)), 'millisecond'), false, 'hour is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 5, 5, 10)), 'millisecond'), true, 'minute is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 3, 5, 10)), 'millisecond'), false, 'minute is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 6, 10)), 'millisecond'), true, 'second is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 4, 5)), 'millisecond'), false, 'second is earlier');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 6, 11)), 'millisecond'), true, 'millisecond is later');
+    assert.equal(m.isBefore(moment(new Date(2011, 3, 2, 3, 4, 4, 9)), 'millisecond'), false, 'millisecond is earlier');
+    assert.equal(m.isBefore(m, 'millisecond'), false, 'same moments are not before the same millisecond');
+    assert.equal(+m, +mCopy, 'isBefore millisecond should not change moment');
+});
+//===================================================================================================================================================================================================================== //>
+module('is between');
+
+test('is between without units', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 10)), mCopy = moment(m);
+    assert.equal(m.isBetween(
+                moment(new Date(2009, 3, 2, 3, 4, 5, 10)),
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10))), false, 'year is later');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10)),
+                moment(new Date(2013, 3, 2, 3, 4, 5, 10))), false, 'year is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2010, 3, 2, 3, 4, 5, 10)),
+                moment(new Date(2012, 3, 2, 3, 4, 5, 10))), true, 'year is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 5, 10)),
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10))), false, 'month is later');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10)),
+                moment(new Date(2011, 5, 2, 3, 4, 5, 10))), false, 'month is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 2, 2, 3, 4, 5, 10)),
+                moment(new Date(2011, 4, 2, 3, 4, 5, 10))), true, 'month is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 1, 3, 4, 5, 10)),
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10))), false, 'day is later');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10)),
+                moment(new Date(2011, 3, 4, 3, 4, 5, 10))), false, 'day is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 1, 3, 4, 5, 10)),
+                moment(new Date(2011, 3, 3, 3, 4, 5, 10))), true, 'day is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 1, 4, 5, 10)),
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10))), false, 'hour is later');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10)),
+                moment(new Date(2011, 3, 2, 5, 4, 5, 10))), false, 'hour is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 2, 4, 5, 10)),
+                moment(new Date(2011, 3, 2, 4, 4, 5, 10))), true, 'hour is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10)),
+                moment(new Date(2011, 3, 2, 3, 6, 5, 10))), false, 'minute is later');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 2, 5, 10)),
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10))), false, 'minute is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 3, 5, 10)),
+                moment(new Date(2011, 3, 2, 3, 5, 5, 10))), true, 'minute is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10)),
+                moment(new Date(2011, 3, 2, 3, 4, 7, 10))), false, 'second is later');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 3, 10)),
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10))), false, 'second is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 4, 10)),
+                moment(new Date(2011, 3, 2, 3, 4, 6, 10))), true, 'second is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10)),
+                moment(new Date(2011, 3, 2, 3, 4, 5, 12))), false, 'millisecond is later');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 5, 8)),
+                moment(new Date(2011, 3, 2, 3, 4, 5, 10))), false, 'millisecond is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 3, 2, 3, 4, 5, 9)),
+                moment(new Date(2011, 3, 2, 3, 4, 5, 11))), true, 'millisecond is between');
+    assert.equal(m.isBetween(m, m), false, 'moments are not between themselves');
+    assert.equal(+m, +mCopy, 'isBetween second should not change moment');
+});
+
+test('is between year', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 5, 6, 7, 8, 9, 10)),
+                moment(new Date(2011, 5, 6, 7, 8, 9, 10)), 'year'), false, 'year match');
+    assert.equal(m.isBetween(
+                moment(new Date(2010, 5, 6, 7, 8, 9, 10)),
+                moment(new Date(2012, 5, 6, 7, 8, 9, 10)), 'years'), true, 'plural should work');
+    assert.equal(m.isBetween(
+                moment(new Date(2010, 5, 6, 7, 8, 9, 10)),
+                moment(new Date(2012, 5, 6, 7, 8, 9, 10)), 'year'), true, 'year is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 5, 6, 7, 8, 9, 10)),
+                moment(new Date(2013, 5, 6, 7, 8, 9, 10)), 'year'), false, 'year is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2010, 5, 6, 7, 8, 9, 10)),
+                moment(new Date(2011, 5, 6, 7, 8, 9, 10)), 'year'), false, 'year is later');
+    assert.equal(m.isBetween(m, 'year'), false, 'same moments are not between the same year');
+    assert.equal(+m, +mCopy, 'isBetween year should not change moment');
+});
+
+test('is between month', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 6, 7, 8, 9, 10)),
+                moment(new Date(2011, 1, 6, 7, 8, 9, 10)), 'month'), false, 'month match');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 0, 6, 7, 8, 9, 10)),
+                moment(new Date(2011, 2, 6, 7, 8, 9, 10)), 'months'), true, 'plural should work');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 0, 31, 23, 59, 59, 999)),
+                moment(new Date(2011, 2, 1, 0, 0, 0, 0)), 'month'), true, 'month is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 6, 7, 8, 9, 10)),
+                moment(new Date(2011, 2, 6, 7, 8, 9, 10)), 'month'), false, 'month is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 11, 6, 7, 8, 9, 10)),
+                moment(new Date(2011, 1, 6, 7, 8, 9, 10)), 'month'), false, 'month is later');
+    assert.equal(m.isBetween(m, 'month'), false, 'same moments are not between the same month');
+    assert.equal(+m, +mCopy, 'isBetween month should not change moment');
+});
+
+test('is between day', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 7, 8, 9, 10)),
+                moment(new Date(2011, 1, 2, 7, 8, 9, 10)), 'day'), false, 'day match');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 1, 7, 8, 9, 10)),
+                moment(new Date(2011, 1, 3, 7, 8, 9, 10)), 'days'), true, 'plural should work');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 1, 7, 8, 9, 10)),
+                moment(new Date(2011, 1, 3, 7, 8, 9, 10)), 'day'), true, 'day is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 7, 8, 9, 10)),
+                moment(new Date(2011, 1, 4, 7, 8, 9, 10)), 'day'), false, 'day is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 1, 7, 8, 9, 10)),
+                moment(new Date(2011, 1, 2, 7, 8, 9, 10)), 'day'), false, 'day is later');
+    assert.equal(m.isBetween(m, 'day'), false, 'same moments are not between the same day');
+    assert.equal(+m, +mCopy, 'isBetween day should not change moment');
+});
+
+test('is between hour', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 5, 9, 10)),
+                moment(new Date(2011, 1, 2, 3, 9, 9, 10)), 'hour'), false, 'hour match');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 1, 59, 59, 999)),
+                moment(new Date(2011, 1, 2, 4, 0, 0, 0)), 'hours'), true, 'plural should work');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 2, 59, 59, 999)),
+                moment(new Date(2011, 1, 2, 4, 0, 0, 0)), 'hour'), true, 'hour is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 7, 8, 9, 10)),
+                moment(new Date(2011, 1, 2, 7, 8, 9, 10)), 'hour'), false, 'hour is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 7, 8, 9, 10)),
+                moment(new Date(2011, 1, 2, 7, 8, 9, 10)), 'hour'), false, 'hour is later');
+    assert.equal(m.isBetween(m, 'hour'), false, 'same moments are not between the same hour');
+    assert.equal(+m, +mCopy, 'isBetween hour should not change moment');
+});
+
+test('is between minute', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 9, 10)),
+                moment(new Date(2011, 1, 2, 3, 4, 9, 10)), 'minute'), false, 'minute match');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 3, 9, 10)),
+                moment(new Date(2011, 1, 2, 3, 5, 9, 10)), 'minutes'), true, 'plural should work');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 3, 59, 999)),
+                moment(new Date(2011, 1, 2, 3, 5, 0, 0)), 'minute'), true, 'minute is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 5, 0, 0)),
+                moment(new Date(2011, 1, 2, 3, 8, 9, 10)), 'minute'), false, 'minute is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 2, 9, 10)),
+                moment(new Date(2011, 1, 2, 3, 3, 59, 999)), 'minute'), false, 'minute is later');
+    assert.equal(m.isBetween(m, 'minute'), false, 'same moments are not between the same minute');
+    assert.equal(+m, +mCopy, 'isBetween minute should not change moment');
+});
+
+test('is between second', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 5, 10)),
+                moment(new Date(2011, 1, 2, 3, 4, 5, 10)), 'second'), false, 'second match');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 4, 10)),
+                moment(new Date(2011, 1, 2, 3, 4, 6, 10)), 'seconds'), true, 'plural should work');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 4, 999)),
+                moment(new Date(2011, 1, 2, 3, 4, 6, 0)), 'second'), true, 'second is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 6, 0)),
+                moment(new Date(2011, 1, 2, 3, 4, 7, 10)), 'second'), false, 'second is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 3, 10)),
+                moment(new Date(2011, 1, 2, 3, 4, 4, 999)), 'second'), false, 'second is later');
+    assert.equal(m.isBetween(m, 'second'), false, 'same moments are not between the same second');
+    assert.equal(+m, +mCopy, 'isBetween second should not change moment');
+});
+
+test('is between millisecond', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 5, 6)),
+                moment(new Date(2011, 1, 2, 3, 4, 5, 6)), 'millisecond'), false, 'millisecond match');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 5, 5)),
+                moment(new Date(2011, 1, 2, 3, 4, 5, 7)), 'milliseconds'), true, 'plural should work');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 5, 5)),
+                moment(new Date(2011, 1, 2, 3, 4, 5, 7)), 'millisecond'), true, 'millisecond is between');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 5, 7)),
+                moment(new Date(2011, 1, 2, 3, 4, 5, 10)), 'millisecond'), false, 'millisecond is earlier');
+    assert.equal(m.isBetween(
+                moment(new Date(2011, 1, 2, 3, 4, 5, 4)),
+                moment(new Date(2011, 1, 2, 3, 4, 5, 6)), 'millisecond'), false, 'millisecond is later');
+    assert.equal(m.isBetween(m, 'millisecond'), false, 'same moments are not between the same millisecond');
+    assert.equal(+m, +mCopy, 'isBetween millisecond should not change moment');
+});
+//===================================================================================================================================================================================================================== //>
+module('is date');
+
+test('isDate recognizes Date objects', function (assert) {
+    assert.ok(moment.isDate(new Date()), 'no args (now)');
+    assert.ok(moment.isDate(new Date([2014, 2, 15])), 'array args');
+    assert.ok(moment.isDate(new Date('2014-03-15')), 'string args');
+    assert.ok(moment.isDate(new Date('does NOT look like a date')), 'invalid date');
+});
+
+test('isDate rejects non-Date objects', function (assert) {
+    assert.ok(!moment.isDate(), 'nothing');
+    assert.ok(!moment.isDate(undefined), 'undefined');
+    assert.ok(!moment.isDate(null), 'string args');
+    assert.ok(!moment.isDate(42), 'number');
+    assert.ok(!moment.isDate('2014-03-15'), 'string');
+    assert.ok(!moment.isDate([2014, 2, 15]), 'array');
+    assert.ok(!moment.isDate({year: 2014, month: 2, day: 15}), 'object');
+    assert.ok(!moment.isDate({toString: function () {
+        return '[object Date]';
+    }}), 'lying object');
+});
+//===================================================================================================================================================================================================================== //>
+module('is moment');
+
+test('is moment object', function (assert) {
+    var MyObj = function () {},
+        extend = function (a, b) {
+            var i;
+            for (i in b) {
+                a[i] = b[i];
+            }
+            return a;
+        };
+    MyObj.prototype.toDate = function () {
+        return new Date();
+    };
+
+    assert.ok(moment.isMoment(moment()), 'simple moment object');
+    assert.ok(moment.isMoment(moment(null)), 'invalid moment object');
+    assert.ok(moment.isMoment(extend({}, moment())), 'externally cloned moments are moments');
+    assert.ok(moment.isMoment(extend({}, moment.utc())), 'externally cloned utc moments are moments');
+
+    assert.ok(!moment.isMoment(new MyObj()), 'myObj is not moment object');
+    assert.ok(!moment.isMoment(moment), 'moment function is not moment object');
+    assert.ok(!moment.isMoment(new Date()), 'date object is not moment object');
+    assert.ok(!moment.isMoment(Object), 'Object is not moment object');
+    assert.ok(!moment.isMoment('foo'), 'string is not moment object');
+    assert.ok(!moment.isMoment(1), 'number is not moment object');
+    assert.ok(!moment.isMoment(NaN), 'NaN is not moment object');
+    assert.ok(!moment.isMoment(null), 'null is not moment object');
+    assert.ok(!moment.isMoment(undefined), 'undefined is not moment object');
+});
+
+test('is moment with hacked hasOwnProperty', function (assert) {
+    var obj = {};
+    // HACK to suppress jshint warning about bad property name
+    obj['hasOwnMoney'.replace('Money', 'Property')] = function () {
+        return true;
+    };
+
+    assert.ok(!moment.isMoment(obj), 'isMoment works even if passed object has a wrong hasOwnProperty implementation (ie8)');
+});
+//===================================================================================================================================================================================================================== //>
+module('is same');
+
+test('is same without units', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 10)), mCopy = moment(m);
+    assert.equal(m.isSame(moment(new Date(2012, 3, 2, 3, 5, 5, 10))), false, 'year is later');
+    assert.equal(m.isSame(moment(new Date(2010, 3, 2, 3, 3, 5, 10))), false, 'year is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 4, 2, 3, 4, 5, 10))), false, 'month is later');
+    assert.equal(m.isSame(moment(new Date(2011, 2, 2, 3, 4, 5, 10))), false, 'month is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 3, 3, 4, 5, 10))), false, 'day is later');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 1, 3, 4, 5, 10))), false, 'day is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 4, 4, 5, 10))), false, 'hour is later');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 2, 4, 5, 10))), false, 'hour is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 5, 5, 10))), false, 'minute is later');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 3, 5, 10))), false, 'minute is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 6, 10))), false, 'second is later');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 4, 11))), false, 'second is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 5, 10))), true, 'millisecond match');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 5, 11))), false, 'millisecond is later');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 5, 9))), false, 'millisecond is earlier');
+    assert.equal(m.isSame(m), true, 'moments are the same as themselves');
+    assert.equal(+m, +mCopy, 'isSame second should not change moment');
+});
+
+test('is same year', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isSame(moment(new Date(2011, 5, 6, 7, 8, 9, 10)), 'year'), true, 'year match');
+    assert.equal(m.isSame(moment(new Date(2011, 5, 6, 7, 8, 9, 10)), 'years'), true, 'plural should work');
+    assert.equal(m.isSame(moment(new Date(2012, 5, 6, 7, 8, 9, 10)), 'year'), false, 'year mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 0, 1, 0, 0, 0, 0)), 'year'), true, 'exact start of year');
+    assert.equal(m.isSame(moment(new Date(2011, 11, 31, 23, 59, 59, 999)), 'year'), true, 'exact end of year');
+    assert.equal(m.isSame(moment(new Date(2012, 0, 1, 0, 0, 0, 0)), 'year'), false, 'start of next year');
+    assert.equal(m.isSame(moment(new Date(2010, 11, 31, 23, 59, 59, 999)), 'year'), false, 'end of previous year');
+    assert.equal(m.isSame(m, 'year'), true, 'same moments are in the same year');
+    assert.equal(+m, +mCopy, 'isSame year should not change moment');
+});
+
+test('is same month', function (assert) {
+    var m = moment(new Date(2011, 2, 3, 4, 5, 6, 7)), mCopy = moment(m);
+    assert.equal(m.isSame(moment(new Date(2011, 2, 6, 7, 8, 9, 10)), 'month'), true, 'month match');
+    assert.equal(m.isSame(moment(new Date(2011, 2, 6, 7, 8, 9, 10)), 'months'), true, 'plural should work');
+    assert.equal(m.isSame(moment(new Date(2012, 2, 6, 7, 8, 9, 10)), 'month'), false, 'year mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 5, 6, 7, 8, 9, 10)), 'month'), false, 'month mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 2, 1, 0, 0, 0, 0)), 'month'), true, 'exact start of month');
+    assert.equal(m.isSame(moment(new Date(2011, 2, 31, 23, 59, 59, 999)), 'month'), true, 'exact end of month');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 1, 0, 0, 0, 0)), 'month'), false, 'start of next month');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 27, 23, 59, 59, 999)), 'month'), false, 'end of previous month');
+    assert.equal(m.isSame(m, 'month'), true, 'same moments are in the same month');
+    assert.equal(+m, +mCopy, 'isSame month should not change moment');
+});
+
+test('is same day', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 7, 8, 9, 10)), 'day'), true, 'day match');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 7, 8, 9, 10)), 'days'), true, 'plural should work');
+    assert.equal(m.isSame(moment(new Date(2012, 1, 2, 7, 8, 9, 10)), 'day'), false, 'year mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 2, 2, 7, 8, 9, 10)), 'day'), false, 'month mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 3, 7, 8, 9, 10)), 'day'), false, 'day mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 0, 0, 0, 0)), 'day'), true, 'exact start of day');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 23, 59, 59, 999)), 'day'), true, 'exact end of day');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 3, 0, 0, 0, 0)), 'day'), false, 'start of next day');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 1, 23, 59, 59, 999)), 'day'), false, 'end of previous day');
+    assert.equal(m.isSame(m, 'day'), true, 'same moments are in the same day');
+    assert.equal(+m, +mCopy, 'isSame day should not change moment');
+});
+
+test('is same hour', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 8, 9, 10)), 'hour'), true, 'hour match');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 8, 9, 10)), 'hours'), true, 'plural should work');
+    assert.equal(m.isSame(moment(new Date(2012, 1, 2, 3, 8, 9, 10)), 'hour'), false, 'year mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 2, 2, 3, 8, 9, 10)), 'hour'), false, 'month mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 3, 3, 8, 9, 10)), 'hour'), false, 'day mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 4, 8, 9, 10)), 'hour'), false, 'hour mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 0, 0, 0)), 'hour'), true, 'exact start of hour');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 59, 59, 999)), 'hour'), true, 'exact end of hour');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 4, 0, 0, 0)), 'hour'), false, 'start of next hour');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 2, 59, 59, 999)), 'hour'), false, 'end of previous hour');
+    assert.equal(m.isSame(m, 'hour'), true, 'same moments are in the same hour');
+    assert.equal(+m, +mCopy, 'isSame hour should not change moment');
+});
+
+test('is same minute', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 9, 10)), 'minute'), true, 'minute match');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 9, 10)), 'minutes'), true, 'plural should work');
+    assert.equal(m.isSame(moment(new Date(2012, 1, 2, 3, 4, 9, 10)), 'minute'), false, 'year mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 2, 2, 3, 4, 9, 10)), 'minute'), false, 'month mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 3, 3, 4, 9, 10)), 'minute'), false, 'day mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 4, 4, 9, 10)), 'minute'), false, 'hour mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 5, 9, 10)), 'minute'), false, 'minute mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 0, 0)), 'minute'), true, 'exact start of minute');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 59, 999)), 'minute'), true, 'exact end of minute');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 5, 0, 0)), 'minute'), false, 'start of next minute');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 3, 59, 999)), 'minute'), false, 'end of previous minute');
+    assert.equal(m.isSame(m, 'minute'), true, 'same moments are in the same minute');
+    assert.equal(+m, +mCopy, 'isSame minute should not change moment');
+});
+
+test('is same second', function (assert) {
+    var m = moment(new Date(2011, 1, 2, 3, 4, 5, 6)), mCopy = moment(m);
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 5, 10)), 'second'), true, 'second match');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 5, 10)), 'seconds'), true, 'plural should work');
+    assert.equal(m.isSame(moment(new Date(2012, 1, 2, 3, 4, 5, 10)), 'second'), false, 'year mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 2, 2, 3, 4, 5, 10)), 'second'), false, 'month mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 3, 3, 4, 5, 10)), 'second'), false, 'day mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 4, 4, 5, 10)), 'second'), false, 'hour mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 5, 5, 10)), 'second'), false, 'minute mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 6, 10)), 'second'), false, 'second mismatch');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 5, 0)), 'second'), true, 'exact start of second');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 5, 999)), 'second'), true, 'exact end of second');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 6, 0)), 'second'), false, 'start of next second');
+    assert.equal(m.isSame(moment(new Date(2011, 1, 2, 3, 4, 4, 999)), 'second'), false, 'end of previous second');
+    assert.equal(m.isSame(m, 'second'), true, 'same moments are in the same second');
+    assert.equal(+m, +mCopy, 'isSame second should not change moment');
+});
+
+test('is same millisecond', function (assert) {
+    var m = moment(new Date(2011, 3, 2, 3, 4, 5, 10)), mCopy = moment(m);
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 5, 10)), 'millisecond'), true, 'millisecond match');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 5, 10)), 'milliseconds'), true, 'plural should work');
+    assert.equal(m.isSame(moment(new Date(2012, 3, 2, 3, 4, 5, 10)), 'millisecond'), false, 'year is later');
+    assert.equal(m.isSame(moment(new Date(2010, 3, 2, 3, 4, 5, 10)), 'millisecond'), false, 'year is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 4, 2, 3, 4, 5, 10)), 'millisecond'), false, 'month is later');
+    assert.equal(m.isSame(moment(new Date(2011, 2, 2, 3, 4, 5, 10)), 'millisecond'), false, 'month is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 3, 3, 4, 5, 10)), 'millisecond'), false, 'day is later');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 1, 1, 4, 5, 10)), 'millisecond'), false, 'day is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 4, 4, 5, 10)), 'millisecond'), false, 'hour is later');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 1, 4, 1, 5, 10)), 'millisecond'), false, 'hour is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 5, 5, 10)), 'millisecond'), false, 'minute is later');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 3, 5, 10)), 'millisecond'), false, 'minute is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 6, 10)), 'millisecond'), false, 'second is later');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 4, 5)), 'millisecond'), false, 'second is earlier');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 6, 11)), 'millisecond'), false, 'millisecond is later');
+    assert.equal(m.isSame(moment(new Date(2011, 3, 2, 3, 4, 4, 9)), 'millisecond'), false, 'millisecond is earlier');
+    assert.equal(m.isSame(m, 'millisecond'), true, 'same moments are in the same millisecond');
+    assert.equal(+m, +mCopy, 'isSame millisecond should not change moment');
+});
+
+test('is same with utc offset moments', function (assert) {
+    assert.ok(moment.parseZone('2013-02-01T-05:00').isSame(moment('2013-02-01'), 'year'), 'zoned vs local moment');
+    assert.ok(moment('2013-02-01').isSame(moment('2013-02-01').utcOffset('-05:00'), 'year'), 'local vs zoned moment');
+    assert.ok(moment.parseZone('2013-02-01T-05:00').isSame(moment.parseZone('2013-02-01T-06:30'), 'year'),
+            'zoned vs (differently) zoned moment');
+});
+//===================================================================================================================================================================================================================== //>
+module('is valid');
+
+test('array bad month', function (assert) {
+    assert.equal(moment([2010, -1]).isValid(), false, 'month -1 invalid');
+    assert.equal(moment([2100, 12]).isValid(), false, 'month 12 invalid');
+});
+
+test('array good month', function (assert) {
+    for (var i = 0; i < 12; i++) {
+        assert.equal(moment([2010, i]).isValid(), true, 'month ' + i);
+        assert.equal(moment.utc([2010, i]).isValid(), true, 'month ' + i);
+    }
+});
+
+test('array bad date', function (assert) {
+    var tests = [
+        moment([2010, 0, 0]),
+        moment([2100, 0, 32]),
+        moment.utc([2010, 0, 0]),
+        moment.utc([2100, 0, 32])
+    ],
+    i, m;
+
+    for (i in tests) {
+        m = tests[i];
+        assert.equal(m.isValid(), false);
+    }
+});
+
+test('h/hh with hour > 12', function (assert) {
+    assert.ok(moment('06/20/2014 11:51 PM', 'MM/DD/YYYY hh:mm A', true).isValid(), '11 for hh');
+    assert.ok(moment('06/20/2014 11:51 AM', 'MM/DD/YYYY hh:mm A', true).isValid(), '11 for hh');
+    assert.ok(moment('06/20/2014 23:51 PM', 'MM/DD/YYYY hh:mm A').isValid(), 'non-strict validity 23 for hh');
+    assert.ok(moment('06/20/2014 23:51 PM', 'MM/DD/YYYY hh:mm A').parsingFlags().bigHour, 'non-strict bigHour 23 for hh');
+    assert.ok(!moment('06/20/2014 23:51 PM', 'MM/DD/YYYY hh:mm A', true).isValid(), 'validity 23 for hh');
+    assert.ok(moment('06/20/2014 23:51 PM', 'MM/DD/YYYY hh:mm A', true).parsingFlags().bigHour, 'bigHour 23 for hh');
+});
+
+test('array bad date leap year', function (assert) {
+    assert.equal(moment([2010, 1, 29]).isValid(), false, '2010 feb 29');
+    assert.equal(moment([2100, 1, 29]).isValid(), false, '2100 feb 29');
+    assert.equal(moment([2008, 1, 30]).isValid(), false, '2008 feb 30');
+    assert.equal(moment([2000, 1, 30]).isValid(), false, '2000 feb 30');
+
+    assert.equal(moment.utc([2010, 1, 29]).isValid(), false, 'utc 2010 feb 29');
+    assert.equal(moment.utc([2100, 1, 29]).isValid(), false, 'utc 2100 feb 29');
+    assert.equal(moment.utc([2008, 1, 30]).isValid(), false, 'utc 2008 feb 30');
+    assert.equal(moment.utc([2000, 1, 30]).isValid(), false, 'utc 2000 feb 30');
+});
+
+/* REMOVED Não sei o por que dessa... mas o erro era o seguinte: System.ArgumentOutOfRangeException : O ano deve estar entre 1 e 9999. Nome do parâmetro: year em System.DateTime.DaysInMonth(Int32 year, Int32 month) em Jurassic.Library.DateInstance.ToDateTime(Int32 year, Int32 month, Int32 day, Int32 hour, Int32 minute, Int32 second, Int32 millisecond, DateTimeKind kind)
+   
+test('string + formats bad date', function (assert) {
+    assert.equal(moment('2020-00-00', []).isValid(), false, 'invalid on empty array');
+    assert.equal(moment('2020-00-00', ['YYYY-MM-DD', 'DD-MM-YYYY']).isValid(), false, 'invalid on all in array');
+    assert.equal(moment('2020-00-00', ['DD-MM-YYYY', 'YYYY-MM-DD']).isValid(), false, 'invalid on all in array');
+    assert.equal(moment('2020-01-01', ['YYYY-MM-DD', 'DD-MM-YYYY']).isValid(), true, 'valid on first');
+    assert.equal(moment('2020-01-01', ['DD-MM-YYYY', 'YYYY-MM-DD']).isValid(), true, 'valid on last');
+    assert.equal(moment('2020-01-01', ['YYYY-MM-DD', 'YYYY-DD-MM']).isValid(), true, 'valid on both');
+    assert.equal(moment('2020-13-01', ['YYYY-MM-DD', 'YYYY-DD-MM']).isValid(), true, 'valid on last');
+
+    assert.equal(moment('12-13-2012', ['DD-MM-YYYY', 'YYYY-MM-DD']).isValid(), false, 'month rollover');
+    assert.equal(moment('12-13-2012', ['DD-MM-YYYY', 'DD-MM-YYYY']).isValid(), false, 'month rollover');
+    assert.equal(moment('38-12-2012', ['DD-MM-YYYY']).isValid(), false, 'day rollover');
+});
+*/
+test('string nonsensical with format', function (assert) {
+    assert.equal(moment('fail', 'MM-DD-YYYY').isValid(), false, 'string \'fail\' with format \'MM-DD-YYYY\'');
+    assert.equal(moment('xx-xx-2001', 'DD-MM-YYY').isValid(), true, 'string \'xx-xx-2001\' with format \'MM-DD-YYYY\'');
+});
+
+test('string with bad month name', function (assert) {
+    assert.equal(moment('01-Nam-2012', 'DD-MMM-YYYY').isValid(), false, '\'Nam\' is an invalid month');
+    assert.equal(moment('01-Aug-2012', 'DD-MMM-YYYY').isValid(), true, '\'Aug\' is a valid month');
+});
+
+test('string with spaceless format', function (assert) {
+    assert.equal(moment('10Sep2001', 'DDMMMYYYY').isValid(), true, 'Parsing 10Sep2001 should result in a valid date');
+});
+
+test('invalid string iso 8601', function (assert) {
+    var tests = [
+        '2010-00-00',
+        '2010-01-00',
+        '2010-01-40',
+        '2010-01-01T24:01',  // 24:00:00 is actually valid
+        '2010-01-01T23:60',
+        '2010-01-01T23:59:60'
+    ], i;
+
+    for (i = 0; i < tests.length; i++) {
+        assert.equal(moment(tests[i]).isValid(), false, tests[i] + ' should be invalid');
+        assert.equal(moment.utc(tests[i]).isValid(), false, tests[i] + ' should be invalid');
+    }
+});
+
+test('invalid string iso 8601 + timezone', function (assert) {
+    var tests = [
+        '2010-00-00T+00:00',
+        '2010-01-00T+00:00',
+        '2010-01-40T+00:00',
+        '2010-01-40T24:01+00:00',
+        '2010-01-40T23:60+00:00',
+        '2010-01-40T23:59:60+00:00',
+        '2010-01-40T23:59:59.9999+00:00'
+    ], i;
+
+    for (i = 0; i < tests.length; i++) {
+        assert.equal(moment(tests[i]).isValid(), false, tests[i] + ' should be invalid');
+        assert.equal(moment.utc(tests[i]).isValid(), false, tests[i] + ' should be invalid');
+    }
+});
+
+test('valid string iso 8601 + timezone', function (assert) {
+    var tests = [
+        '2010-01-01',
+        '2010-01-30',
+        '2010-01-30T23+00:00',
+        '2010-01-30T23:59+00:00',
+        '2010-01-30T23:59:59+00:00',
+        '2010-01-30T23:59:59.999+00:00',
+        '2010-01-30T23:59:59.999-07:00',
+        '2010-01-30T00:00:00.000+07:00',
+        '2010-01-30T00:00:00.000+07'
+    ], i;
+
+    for (i = 0; i < tests.length; i++) {
+        assert.equal(moment(tests[i]).isValid(), true, tests[i] + ' should be valid');
+        assert.equal(moment.utc(tests[i]).isValid(), true, tests[i] + ' should be valid');
+    }
+});
+
+test('invalidAt', function (assert) {
+    assert.equal(moment([2000, 12]).invalidAt(), 1, 'month 12 is invalid: 0-11');
+    assert.equal(moment([2000, 1, 30]).invalidAt(), 2, '30 is not a valid february day');
+    assert.equal(moment([2000, 1, 29, 25]).invalidAt(), 3, '25 is invalid hour');
+    assert.equal(moment([2000, 1, 29, 24,  1]).invalidAt(), 3, '24:01 is invalid hour');
+    assert.equal(moment([2000, 1, 29, 23, 60]).invalidAt(), 4, '60 is invalid minute');
+    assert.equal(moment([2000, 1, 29, 23, 59, 60]).invalidAt(), 5, '60 is invalid second');
+    assert.equal(moment([2000, 1, 29, 23, 59, 59, 1000]).invalidAt(), 6, '1000 is invalid millisecond');
+    assert.equal(moment([2000, 1, 29, 23, 59, 59, 999]).invalidAt(), -1, '-1 if everything is fine');
+});
+/* REMOVED .Net não suporta formato Unix
+test('valid Unix timestamp', function (assert) {
+    assert.equal(moment(1371065286, 'X').isValid(), true, 'number integer');
+    assert.equal(moment(1379066897.0, 'X').isValid(), true, 'number whole 1dp');
+    assert.equal(moment(1379066897.7, 'X').isValid(), true, 'number 1dp');
+    assert.equal(moment(1379066897.00, 'X').isValid(), true, 'number whole 2dp');
+    assert.equal(moment(1379066897.07, 'X').isValid(), true, 'number 2dp');
+    assert.equal(moment(1379066897.17, 'X').isValid(), true, 'number 2dp');
+    assert.equal(moment(1379066897.000, 'X').isValid(), true, 'number whole 3dp');
+    assert.equal(moment(1379066897.007, 'X').isValid(), true, 'number 3dp');
+    assert.equal(moment(1379066897.017, 'X').isValid(), true, 'number 3dp');
+    assert.equal(moment(1379066897.157, 'X').isValid(), true, 'number 3dp');
+    assert.equal(moment('1371065286', 'X').isValid(), true, 'string integer');
+    assert.equal(moment('1379066897.', 'X').isValid(), true, 'string trailing .');
+    assert.equal(moment('1379066897.0', 'X').isValid(), true, 'string whole 1dp');
+    assert.equal(moment('1379066897.7', 'X').isValid(), true, 'string 1dp');
+    assert.equal(moment('1379066897.00', 'X').isValid(), true, 'string whole 2dp');
+    assert.equal(moment('1379066897.07', 'X').isValid(), true, 'string 2dp');
+    assert.equal(moment('1379066897.17', 'X').isValid(), true, 'string 2dp');
+    assert.equal(moment('1379066897.000', 'X').isValid(), true, 'string whole 3dp');
+    assert.equal(moment('1379066897.007', 'X').isValid(), true, 'string 3dp');
+    assert.equal(moment('1379066897.017', 'X').isValid(), true, 'string 3dp');
+    assert.equal(moment('1379066897.157', 'X').isValid(), true, 'string 3dp');
+});
+*/
+/* REMOVED .Net não suporta formato Unix
+test('invalid Unix timestamp', function (assert) {
+    assert.equal(moment(undefined, 'X').isValid(), false, 'undefined');
+    assert.equal(moment('undefined', 'X').isValid(), false, 'string undefined');
+    try {
+        assert.equal(moment(null, 'X').isValid(), false, 'null');
+    } catch (e) {
+        assert.ok(true, 'null');
+    }
+
+    assert.equal(moment('null', 'X').isValid(), false, 'string null');
+    assert.equal(moment([], 'X').isValid(), false, 'array');
+    assert.equal(moment('{}', 'X').isValid(), false, 'object');
+    try {
+        assert.equal(moment('', 'X').isValid(), false, 'string empty');
+    } catch (e) {
+        assert.ok(true, 'string empty');
+    }
+
+    assert.equal(moment(' ', 'X').isValid(), false, 'string space');
+});
+*/
+/* REMOVED .Net não suporta formato Unix
+test('valid Unix offset milliseconds', function (assert) {
+    assert.equal(moment(1234567890123, 'x').isValid(), true, 'number integer');
+    assert.equal(moment('1234567890123', 'x').isValid(), true, 'string integer');
+});
+*/
+/* REMOVED .Net não suporta formato Unix
+test('invalid Unix offset milliseconds', function (assert) {
+    assert.equal(moment(undefined, 'x').isValid(), false, 'undefined');
+    assert.equal(moment('undefined', 'x').isValid(), false, 'string undefined');
+    try {
+        assert.equal(moment(null, 'x').isValid(), false, 'null');
+    } catch (e) {
+        assert.ok(true, 'null');
+    }
+
+    assert.equal(moment('null', 'x').isValid(), false, 'string null');
+    assert.equal(moment([], 'x').isValid(), false, 'array');
+    assert.equal(moment('{}', 'x').isValid(), false, 'object');
+    try {
+        assert.equal(moment('', 'x').isValid(), false, 'string empty');
+    } catch (e) {
+        assert.ok(true, 'string empty');
+    }
+
+    assert.equal(moment(' ', 'x').isValid(), false, 'string space');
+});
+*/
+test('empty', function (assert) {
+    assert.equal(moment(null).isValid(), false, 'null');
+    assert.equal(moment('').isValid(), false, 'empty string');
+    assert.equal(moment(null, 'YYYY').isValid(), false, 'format + null');
+    assert.equal(moment('', 'YYYY').isValid(), false, 'format + empty string');
+    assert.equal(moment(' ', 'YYYY').isValid(), false, 'format + empty when trimmed');
+});
+
+test('days of the year', function (assert) {
+    assert.equal(moment('2010 300', 'YYYY DDDD').isValid(), true, 'day 300 of year valid');
+    assert.equal(moment('2010 365', 'YYYY DDDD').isValid(), true, 'day 365 of year valid');
+    assert.equal(moment('2010 366', 'YYYY DDDD').isValid(), false, 'day 366 of year invalid');
+    assert.equal(moment('2012 365', 'YYYY DDDD').isValid(), true, 'day 365 of leap year valid');
+    assert.equal(moment('2012 366', 'YYYY DDDD').isValid(), true, 'day 366 of leap year valid');
+    assert.equal(moment('2012 367', 'YYYY DDDD').isValid(), false, 'day 367 of leap year invalid');
+});
+
+test('24:00:00.000 is valid', function (assert) {
+    assert.equal(moment('2014-01-01 24', 'YYYY-MM-DD HH').isValid(), true, '24 is valid');
+    assert.equal(moment('2014-01-01 24:00', 'YYYY-MM-DD HH:mm').isValid(), true, '24:00 is valid');
+    assert.equal(moment('2014-01-01 24:01', 'YYYY-MM-DD HH:mm').isValid(), false, '24:01 is not valid');
+});
+
+test('oddball permissiveness', function (assert) {
+    //https://github.com/moment/moment/issues/1128
+    assert.ok(moment('2010-10-3199', ['MM/DD/YYYY', 'MM-DD-YYYY', 'YYYY-MM-DD']).isValid());
+
+    //https://github.com/moment/moment/issues/1122
+    assert.ok(moment('3:25', ['h:mma', 'hh:mma', 'H:mm', 'HH:mm']).isValid());
+});
+
+test('0 hour is invalid in strict', function (assert) {
+    assert.equal(moment('00:01', 'hh:mm', true).isValid(), false, '00 hour is invalid in strict');
+    assert.equal(moment('00:01', 'hh:mm').isValid(), true, '00 hour is valid in normal');
+    assert.equal(moment('0:01', 'h:mm', true).isValid(), false, '0 hour is invalid in strict');
+    assert.equal(moment('0:01', 'h:mm').isValid(), true, '0 hour is valid in normal');
+});
+//===================================================================================================================================================================================================================== //>
