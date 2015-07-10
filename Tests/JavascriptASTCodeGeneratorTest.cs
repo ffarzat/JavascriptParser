@@ -221,6 +221,10 @@ namespace Tests
             const string fileGeneratedCode = "target.js";
             
             var sw = new Stopwatch();
+            var swTotal = new Stopwatch();
+
+            swTotal.Start();
+
             sw.Start();
             #region Build the AST from Js and Generate the code
             var momentTextWithoutComments = File.ReadAllText(fileMomentPath);
@@ -338,10 +342,11 @@ namespace Tests
 
                 sw.Reset();
                 sw.Start();
+                
                 engine.Execute(@"   QUnit.load();
                                     QUnit.start();
                 ");
-                sw.Stop();
+                
                 sw.Stop();
                 Console.WriteLine("{0} - {1}", "Execução dos testes", sw.Elapsed.ToString(@"m\:ss"));
             }
@@ -360,7 +365,8 @@ namespace Tests
             var sucesso = engine.GetGlobalValue<int>("sucesso");
 
             
-
+            swTotal.Stop();
+            Console.WriteLine("{0} - {1}", "Tempo total", swTotal.Elapsed.ToString(@"m\:ss"));
             Assert.AreEqual(total, sucesso);
 
         }
