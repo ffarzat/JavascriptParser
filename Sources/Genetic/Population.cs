@@ -402,16 +402,19 @@ namespace AForge.Genetic
             {
                 foreach (var chromosome in population)
                 {
-                    IChromosome chromosome1 = chromosome;
-                    Action action = () => chromosome1.Evaluate(fitnessFunction);
-
+                    Action action = () => chromosome.Evaluate(fitnessFunction);
                     IAsyncResult result = action.BeginInvoke(null, null);
-                    
+
+                    //Atualizo o span
+                    span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
                     if (!result.AsyncWaitHandle.WaitOne(span))
                     {
-                        chromosome1.Fitness = double.MaxValue;
+                        chromosome.Fitness = double.MaxValue;
                         Console.WriteLine("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:mm:ss"));
                     }
+                    else
+                        action.EndInvoke(result);
+
                         
                 }
             }
