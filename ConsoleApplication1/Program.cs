@@ -65,17 +65,7 @@ namespace ConsoleApplication1
             Parallelism = Convert.ToBoolean(ConfigurationManager.AppSettings["Parallelism"]);
             EvaluateTimeOutMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["EvaluateTimeOutMinutes"]);
 
-            Console.WriteLine("Biblioteca {0}", JsFile);
-            Console.WriteLine("Testes {0}", JsFileTest);
-            Console.WriteLine("Função alvo {0}", TargetFunction);
-            Console.WriteLine("Qunit {0}", QunitFile);
-            
-            Console.WriteLine("População {0}", PopulationSize);
-            Console.WriteLine("Gerações {0}", Generations);
-            Console.WriteLine("Paralelismo {0}", Parallelism);
-            Console.WriteLine("TimeOut para Fitness {0}", EvaluateTimeOutMinutes);
-            
-
+            Console.WriteLine("Alvo(s) da otimização: {0}", TargetFunction);
 
             var sw = new Stopwatch();
             sw.Start();
@@ -122,7 +112,7 @@ namespace ConsoleApplication1
             }
             
             sw.Stop();
-            Console.WriteLine("Árvore inicial construída em {0} milisegundos", sw.Elapsed.ToString("mm\\:ss\\.ff"));
+            Console.WriteLine("AST do arquivo {1} construída em {0} milisegundos", sw.Elapsed.ToString("mm\\:ss\\.ff"), JsFile);
 
             return tree;
         }
@@ -134,90 +124,106 @@ namespace ConsoleApplication1
         /// <param name="directoryInfo"></param>
         private static void ExecutarRodadas(CommonTree tree, DirectoryInfo directoryInfo)
         {
-            var sw = new Stopwatch();
-            var swEpoch = new Stopwatch();
-            sw.Start();
+            var funcoesAlvo = TargetFunction.Split("|".ToCharArray());
+
+            Console.WriteLine("================================================================================");
+            Console.WriteLine("Biblioteca {0}", JsFile);
+            Console.WriteLine("Testes {0}", JsFileTest);
             
-            #region Encontra a função alvo da otimização, recupera o bloco de instruções
-            var funcaoOtimizar = JavascriptAstCodeGenerator.FindFunctionTree(tree, TargetFunction);
+            Console.WriteLine("Qunit {0}", QunitFile);
 
-            if (funcaoOtimizar == null)
-                throw new ApplicationException(String.Format("Função não encontrada: {0}", TargetFunction));
+            Console.WriteLine("População {0}", PopulationSize);
+            Console.WriteLine("Gerações {0}", Generations);
+            Console.WriteLine("Paralelismo {0}", Parallelism);
+            Console.WriteLine("TimeOut para Fitness {0}", EvaluateTimeOutMinutes);
 
-            #endregion
-
-            #region Monta o primeiro individuo
-
-            var ancestral = new JavascriptChromosome(tree, TargetFunction);
             
-            #endregion
-
-            #region Faz o setup da população inicial
-            IFitnessFunction fitness = new JavascriptFitness(ExecutionPath, JsFileTest, QunitFile);
-            
-            ISelectionMethod metodoSelecao = new EliteSelection();
-
-            Population population = new Population(PopulationSize, ancestral, fitness, metodoSelecao, Parallelism, EvaluateTimeOutMinutes);
-
-            #endregion
-            
-            sw.Stop();
-            Console.WriteLine("Setup da população em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff")); 
-
-            sw.Reset();
-            sw.Start();
-            #region Executa a otimização
-
-            for (int i = 0; i < Generations; i++)
+            foreach (var nomeFuncaoTarget in funcoesAlvo)
             {
-                swEpoch.Reset();
-                swEpoch.Start();
-                Console.WriteLine("--------------------------");
-                Console.WriteLine("Processando geração {0}... ", i+1);
-                population.RunEpoch();
-                swEpoch.Stop();
-                Console.WriteLine("Best Fit {0}", population.FitnessMax);
-                //Console.WriteLine("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", ""));
-                Console.WriteLine("{0} minutos", swEpoch.Elapsed.ToString("mm\\:ss\\.ff"));
-                Console.WriteLine("--------------------------");
+                Console.WriteLine("Executando otimização da função '{0}'", nomeFuncaoTarget);
+
+                var sw = new Stopwatch();
+                var swEpoch = new Stopwatch();
+                sw.Start();
+
+                #region Encontra as função alvo da otimização, recupera o bloco de instruções
+                var funcaoOtimizar = JavascriptAstCodeGenerator.FindFunctionTree(tree, nomeFuncaoTarget);
+
+                if (funcaoOtimizar == null)
+                {
+                    Console.WriteLine("Função não encontrada: {0}", nomeFuncaoTarget);
+                    break;
+                }
+
+                #endregion
+
+                #region Monta o primeiro individuo
+
+                var ancestral = new JavascriptChromosome(tree, nomeFuncaoTarget);
+
+                #endregion
+
+                #region Faz o setup da população inicial
+                IFitnessFunction fitness = new JavascriptFitness(ExecutionPath, JsFileTest, QunitFile);
+
+                ISelectionMethod metodoSelecao = new EliteSelection();
+
+                Population population = new Population(PopulationSize, ancestral, fitness, metodoSelecao, Parallelism, EvaluateTimeOutMinutes);
+
+                #endregion
+
+                sw.Stop();
+                Console.WriteLine("Setup da população em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff"));
+
+                sw.Reset();
+                sw.Start();
+
+                #region Executa a otimização
+
+                for (int i = 0; i < Generations; i++)
+                {
+                    swEpoch.Reset();
+                    swEpoch.Start();
+                    Console.WriteLine("--------------------------");
+                    Console.WriteLine("Processando geração {0}... ", i + 1);
+                    population.RunEpoch();
+                    swEpoch.Stop();
+                    Console.WriteLine("Best Fit {0}", population.FitnessMax);
+                    //Console.WriteLine("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", ""));
+                    Console.WriteLine("{0} minutos", swEpoch.Elapsed.ToString("mm\\:ss\\.ff"));
+                    Console.WriteLine("--------------------------");
+                }
+
+                #endregion
+
+                sw.Stop();
+                Console.WriteLine("Processo executado em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff"));
+
+                #region Results
+                Console.WriteLine("============================= ");
+                Console.WriteLine("Max = " + population.FitnessMax);
+                Console.WriteLine("Sum = " + population.FitnessSum);
+                Console.WriteLine("Avg = " + population.FitnessAvg);
+                Console.WriteLine("Best= " + population.BestChromosome.Id);
+                Console.WriteLine(population.BestChromosome.ToString());
+
+
+                var nppDir = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Notepad++", null, null);
+                var nppExePath = Path.Combine(nppDir + "", "Notepad++.exe");
+                var nppReadmePath = population.BestChromosome.File;
+                var line = 20;
+                var sb = new StringBuilder();
+                sb.AppendFormat("\"{0}\" -n{1}", nppReadmePath, line);
+
+                if (File.Exists(nppExePath))
+                    Process.Start(nppExePath, sb.ToString());
+
+                #endregion
             }
-            
-            #endregion
-
-            sw.Stop();
-            Console.WriteLine("Processo executado em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff"));
-
-            #region Results
-            Console.WriteLine("============================= ");
-            Console.WriteLine("Max = " + population.FitnessMax);
-            Console.WriteLine("Sum = " + population.FitnessSum);
-            Console.WriteLine("Avg = " + population.FitnessAvg);
-            Console.WriteLine("Best= " + population.BestChromosome.Id);
-            Console.WriteLine(population.BestChromosome.ToString());
-
-
-            var nppDir = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Notepad++", null, null);
-            var nppExePath = Path.Combine(nppDir + "", "Notepad++.exe");
-            var nppReadmePath = population.BestChromosome.File;
-            var line = 20;
-            var sb = new StringBuilder();
-            sb.AppendFormat("\"{0}\" -n{1}", nppReadmePath, line);
-            
-            if (File.Exists(nppExePath))
-                Process.Start(nppExePath, sb.ToString());
 
             
 
-
-            //foreach (var generationsBestChromosome in population.GenerationsBestChromosomes)
-            //{
-            //    Console.WriteLine("");
-            //    Console.WriteLine("generation {0} ", generationsBestChromosome.Key);
-            //    Console.WriteLine("Best Founded = " + generationsBestChromosome.Value);
-            //    Console.WriteLine("==========================");
-            //}
-
-            #endregion
+           
         }
     } 
 }
