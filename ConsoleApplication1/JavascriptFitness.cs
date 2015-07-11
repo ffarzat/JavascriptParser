@@ -104,6 +104,13 @@ namespace ConsoleApplication1
                                 });
                                 */
 
+                                QUnit.testDone(function(details) {
+                                    //alert(details);
+                                    if (details.failed) {
+                                        throw new Error('Falhou no teste: ' + details.module + ':' + details.name);
+                                    }
+                                });
+
                                 /*
                                 QUnit.log(function( details ) {
                                   if ( details.result ) {
@@ -125,7 +132,7 @@ namespace ConsoleApplication1
                                 */
 
                                 QUnit.config.autostart = false;
-                                QUnit.config.ignoreGlobalErrors = true;
+                                QUnit.config.ignoreGlobalErrors = false;
                         ");
             #endregion
 
@@ -219,6 +226,7 @@ namespace ConsoleApplication1
             catch (JavaScriptException ex)
             {
                 //Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
+                Console.WriteLine("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString(@"m\:ss"), ex.Message);
                 return fitness;
             }
             catch (Exception ex)
