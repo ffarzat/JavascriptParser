@@ -178,7 +178,7 @@ namespace ConsoleApplication1
                 swEpoch.Stop();
                 Console.WriteLine("Best Fit {0}", population.FitnessMax);
                 //Console.WriteLine("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", ""));
-                Console.WriteLine("{0} minutos", swEpoch.Elapsed.ToString("mm\\:ss.\\ff"));
+                Console.WriteLine("{0} minutos", swEpoch.Elapsed.ToString("mm\\:ss\\.ff"));
                 Console.WriteLine("--------------------------");
             }
             
