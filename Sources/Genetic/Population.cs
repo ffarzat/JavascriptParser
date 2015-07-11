@@ -40,7 +40,7 @@ namespace AForge.Genetic
         private List<IChromosome>   population = new List<IChromosome>();
 		private int			size;
 	    private int         _generationCount = 0;
-		private double		randomSelectionPortion = 0.75;
+		private double		randomSelectionPortion = 0.2;
 
 		// population parameters
 		private double		crossOverRate	= 0.75;
