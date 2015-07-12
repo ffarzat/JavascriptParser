@@ -239,8 +239,7 @@ namespace ConsoleApplication1
             {
                 var functionsMostUseds = JavascriptAstCodeGenerator.FindTopUsedFunctions(tree);
                 var functionsWithCallsAndLocs = JavascriptAstCodeGenerator.FindTopLocFunctions(functionsMostUseds);
-
-                return functionsWithCallsAndLocs.OrderByDescending(c => c.Value.Key).OrderByDescending(l => l.Value.Value).Select(f=> f.Key).AsEnumerable();
+                return functionsWithCallsAndLocs;
             }
 
             return TargetFunction.Split("|".ToCharArray()); //caso contrário retorna do App.config

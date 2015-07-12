@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using ConsoleApplication1;
@@ -32,6 +33,21 @@ namespace Tests
             ES3Parser.program_return programReturn = parser.program();
             _tree = programReturn.Tree as CommonTree;
             #endregion
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Test]
+        public void ToOrderTest()
+        {
+            var list = JavascriptAstCodeGenerator.BuildFunctionList(_tree); //weak way
+            var functionsMostUseds = JavascriptAstCodeGenerator.FindTopUsedFunctions(_tree);
+            var functionsWithCallsAndLocs = JavascriptAstCodeGenerator.FindTopLocFunctions(functionsMostUseds).ToList();
+
+            Assert.AreEqual(functionsWithCallsAndLocs[0], "DeterminarQuantidadeDeDias");
+            Assert.AreEqual(functionsWithCallsAndLocs[1], "escreverNaTela");
+            
         }
 
         /// <summary>

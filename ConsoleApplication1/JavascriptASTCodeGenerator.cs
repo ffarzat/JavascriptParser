@@ -1235,7 +1235,7 @@ namespace ConsoleApplication1
         /// </summary>
         /// <param name="functionsMostUseds"></param>
         /// <returns></returns>
-        public static Dictionary<string, KeyValuePair<int, int>> FindTopLocFunctions(Dictionary<string, int> functionsMostUseds)
+        public static IEnumerable<string> FindTopLocFunctions(Dictionary<string, int> functionsMostUseds)
         {
             var locFunctions = new Dictionary<string, KeyValuePair<int, int>>();
             var realFunctions = functionsMostUseds.Where(f => _functions.Count(tree1 => tree1.GetChild(0).Text == f.Key) > 0);
@@ -1249,7 +1249,7 @@ namespace ConsoleApplication1
                 locFunctions.Add(name, locCallPair);
             }
 
-            return locFunctions;
+            return locFunctions.OrderByDescending(c => c.Value.Key).OrderByDescending(l => l.Value.Value).Select(f => f.Key).AsEnumerable();
         }
 
         /// <summary>
