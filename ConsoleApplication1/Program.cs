@@ -206,7 +206,7 @@ namespace ConsoleApplication1
                 Console.WriteLine("Sum = " + population.FitnessSum);
                 Console.WriteLine("Avg = " + population.FitnessAvg);
                 Console.WriteLine("Best= " + population.BestChromosome.Id);
-                Console.WriteLine(population.BestChromosome.ToString());
+                //Console.WriteLine(population.BestChromosome.ToString());
 
 
                 var nppDir = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Notepad++", null, null);
