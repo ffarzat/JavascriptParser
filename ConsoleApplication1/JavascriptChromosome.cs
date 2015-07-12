@@ -143,7 +143,14 @@ namespace ConsoleApplication1
         public IChromosome CreateOffspring()
         {
             var newChromosome = this.Clone();
-            newChromosome.Mutate();
+
+            var opt = Rand.Next(0, 2);
+
+            if(opt == 0)
+                newChromosome.Mutate();
+            else
+                newChromosome.Delete();
+            
             return newChromosome;
         }
 
