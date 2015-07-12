@@ -188,6 +188,8 @@ namespace Tests
             var originalFunction = JavascriptAstCodeGenerator.DeepClone(javaChromosome.Function as CommonTree);
 
             javaChromosome.Mutate();
+            javaChromosome.Mutate();
+            javaChromosome.Mutate();
             javaChromosome.Evaluate(fitness);
             
             Assert.AreNotEqual(fitvalue, javaChromosome.Fitness);
