@@ -15,6 +15,11 @@ namespace ConsoleApplication1
     public class JavascriptFitness : IFitnessFunction
     {
         /// <summary>
+        /// Ancestor Js
+        /// </summary>
+        private JavascriptChromosome _ancestor;
+
+        /// <summary>
         /// Path for generate the target code
         /// </summary>
         private string _pathToExecution;
@@ -54,8 +59,9 @@ namespace ConsoleApplication1
         /// <summary>
         /// Do the setup for a future execution
         /// </summary>
-        public JavascriptFitness(string pathToExecution, string scriptTestPtah, string qunitPath)
+        public JavascriptFitness(JavascriptChromosome ancestor, string pathToExecution, string scriptTestPtah, string qunitPath)
         {
+            _ancestor = ancestor;
             _pathToExecution = pathToExecution;
             _scriptTestPtah = scriptTestPtah;
             _qunitPath = qunitPath;
@@ -68,7 +74,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         public IFitnessFunction Clone()
         {
-            return  new JavascriptFitness(this._pathToExecution, this._scriptTestPtah, this._qunitPath);
+            return  new JavascriptFitness(_ancestor, this._pathToExecution, this._scriptTestPtah, this._qunitPath);
         }
 
         /// <summary>
@@ -172,7 +178,9 @@ namespace ConsoleApplication1
             DirectoryInfo directoryForIndividual = null;
             double fitness = double.MaxValue;
             string generatedJsCode = "";
-            
+            var sw = new Stopwatch();
+            sw.Start();
+
             #region setup a directory for this individual?
             var createNewDirectoryForGeneration = _dirOfRun.GetDirectories().FirstOrDefault(d => d.Name == chromosome.GenerationId.ToString(CultureInfo.InvariantCulture)) == null;
 
@@ -193,6 +201,13 @@ namespace ConsoleApplication1
                 var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Tree);
                 generatedJsCode = codeGenerator.DoCodeTransformation();
                 ((JavascriptChromosome) chromosome).Code = generatedJsCode;
+
+                if (((JavascriptChromosome)chromosome).Code.Equals(_ancestor.ToString()) & !chromosome.Id.Equals(_ancestor.Id))
+                {
+                    Console.WriteLine("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), "Similar ao original");
+                    return fitness;
+                }
+
             }
             catch (Exception)
             {
@@ -203,8 +218,7 @@ namespace ConsoleApplication1
             #endregion
             
             #region Executar os testes no novo Js (medindo tempo)
-            var sw = new Stopwatch();
-            sw.Start();
+            
 
             double total, sucess, fail, time;
             //Console.WriteLine("=====================================");

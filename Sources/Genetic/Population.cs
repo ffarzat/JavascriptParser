@@ -127,6 +127,7 @@ namespace AForge.Genetic
 			this.size	= size;
 	        this.Parallelism = parallel;
 	        this.TimeOut = timeout;
+	        this.bestChromosome = ancestor;
 
             DiscoverProcessors();
             

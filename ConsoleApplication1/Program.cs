@@ -165,7 +165,7 @@ namespace ConsoleApplication1
                 #endregion
 
                 #region Faz o setup da população inicial
-                IFitnessFunction fitness = new JavascriptFitness(ExecutionPath, JsFileTest, QunitFile);
+                IFitnessFunction fitness = new JavascriptFitness(ancestral, ExecutionPath, JsFileTest, QunitFile);
 
                 ISelectionMethod metodoSelecao = new EliteSelection();
 
