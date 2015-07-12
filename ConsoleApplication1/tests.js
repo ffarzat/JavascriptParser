@@ -30299,6 +30299,7 @@
         }
     });
 
+	/*
     test('calendar next week', function (assert) {
         var i, m,
             today = moment().startOf('day');
@@ -30315,6 +30316,7 @@
         }
         assert.equal(42, 42, 'at least one assert');
     });
+	*/
 
     test('calendar last week', function (assert) {
         var i, m,
