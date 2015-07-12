@@ -60,7 +60,7 @@ namespace ConsoleApplication1
         /// <summary>
         /// List of javascript instructions
         /// </summary>
-        private IDictionary<string, string> _possibleFunctions;
+        private List<ITree> _possibleFunctions;
         
         // random number generator for chromosoms generation
         protected static Random Rand = new Random((int)DateTime.Now.Ticks);
@@ -95,7 +95,7 @@ namespace ConsoleApplication1
             _tree = DeepClone(tree);
             _functionName = functionName;
             _possibleFunctions = BuildFunctionList(); //TODO: rever isso aqui. Pool mais forte de funções tipadas para substituição na mutação
-            _function = JavascriptAstCodeGenerator.FindFunctionTree(_tree, functionName).GetChild(2);
+            _function = _possibleFunctions.Single(f => f.GetChild(0).Text == functionName);
         }
 
         /// <summary>
@@ -136,29 +136,47 @@ namespace ConsoleApplication1
 
 
         /// <summary>
-        /// Reads the Tokens file and process a lista of possible functions
+        /// Reads the entire tree and keeps the functions for crossover and mutation operations
         /// </summary>
         /// <returns></returns>
-        private IDictionary<string, string> BuildFunctionList()
+        private List<ITree> BuildFunctionList()
         {
-            var sr = System.IO.File.OpenText(InstructionsFile);
-            string line = "";
-            var list = new Dictionary<string, string>();
-            int lineCount = 0;
+            var functionsFounded = new List<string>();
 
-            while ((line = sr.ReadLine()) != null && lineCount <=168)
+            for (int i = 0; i < _tree.ChildCount; i++)
             {
-                lineCount++;
-                var functionName = line.Split(" = ".ToCharArray())[0];
-                var functionNumber = line.Split(" = ".ToCharArray())[1];
-                
-                if (JavascriptAstCodeGenerator.IsFunction(int.Parse(functionNumber)))
-                    list.Add(functionName, functionNumber);
+                 functionsFounded.AddRange(VisitForFunctionName(_tree.GetChild(i)));
             }
 
-            sr.Close();
+            var functionsTree = new List<ITree>();
 
-            return list;
+            functionsFounded.ForEach(f => functionsTree.Add(JavascriptAstCodeGenerator.FindFunctionTree(_tree, f)));
+            
+            return functionsTree;
+        }
+
+        /// <summary>
+        /// Visits the node and its children to find functions nodes
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private IEnumerable<string> VisitForFunctionName(ITree node)
+        {
+            var functions = new List<string>();
+
+            #region IsFunction Node?
+            if (node.Type == 17 && node.GetChild(0).Text != "ARGS") //function
+            {
+                functions.Add(node.GetChild(0).Text);
+            }
+            #endregion
+
+            for (int i = 0; i < node.ChildCount; i++)
+            {
+                functions.AddRange(VisitForFunctionName(node.GetChild(i)));
+            }
+
+            return functions;
         }
 
         /// <summary>
@@ -213,57 +231,7 @@ namespace ConsoleApplication1
         /// </summary>
         public void Mutate()
         {
-            Fitness = 0;
-
-            #region Defines Target Function to Mutate
-            int indexTargetFunction = Rand.Next(0, _possibleFunctions.Count);          //target mutation function
-            var targetFunction = _possibleFunctions.ElementAt(indexTargetFunction);
-            #endregion
-
-            bool sinal = true;
-
-            while (sinal)
-            {
-                int instructionLevelToDelete = Rand.Next(0, _function.ChildCount); //at line instruction
-                var functionToDelete = _function.GetChild(instructionLevelToDelete);
-
-                if (JavascriptAstCodeGenerator.IsFunction(functionToDelete))
-                {
-
-                    #region Keeps all children nodes
-                    var listOfChildren = new List<ITree>();
-
-                    for (int i = 0; i < functionToDelete.ChildCount; i++)
-                    {
-                        listOfChildren.Add(functionToDelete.GetChild(i));
-
-                    }
-                    #endregion
-
-                    #region Creates The New one
-
-                    var newOne = new CommonTree(new CommonToken()
-                        {
-                            Text = targetFunction.Key,
-                            Type = int.Parse(targetFunction.Value),
-                        });
-
-                    //Add all chidren
-                    listOfChildren.ForEach(newOne.AddChild);
-
-                    #endregion
-
-                    #region Replaces it
-
-
-                    _function.ReplaceChildren(instructionLevelToDelete, instructionLevelToDelete, newOne);
-
-                    sinal = false;
-
-                    #endregion
-                }
-
-            }
+            
         }
 
         /// <summary>
