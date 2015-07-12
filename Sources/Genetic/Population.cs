@@ -57,11 +57,6 @@ namespace AForge.Genetic
 		private IChromosome	bestChromosome = null;
 
         /// <summary>
-        /// Keeps the best Chromosome of each generation
-        /// </summary>
-        private IDictionary<int, IChromosome> _generationsBestChromosomes = null;
-
-        /// <summary>
         /// #Processors
         /// </summary>
 	    private int _processorsCount;
@@ -114,14 +109,6 @@ namespace AForge.Genetic
 	        get { return _generationCount; }
 	    }
 
-	    /// <summary>
-	    /// List of the best Chromosomes of each generation
-	    /// </summary>
-	    public IDictionary<int, IChromosome> GenerationsBestChromosomes
-	    {
-	        get { return _generationsBestChromosomes; }
-	    }
-
 	    /// <sumary>
 		/// Get chromosome with specified index
 		/// </sumary>
@@ -140,8 +127,6 @@ namespace AForge.Genetic
 			this.size	= size;
 	        this.Parallelism = parallel;
 	        this.TimeOut = timeout;
-
-            this._generationsBestChromosomes = new Dictionary<int, IChromosome>();
 
             DiscoverProcessors();
 
