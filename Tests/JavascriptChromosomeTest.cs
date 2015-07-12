@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using AForge.Genetic;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using ConsoleApplication1;
@@ -19,6 +20,7 @@ namespace Tests
         private static string _javascriptText = "";
         private static string _javascriptTextWithoutComments = "";
         private static CommonTree _tree;
+        private static string _JsQUnitFile = "qunit-1.18.0.js";
 
         [TestFixtureSetUp]
         public void Setup()
@@ -78,17 +80,42 @@ namespace Tests
             Assert.AreEqual(originalText, generatedText);
         }
 
+        //Covers Clone not equal each other
+        [Test]
+        public void CloneNotEqual()
+        {
+            var javaChromosome = new JavascriptChromosome(_tree, _functionName);
+            IFitnessFunction fitness = new JavascriptFitness(javaChromosome, Environment.CurrentDirectory, _jsFile, _JsQUnitFile);
+            javaChromosome.Evaluate(fitness);
+            
+            var newJavaChromosome = javaChromosome.Clone() as JavascriptChromosome;
+            
+            Assert.AreNotEqual(javaChromosome, newJavaChromosome);
+            Assert.AreNotEqual(newJavaChromosome.Fitness, javaChromosome.Fitness);
+            
+            newJavaChromosome.Evaluate(fitness);
+            Assert.AreNotEqual(newJavaChromosome.Fitness, javaChromosome.Fitness);
+
+            //Do Delete and compare again
+            var newDeletedChromosome = newJavaChromosome.Clone() as JavascriptChromosome;
+            newDeletedChromosome.Delete(); 
+
+            Assert.AreNotEqual(newJavaChromosome.Fitness, newDeletedChromosome.Fitness);
+            Assert.AreNotEqual(newJavaChromosome.Code, newDeletedChromosome.Code);
+            
+            newDeletedChromosome.Evaluate(fitness);
+            Assert.AreNotEqual(newJavaChromosome.Code, newDeletedChromosome.Code);
+
+            
+        }
+        
         //Covers Delete operator
         [Test]
         public void Delete()
         {
             var javaChromosome = new JavascriptChromosome(_tree, _functionName);
-            
-            
             javaChromosome.Delete();
 
-            var totalLinesAfter = javaChromosome.Function.ChildCount;
-            
             var codeGenerator = new JavascriptAstCodeGenerator(javaChromosome.Tree);
             var generatedJsCode = codeGenerator.DoCodeTransformation();
             
