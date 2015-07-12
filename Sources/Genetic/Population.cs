@@ -359,8 +359,8 @@ namespace AForge.Genetic
         {
             #region Apply operators
             Refresh();
-			Crossover( );
-			//Mutate( );
+			Crossover();
+			Mutate();
 		    Delete();
             #endregion
 

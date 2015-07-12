@@ -214,7 +214,19 @@ namespace ConsoleApplication1
         public IChromosome CreateOffspring()
         {
             var newChromosome = this.Clone();
-            newChromosome.Delete();
+
+            int opt = Rand.Next(0, 1);
+
+            switch (opt)
+            {
+                case 0:
+                    newChromosome.Delete();
+                    break;
+                case 1:
+                    newChromosome.Mutate();
+                    break;
+            }
+           
             return newChromosome;
         }
 
@@ -232,6 +244,44 @@ namespace ConsoleApplication1
         public void Mutate()
         {
             
+            int tries = 100;
+            Fitness = 0;
+
+            bool sinal = true;
+            int count = 0;
+
+            //Try to cross a function node
+            while (sinal)
+            {
+                if (count >= tries)
+                {
+                    sinal = false;
+                }
+
+                int functionRand = Rand.Next(0, _possibleFunctions.Count); //choose a function from entire body
+
+                var blockDad = _function.GetChild(2);
+                var blockMom = _possibleFunctions[functionRand].GetChild(2);
+
+                int dadLine = Rand.Next(0, blockDad.ChildCount); //at line instruction
+                int momLine = Rand.Next(0, blockMom.ChildCount); //at line instruction
+
+                int dadPoint = Rand.Next(0, blockDad.GetChild(dadLine).ChildCount); //at instruction Level
+                int momPoint = Rand.Next(0, blockMom.GetChild(momLine).ChildCount); //at instruction Level
+
+
+                var functionNodeDad = blockDad.GetChild(dadLine).GetChild(dadPoint);//function node at Dad
+                var functionNodeMom = blockMom.GetChild(momLine).GetChild(momPoint);//function node at Mom
+
+                if (JavascriptAstCodeGenerator.IsFunction(functionNodeDad) && (JavascriptAstCodeGenerator.IsFunction(functionNodeMom)))
+                {
+                    blockDad.GetChild(dadLine).ReplaceChildren(dadPoint, dadPoint, functionNodeMom);
+
+                    sinal = false;
+                }
+
+                count++;
+            }
         }
 
         /// <summary>
@@ -320,7 +370,7 @@ namespace ConsoleApplication1
                 int momLine = Rand.Next(0, blockMom.ChildCount); //at line instruction
 
                 int dadPoint = Rand.Next(0, blockDad.GetChild(dadLine).ChildCount); //at instruction Level
-                int momPoint = Rand.Next(0, blockDad.GetChild(momLine).ChildCount); //at instruction Level
+                int momPoint = Rand.Next(0, blockMom.GetChild(momLine).ChildCount); //at instruction Level
 
 
                 var functionNodeDad = blockDad.GetChild(dadLine).GetChild(dadPoint);//function node at Dad
