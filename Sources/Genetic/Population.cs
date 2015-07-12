@@ -131,7 +131,7 @@ namespace AForge.Genetic
             DiscoverProcessors();
 
 		    // add ancestor to the population
-			//ancestor.Evaluate( fitnessFunction );
+			ancestor.Evaluate( fitnessFunction );
 			population.Add( ancestor );
 			// add more chromosomes to the population
 			for ( int i = 1; i < size; i++ )

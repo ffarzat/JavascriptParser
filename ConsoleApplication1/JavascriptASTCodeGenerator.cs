@@ -1277,6 +1277,41 @@ namespace ConsoleApplication1
         }
 
 
+        /// <summary>
+        /// Creates a Clone of a Tree
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <returns></returns>
+        public static CommonTree DeepClone(CommonTree tree)
+        {
+            var root = tree.DupNode();
+
+            for (int i = 0; i < tree.ChildCount; i++)
+            {
+                var clonedChild = DeepClone(tree.GetChild(i));
+                root.AddChild(clonedChild);
+            }
+
+            return root as CommonTree;
+        }
+
+        /// <summary>
+        /// Creates a Deep Clone of a ITree node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private static ITree DeepClone(ITree node)
+        {
+            var cloneNode = node.DupNode();
+
+            for (int i = 0; i < node.ChildCount; i++)
+            {
+                var cloneChildNode = DeepClone(node.GetChild(i)); //gets a dupNode cloned
+                cloneNode.AddChild(cloneChildNode); //adds
+            }
+
+            return cloneNode;
+        }
 
         #endregion
     }
