@@ -188,7 +188,7 @@ namespace ConsoleApplication1
                     Console.WriteLine("Processando geração {0}... ", i + 1);
                     population.RunEpoch();
                     swEpoch.Stop();
-                    Console.WriteLine("Best Fit {0}", population.FitnessMax);
+                    Console.WriteLine("Best Fit {0}", population.FitnessMin);
                     //Console.WriteLine("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", ""));
                     Console.WriteLine("{0} minutos", swEpoch.Elapsed.ToString("mm\\:ss\\.ff"));
                     Console.WriteLine("--------------------------");
@@ -201,7 +201,7 @@ namespace ConsoleApplication1
 
                 #region Results
                 Console.WriteLine("============================= ");
-                Console.WriteLine("Max = " + population.FitnessMax);
+                Console.WriteLine("Max = " + population.FitnessMin);
                 Console.WriteLine("Sum = " + population.FitnessSum);
                 Console.WriteLine("Avg = " + population.FitnessAvg);
                 Console.WriteLine("Best= " + population.BestChromosome.Id);

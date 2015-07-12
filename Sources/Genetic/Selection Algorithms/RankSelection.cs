@@ -27,7 +27,7 @@ namespace AForge.Genetic
 		/// <summary>
 		/// Apply selection to the population
 		/// </summary>
-		public void ApplySelection( List<IChromosome> chromosomes, int size )
+		public void ApplySelection(ref List<IChromosome> chromosomes, int size )
 		{
 			// new population, initially empty
 			ArrayList newPopulation = new ArrayList( );

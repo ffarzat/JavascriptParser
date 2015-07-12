@@ -19,6 +19,6 @@ namespace AForge.Genetic
 		/// <summary>
 		/// Apply selection to the population
 		/// </summary>
-		void ApplySelection( List<IChromosome> chromosomes, int size );
+		void ApplySelection(ref List<IChromosome> chromosomes, int size );
 	}
 }

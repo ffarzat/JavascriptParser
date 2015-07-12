@@ -58,7 +58,7 @@ namespace AForge.Genetic
 	    /// <summary>
 		/// Apply selection to the population
 		/// </summary>
-        public void ApplySelection(List<IChromosome> chromosomes, int size)
+        public void ApplySelection(ref List<IChromosome> chromosomes, int size)
 		{
 			// sort chromosomes
 		    var ordered = chromosomes.OrderBy(c => c.Fitness).ToList();

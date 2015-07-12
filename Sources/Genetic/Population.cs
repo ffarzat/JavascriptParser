@@ -40,7 +40,7 @@ namespace AForge.Genetic
         private List<IChromosome>   population = new List<IChromosome>();
 		private int			size;
 	    private int         _generationCount = 0;
-		private double		randomSelectionPortion = 0.2;
+		private double		randomSelectionPortion = 0.6;
 
 		// population parameters
 		private double		crossOverRate	= 0.75;
@@ -51,7 +51,7 @@ namespace AForge.Genetic
 		private static Random rand = new Random( (int) DateTime.Now.Ticks );
 
 		//
-		private double		fitnessMax = double.MaxValue;
+		private double		fitnessMin = double.MaxValue;
 		private double		fitnessSum = 0;
 		private double		fitnessAvg = 0;
 		private IChromosome	bestChromosome = null;
@@ -69,9 +69,9 @@ namespace AForge.Genetic
 		/// <summary>
 		/// Maximum fitness of the population
 		/// </summary>
-		public double FitnessMax
+		public double FitnessMin
 		{
-			get { return fitnessMax; }
+			get { return fitnessMin; }
 		}
 
 		/// <summary>
@@ -329,10 +329,10 @@ namespace AForge.Genetic
 			// amount of random chromosomes in the new population
 			int randomAmount = (int)( randomSelectionPortion * size );
 
-            Console.WriteLine(" {0} individuos(s) selecionados pelo metodo {1}", randomAmount, selectionMethod.ToString() );
+            Console.WriteLine(" {0} individuos(s) selecionados pelo metodo {1}", (size - randomAmount), selectionMethod.ToString() );
 
 			// do selection
-			selectionMethod.ApplySelection( population, size - randomAmount );
+			selectionMethod.ApplySelection(ref population, size - randomAmount );
 
 			// add random chromosomes
 			if ( randomAmount > 0 )
@@ -343,6 +343,7 @@ namespace AForge.Genetic
 				{
 					// create new chromosome
 					IChromosome c = ancestor.CreateOffspring( );
+				    c.GenerationId = _generationCount; 
 					// calculate it's fitness
 					//c.Evaluate( fitnessFunction );
 					// add it to population
@@ -389,6 +390,7 @@ namespace AForge.Genetic
             sw.Start();
             if (Parallelism)
             {
+                #region  Parallelism
                 var resultList = taskList.Select(chromosome => new Thread(() => Start(chromosome, fitnessFunction.Clone()))
                             {
                                 IsBackground = false,
@@ -397,9 +399,11 @@ namespace AForge.Genetic
 
                 resultList.ForEach(t => t.Start());
                 resultList.ForEach(t => t.Join(span));
+                #endregion
             }
             else
             {
+                #region single thread
                 foreach (var chromosome in population)
                 {
                     Action action = () => chromosome.Evaluate(fitnessFunction);
@@ -414,9 +418,8 @@ namespace AForge.Genetic
                     }
                     else
                         action.EndInvoke(result);
-
-                        
                 }
+                #endregion
             }
 
             sw.Stop();
@@ -446,8 +449,6 @@ namespace AForge.Genetic
 	            throw;
 	        }
 
-	        
-	        
 	    }
 
 	    /// <summary>
@@ -457,7 +458,6 @@ namespace AForge.Genetic
 	    {
 	        #region find best chromosome
 
-	        //fitnessMax = 0;
 	        fitnessSum = 0;
 
 	        foreach (IChromosome c in population)
@@ -468,10 +468,11 @@ namespace AForge.Genetic
 	            fitnessSum += fitness;
 
 	            // check for min
-	            if (fitness < fitnessMax)
+	            if (fitness < fitnessMin)
 	            {
-	                fitnessMax = fitness;
+	                fitnessMin = fitness;
 	                bestChromosome = c;
+                    Console.WriteLine("============================== Achou melhor novo {0} ==============================", fitnessMin);
 	            }
 	        }
 	        fitnessAvg = fitnessSum/size;
@@ -488,17 +489,11 @@ namespace AForge.Genetic
 	    private void Refresh()
 	    {
             _generationCount++;
-
-            foreach (IChromosome c in population)
-            {
-                c.GenerationId = _generationCount;
-            }
-
 	    }
 
 	    public void Trace( )
 		{
-			System.Diagnostics.Debug.WriteLine( "Max = " + fitnessMax );
+			System.Diagnostics.Debug.WriteLine( "Max = " + fitnessMin );
 			System.Diagnostics.Debug.WriteLine( "Sum = " + fitnessSum );
 			System.Diagnostics.Debug.WriteLine( "Avg = " + fitnessAvg );
 			System.Diagnostics.Debug.WriteLine( "--------------------------" );
