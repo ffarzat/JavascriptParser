@@ -13,6 +13,11 @@ namespace ConsoleApplication1
     public class JavascriptAstCodeGenerator
     {
         /// <summary>
+        /// List for all functions body
+        /// </summary>
+        private static List<ITree> _functions = new List<ITree>();
+
+        /// <summary>
         /// Keeps the original tree
         /// </summary>
         private ITree _tree;
@@ -1224,6 +1229,54 @@ namespace ConsoleApplication1
 
             return null;
         }
+
+        /// <summary>
+        /// Reads the entire tree and keeps the functions for crossover and mutation operations
+        /// </summary>
+        /// <returns></returns>
+        public static List<ITree> BuildFunctionList(CommonTree tree)
+        {
+
+            if (_functions.Count > 0)
+                return _functions;
+
+            var functionsFounded = new List<string>();
+
+            for (int i = 0; i < tree.ChildCount; i++)
+            {
+                functionsFounded.AddRange(VisitForFunctionName(tree.GetChild(i)));
+            }
+
+            functionsFounded.ForEach(f => _functions.Add(JavascriptAstCodeGenerator.FindFunctionTree(tree, f)));
+
+            return _functions;
+        }
+
+        /// <summary>
+        /// Visits the node and its children to find functions nodes
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private static IEnumerable<string> VisitForFunctionName(ITree node)
+        {
+            var functions = new List<string>();
+
+            #region IsFunction Node?
+            if (node.Type == 17 && node.GetChild(0).Text != "ARGS") //function
+            {
+                functions.Add(node.GetChild(0).Text);
+            }
+            #endregion
+
+            for (int i = 0; i < node.ChildCount; i++)
+            {
+                functions.AddRange(VisitForFunctionName(node.GetChild(i)));
+            }
+
+            return functions;
+        }
+
+
 
         #endregion
     }

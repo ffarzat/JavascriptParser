@@ -88,13 +88,14 @@ namespace ConsoleApplication1
         /// <summary>
         /// Starts a new instance based on Tree AST
         /// </summary>
+        /// <param name="tree"></param>
         /// <param name="functionName"></param>
         public JavascriptChromosome(CommonTree tree, string functionName)
         {
             Fitness = 0;
             _tree = DeepClone(tree);
             _functionName = functionName;
-            _possibleFunctions = BuildFunctionList(); //TODO: rever isso aqui. Pool mais forte de funções tipadas para substituição na mutação
+            _possibleFunctions = JavascriptAstCodeGenerator.BuildFunctionList(_tree); 
             _function = _possibleFunctions.Single(f => f.GetChild(0).Text == functionName);
         }
 
@@ -132,51 +133,6 @@ namespace ConsoleApplication1
             }
 
             return cloneNode;
-        }
-
-
-        /// <summary>
-        /// Reads the entire tree and keeps the functions for crossover and mutation operations
-        /// </summary>
-        /// <returns></returns>
-        private List<ITree> BuildFunctionList()
-        {
-            var functionsFounded = new List<string>();
-
-            for (int i = 0; i < _tree.ChildCount; i++)
-            {
-                 functionsFounded.AddRange(VisitForFunctionName(_tree.GetChild(i)));
-            }
-
-            var functionsTree = new List<ITree>();
-
-            functionsFounded.ForEach(f => functionsTree.Add(JavascriptAstCodeGenerator.FindFunctionTree(_tree, f)));
-            
-            return functionsTree;
-        }
-
-        /// <summary>
-        /// Visits the node and its children to find functions nodes
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        private IEnumerable<string> VisitForFunctionName(ITree node)
-        {
-            var functions = new List<string>();
-
-            #region IsFunction Node?
-            if (node.Type == 17 && node.GetChild(0).Text != "ARGS") //function
-            {
-                functions.Add(node.GetChild(0).Text);
-            }
-            #endregion
-
-            for (int i = 0; i < node.ChildCount; i++)
-            {
-                functions.AddRange(VisitForFunctionName(node.GetChild(i)));
-            }
-
-            return functions;
         }
 
         /// <summary>
@@ -244,7 +200,7 @@ namespace ConsoleApplication1
         public void Mutate()
         {
             
-            int tries = 100;
+            int tries = 10;
             Fitness = 0;
 
             bool sinal = true;
@@ -297,7 +253,7 @@ namespace ConsoleApplication1
         public void Delete()
         {
             Fitness = 0;
-            int tries = 100;
+            int tries = 10;
             int count = 0;
             bool sinal = true;
 
@@ -366,7 +322,7 @@ namespace ConsoleApplication1
         public  void Crossover(IChromosome pair)
         {
             var javascriptChromosomePair = (JavascriptChromosome)pair;
-            int tries = 100;
+            int tries = 10;
             Fitness = 0;
             javascriptChromosomePair.Fitness = 0;
 
