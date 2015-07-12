@@ -191,7 +191,7 @@ namespace ConsoleApplication1
                     Console.WriteLine("Best Fit {0}", population.FitnessMin);
                     //Console.WriteLine("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", ""));
                     Console.WriteLine("{0} minutos", swEpoch.Elapsed.ToString("mm\\:ss\\.ff"));
-                    Console.WriteLine("--------------------------");
+                    //Console.WriteLine("--------------------------");
                 }
 
                 #endregion
