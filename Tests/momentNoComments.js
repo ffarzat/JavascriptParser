@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-    global.moment = factory()
+    global.moment = factory();
 }(this, function () { 'use strict';
 
     var hookCallback;
@@ -26,7 +26,7 @@
 
     function map(arr, fn) {
         var res = [], i;
-        for (i = 0; i < arr.length; ++i) {
+        for (i = 0; i < arr.length; i++) {
             res.push(fn(arr[i], i));
         }
         return res;
@@ -1071,7 +1071,7 @@
         
         
         
-        for (i = 0; i < 3 && config._a[i] == null; ++i) {
+        for (i = 0; i < 3 && config._a[i] == null; i++) {
             config._a[i] = input[i] = currentDate[i];
         }
 
@@ -1127,7 +1127,7 @@
                 
                 weekday = w.d;
                 if (weekday < dow) {
-                    ++week;
+                    week++;
                 }
             } else if (w.e != null) {
                 
@@ -1403,7 +1403,7 @@
             return local__createLocal();
         }
         res = moments[0];
-        for (i = 1; i < moments.length; ++i) {
+        for (i = 1; i < moments.length; i++) {
             if (moments[i][fn](res)) {
                 res = moments[i];
             }
@@ -1738,7 +1738,7 @@
         res.months = other.month() - base.month() +
             (other.year() - base.year()) * 12;
         if (base.clone().add(res.months, 'M').isAfter(other)) {
-            --res.months;
+            res.months--;
         }
 
         res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
@@ -3070,7 +3070,7 @@
 
     
 
-    ;
+    
 
     
     
