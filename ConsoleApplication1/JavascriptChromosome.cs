@@ -240,27 +240,52 @@ namespace ConsoleApplication1
         public void Delete()
         {
             Fitness = 0;
+
+            while (DeleteInsideBlock(_function.GetChild(2)))
+            {
+                
+            }
+        }
+
+        /// <summary>
+        /// Finds a node to delete
+        /// </summary>
+        /// <param name="function"></param>
+        /// <returns></returns>
+        private bool DeleteInsideBlock(ITree function)
+        {
+            var block = function;
             bool sinal = true;
 
-            while (sinal)
-            {
-                int instructionLevelToDelete = Rand.Next(0,  _function.ChildCount); //at line instruction
-                var functionToDelete = _function.GetChild(instructionLevelToDelete);
+            int lineLevelToDelete = Rand.Next(0, block.ChildCount); //at line Level
+            int instructionLevelToDelete = Rand.Next(0, block.GetChild(lineLevelToDelete).ChildCount); //at instruction Level
 
-                if (JavascriptAstCodeGenerator.IsFunction(functionToDelete))
+            var functionToDelete = block.GetChild(lineLevelToDelete).GetChild(instructionLevelToDelete);
+
+            if (JavascriptAstCodeGenerator.IsFunction(functionToDelete))
+            {
+                if (JavascriptAstCodeGenerator.IsFunction(functionToDelete.Parent) && functionToDelete.Parent.Type != 113) //Not block and is a Function? Delete entire line
                 {
-                    if (JavascriptAstCodeGenerator.IsFunction(functionToDelete.Parent) && functionToDelete.Parent.Type != 113) //Not block and is a Function? Delete entire line
+
+                    if (functionToDelete.Type == 113)
                     {
-                        _function.Parent.DeleteChild(0);
-                        sinal = false;
+                       sinal = DeleteInsideBlock(functionToDelete);
                     }
                     else
                     {
-                        _function.DeleteChild(instructionLevelToDelete);
+                        block.DeleteChild(lineLevelToDelete);
                         sinal = false;
                     }
+
+                }
+                else
+                {
+                    block.GetChild(lineLevelToDelete).DeleteChild(instructionLevelToDelete);
+                    sinal = false;
                 }
             }
+
+            return sinal;
         }
 
         /// <summary>
