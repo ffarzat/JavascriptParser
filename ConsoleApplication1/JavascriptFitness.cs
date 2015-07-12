@@ -217,10 +217,10 @@ namespace ConsoleApplication1
                 
                 _engine.Execute(@"QUnit.start();");
 
-                total = _engine.GetGlobalValue<double>("total");
-                sucess = _engine.GetGlobalValue<double>("sucess");
-                fail = _engine.GetGlobalValue<double>("fail");
-                time = _engine.GetGlobalValue<double>("time");
+                //total = _engine.GetGlobalValue<double>("total");
+                //sucess = _engine.GetGlobalValue<double>("sucess");
+                //fail = _engine.GetGlobalValue<double>("fail");
+                //time = _engine.GetGlobalValue<double>("time");
 
             }
             catch (JavaScriptException ex)
@@ -243,8 +243,11 @@ namespace ConsoleApplication1
             //if (total.Equals(sucess)) //passou em todos
                 //fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
 
-            fitness = total - sucess; //quanto mais testes matar melhor!
-            fitness = fitness + double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
+            //fitness = total - sucess; //quanto mais testes matar melhor!
+            //fitness = fitness + double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
+
+
+            fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
             File.WriteAllText(fileName, generatedJsCode);
             #endregion
 
