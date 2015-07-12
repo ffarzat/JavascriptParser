@@ -214,7 +214,7 @@ namespace Tests
         [Test]
         public void RunTestsFromGeneratedMomentJs()
         {
-            const string jsTestFile = "testsNoLocation.js";
+            const string jsTestFile = "tests.js";
             //const string qunitFile = "qunit-1.18.0.js";
             const string qunitFile = "core-test.js";
             const string fileMomentPath = "moment.js";
