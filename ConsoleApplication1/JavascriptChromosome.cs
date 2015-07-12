@@ -134,8 +134,8 @@ namespace ConsoleApplication1
         public IChromosome CreateOffspring()
         {
             var newChromosome = this.Clone();
-
-            int opt = Rand.Next(0, 1);
+            
+            int opt = Rand.Next(0, 2);
 
             switch (opt)
             {
