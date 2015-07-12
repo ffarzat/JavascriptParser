@@ -44,7 +44,7 @@ namespace ConsoleApplication1
         /// </summary>
         public CommonTree Tree
         {
-            get { return refresh(_tree); }
+            get { return Refresh(_tree); }
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace ConsoleApplication1
             _tree = JavascriptAstCodeGenerator.DeepClone(tree);
             _functionName = functionName;
             _possibleFunctions = JavascriptAstCodeGenerator.BuildFunctionList(_tree); 
-            _function = _possibleFunctions.Single(f => f.GetChild(0).Text == functionName);
+            _function = JavascriptAstCodeGenerator.DeepClone(_possibleFunctions.Single(f => f.GetChild(0).Text == functionName) as CommonTree);
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace ConsoleApplication1
         /// </summary>
         /// <param name="tree"></param>
         /// <returns></returns>
-        private CommonTree refresh(CommonTree tree)
+        private CommonTree Refresh(CommonTree tree)
         {
             var function = JavascriptAstCodeGenerator.FindFunctionTree(tree, _functionName);
 
