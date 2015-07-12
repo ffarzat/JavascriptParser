@@ -29,3 +29,4 @@ D:\Github\JavascriptParser\Tests\obj\Debug\Tests.dll
 D:\Github\JavascriptParser\Tests\obj\Debug\Tests.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\momentNoLocation.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\testsNoLocation.js
+D:\GitHub\JavascriptParser\Tests\bin\Debug\global.js

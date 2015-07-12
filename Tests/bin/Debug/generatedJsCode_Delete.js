@@ -1,5 +1,6 @@
 'use strict';
 function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
+  var ndiasmes = '';
   var ltDia,ltMes,ltAno;
   ltDia = ldDia;
   ltMes = ldMes;

@@ -79,6 +79,9 @@
     <Content Include="core-test.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="global.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="moment.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
