@@ -70,6 +70,18 @@ namespace Tests
         }
 
         /// <summary>
+        /// Count INstructions
+        /// </summary>
+        [Test]
+        public void CoutInstructions()
+        {
+            var escreverNaTela = JavascriptAstCodeGenerator.FindFunctionTree(_tree, "escreverNaTela");
+            var loc = JavascriptAstCodeGenerator.CountInstructionsOf(escreverNaTela);
+
+            Assert.AreEqual(loc, 2);
+        }
+
+        /// <summary>
         /// MomentJs Code regenaration
         /// </summary>
         [Test]

@@ -1257,7 +1257,7 @@ namespace ConsoleApplication1
         /// </summary>
         /// <param name="functionBody"></param>
         /// <returns></returns>
-        private static int CountInstructionsOf(ITree functionBody)
+        public static int CountInstructionsOf(ITree functionBody)
         {
             if (functionBody == null)
                 return 0;
@@ -1266,7 +1266,9 @@ namespace ConsoleApplication1
 
             for (int i = 0; i < functionBody.ChildCount; i++)
             {
-                instructions++;
+                if (IsFunction(functionBody.GetChild(i)))
+                    instructions++;
+                
                 instructions += CountInstructionsOf(functionBody.GetChild(i));
             }
 
