@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,7 @@ namespace ConsoleApplication1
         private static int Generations = 0;
         private static bool Parallelism = false;
         private static int EvaluateTimeOutMinutes = 0;
+        private static int TopTargets = 0;
         
         private static DirectoryInfo _dirinfo = null;
         private static readonly string ExecutionPath = Environment.CurrentDirectory;
@@ -65,9 +67,9 @@ namespace ConsoleApplication1
             Generations = Convert.ToInt32(ConfigurationManager.AppSettings["Generations"]);
             Parallelism = Convert.ToBoolean(ConfigurationManager.AppSettings["Parallelism"]);
             EvaluateTimeOutMinutes = Convert.ToInt32(ConfigurationManager.AppSettings["EvaluateTimeOutMinutes"]);
+            TopTargets = Convert.ToInt32(ConfigurationManager.AppSettings["Targets"]);
 
-            Console.WriteLine("Alvo(s) da otimização: {0}", TargetFunction);
-
+            
             var sw = new Stopwatch();
             sw.Start();
             CommonTree tree = null;
@@ -126,7 +128,14 @@ namespace ConsoleApplication1
         private static void ExecutarRodadas(CommonTree tree, DirectoryInfo directoryInfo)
         {
             var funcoesAlvo = DefinirFuncoesAlvo(tree);
+            string names = "";
+            funcoesAlvo.Take(TopTargets).ToList().ForEach(f => names += "|" + f.ToString(CultureInfo.InvariantCulture));
 
+            TopTargets = TopTargets == 0 ? funcoesAlvo.Count() : TopTargets;
+
+            Console.WriteLine("Quantidade de Funções para Otmizar (corte): {0}", TopTargets);
+            Console.WriteLine("Alvo(s) da otimização: {0}", names);
+            
             Console.WriteLine("================================================================================");
             Console.WriteLine("Biblioteca {0}", JsFile);
             Console.WriteLine("Testes {0}", JsFileTest);
@@ -137,11 +146,17 @@ namespace ConsoleApplication1
             Console.WriteLine("Gerações {0}", Generations);
             Console.WriteLine("Paralelismo {0}", Parallelism);
             Console.WriteLine("TimeOut para Fitness {0}", EvaluateTimeOutMinutes);
+            Console.WriteLine("================================================================================");
 
-            
+            const int countFunctions = 0;
+
             foreach (var nomeFuncaoTarget in funcoesAlvo)
             {
+                if (countFunctions >= TopTargets)
+                    break;
+
                 Console.WriteLine("Executando otimização da função '{0}'", nomeFuncaoTarget);
+                Console.WriteLine("================================================================================");
 
                 var sw = new Stopwatch();
                 var swEpoch = new Stopwatch();
@@ -233,7 +248,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private static IEnumerable<string> DefinirFuncoesAlvo(CommonTree tree)
         {
-           var functions = JavascriptAstCodeGenerator.BuildFunctionList(tree);
+           var functions = JavascriptAstCodeGenerator.BuildFunctionList(tree); // just to build up a function list // TODO: refactoring to not expose this
 
             if (string.IsNullOrEmpty(TargetFunction))
             {
