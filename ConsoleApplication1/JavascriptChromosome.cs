@@ -155,7 +155,7 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome Clone()
         {
-            return new JavascriptChromosome(DeepClone(this._tree), _functionName ){ Fitness = 0, Id = Guid.NewGuid(), GenerationId = this.GenerationId};
+            return new JavascriptChromosome(_tree, _functionName ){ Fitness = 0, Id = Guid.NewGuid(), GenerationId = this.GenerationId};
         }
 
         /// <summary>

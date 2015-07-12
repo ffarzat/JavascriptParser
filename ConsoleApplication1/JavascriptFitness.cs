@@ -226,12 +226,12 @@ namespace ConsoleApplication1
             catch (JavaScriptException ex)
             {
                 //Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
-                Console.WriteLine("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString(@"m\:ss"), ex.Message);
+                Console.WriteLine("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message);
                 return fitness;
             }
             catch (Exception ex)
             {
-                //Console.WriteLine(ex);
+                Console.WriteLine("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message);
                 return fitness;
             }
 
@@ -248,7 +248,7 @@ namespace ConsoleApplication1
             File.WriteAllText(fileName, generatedJsCode);
             #endregion
 
-            Console.WriteLine("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString(@"m\:ss"));
+            Console.WriteLine("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"));
             return fitness;
         }
 

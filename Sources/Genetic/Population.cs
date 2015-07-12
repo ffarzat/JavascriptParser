@@ -129,10 +129,14 @@ namespace AForge.Genetic
 	        this.TimeOut = timeout;
 
             DiscoverProcessors();
-
+            
 		    // add ancestor to the population
 			ancestor.Evaluate( fitnessFunction );
+	        fitnessMin = ancestor.Fitness; //First Best is the original software
 			population.Add( ancestor );
+
+            Console.WriteLine(" Limite superior de valor de Fitness (software original) {0}", fitnessMin);
+
 			// add more chromosomes to the population
 			for ( int i = 1; i < size; i++ )
 			{
@@ -147,7 +151,9 @@ namespace AForge.Genetic
 			}
 
             //Fit Evaluation in as multiThreading
-            //ExecuteFitEvaluation(true);
+            ExecuteFitEvaluation(true);
+
+
 
 		}
 

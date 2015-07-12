@@ -396,8 +396,31 @@ namespace Tests
         /// </summary>
         /// <param name="message"></param>
         private delegate void DAlertDelegate(string message);
+
+        /// <summary>
+        /// Make a full clone of a Tree (AST)
+        /// </summary>
+        [Test]
+        public void DeepCloneTest()
+        {
+            var momentTextWithoutComments = File.ReadAllText("moment.js"); 
+
+            #region Build the AST from Js
+            var stream = new ANTLRStringStream(momentTextWithoutComments);
+            var lexer = new ES3Lexer(stream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new ES3Parser(tokenStream);
+            ES3Parser.program_return programReturn = parser.program();
+            var tree = programReturn.Tree as CommonTree;
+            #endregion
+
+            var clone = JavascriptAstCodeGenerator.DeepClone(tree);
+            var anotherClone = JavascriptAstCodeGenerator.DeepClone(tree);
+            var cloneofClone = JavascriptAstCodeGenerator.DeepClone(anotherClone);
+
+            Assert.AreNotSame(clone, anotherClone);
+            Assert.AreNotSame(anotherClone, cloneofClone);
+        }
     }
-
-
 
 }
