@@ -125,7 +125,7 @@ namespace ConsoleApplication1
         /// <param name="directoryInfo"></param>
         private static void ExecutarRodadas(CommonTree tree, DirectoryInfo directoryInfo)
         {
-            var funcoesAlvo = DefinirFuncoesAlvo();
+            var funcoesAlvo = DefinirFuncoesAlvo(tree);
 
             Console.WriteLine("================================================================================");
             Console.WriteLine("Biblioteca {0}", JsFile);
@@ -231,12 +231,17 @@ namespace ConsoleApplication1
         /// Retorna o conjunto de funções alvo da otimização
         /// </summary>
         /// <returns></returns>
-        private static IEnumerable<string> DefinirFuncoesAlvo()
+        private static IEnumerable<string> DefinirFuncoesAlvo(CommonTree tree)
         {
+           var functions = JavascriptAstCodeGenerator.BuildFunctionList(tree);
+
             if (string.IsNullOrEmpty(TargetFunction))
             {
-                //Top 10 mais usadas
-                return null;
+                var functionsMostUseds = JavascriptAstCodeGenerator.FindTopUsedFunctions(tree);
+             
+                return
+                    functionsMostUseds.Where(f => functions.Count(tree1 => tree1.GetChild(0).Text == f.Key) > 0)
+                                      .Select(x => x.Key);
             }
 
             return TargetFunction.Split("|".ToCharArray()); //caso contrário retorna do App.config
