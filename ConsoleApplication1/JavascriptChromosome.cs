@@ -263,8 +263,15 @@ namespace ConsoleApplication1
                 var blockDad = _function.GetChild(2);
                 var blockMom = _possibleFunctions[functionRand].GetChild(2);
 
+                if (blockDad.ChildCount == 0 || blockMom.ChildCount == 0)
+                    break;
+
                 int dadLine = Rand.Next(0, blockDad.ChildCount); //at line instruction
                 int momLine = Rand.Next(0, blockMom.ChildCount); //at line instruction
+
+
+                if (blockDad.GetChild(dadLine).ChildCount == 0 || blockMom.GetChild(momLine).ChildCount == 0)
+                    break;
 
                 int dadPoint = Rand.Next(0, blockDad.GetChild(dadLine).ChildCount); //at instruction Level
                 int momPoint = Rand.Next(0, blockMom.GetChild(momLine).ChildCount); //at instruction Level
