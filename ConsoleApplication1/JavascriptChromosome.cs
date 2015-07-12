@@ -141,11 +141,11 @@ namespace ConsoleApplication1
             {
                 case 0:
                     newChromosome.Delete();
-                    Console.WriteLine("         Criando novo individuo por {0}", "delete");
+                    Log.WriteLine(string.Format("         Criando novo individuo por {0}", "delete"));
                     break;
                 case 1:
                     newChromosome.Mutate();
-                    Console.WriteLine("         Criando novo individuo por {0}", "mutação");
+                    Log.WriteLine(string.Format("         Criando novo individuo por {0}", "mutação"));
                     break;
             }
            

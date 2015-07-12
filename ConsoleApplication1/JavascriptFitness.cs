@@ -82,7 +82,7 @@ namespace ConsoleApplication1
         /// </summary>
         private void LoadQunitAndTests(ScriptEngine engine)
         {
-            engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
+            engine.SetGlobalFunction("alert", new DAlertDelegate(Log.WriteLine));
             engine.ExecuteFile(_qunitPath);
             #region registra os retornos dos testes
             engine.Execute(@"   var total, sucess, fail, time;
@@ -204,7 +204,7 @@ namespace ConsoleApplication1
 
                 if (((JavascriptChromosome)chromosome).Code.Equals(_ancestor.ToString()) & !chromosome.Id.Equals(_ancestor.Id))
                 {
-                    Console.WriteLine("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), "Similar ao original");
+                    Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), "Similar ao original"));
                     return fitness;
                 }
 
@@ -221,8 +221,8 @@ namespace ConsoleApplication1
             
 
             double total, sucess, fail, time;
-            //Console.WriteLine("=====================================");
-            //Console.WriteLine(chromosome.Id);
+            //Log.WriteLine(string.Format("====================================="));
+            //Log.WriteLine(string.Format(chromosome.Id));
             try
             {
                 var _engine = new ScriptEngine();
@@ -239,20 +239,20 @@ namespace ConsoleApplication1
             }
             catch (JavaScriptException ex)
             {
-                //Console.WriteLine(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message));
-                Console.WriteLine("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message);
+                //Log.WriteLine(string.Format(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message)));
+                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message));
                 return fitness;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message);
+                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message));
                 return fitness;
             }
 
 
             sw.Stop();
-            
-            //Console.WriteLine("{0} segundos", sw.Elapsed.Seconds);
+
+            //Log.WriteLine(string.Format("{0} segundos", sw.Elapsed.Seconds));
 
             //if (total.Equals(sucess)) //passou em todos
                 //fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
@@ -265,7 +265,7 @@ namespace ConsoleApplication1
             File.WriteAllText(fileName, generatedJsCode);
             #endregion
 
-            Console.WriteLine("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"));
+            Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")));
             return fitness;
         }
 

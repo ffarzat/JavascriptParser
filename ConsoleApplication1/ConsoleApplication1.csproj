@@ -64,6 +64,7 @@
     <Compile Include="JavascriptChromosome.cs" />
     <Compile Include="JavascriptFitness.cs" />
     <Compile Include="JavascriptGene.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

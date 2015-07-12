@@ -43,13 +43,9 @@ namespace ConsoleApplication1
             var tree = Setup();
 
             if (tree == null)
-                Console.WriteLine("Erro ao processar a AST do arquivo {0}", JsFile);
+                Log.WriteLine(string.Format("Erro ao processar a AST do arquivo {0}", JsFile));
             else
                 ExecutarRodadas(tree, _dirinfo);
-
-
-            Console.WriteLine("Aperte qualquer tecla para encerrar...");
-            Console.Read();
 
         }
 
@@ -103,19 +99,19 @@ namespace ConsoleApplication1
 
 
                 //var gen = new DotTreeGenerator();
-                //Console.Write(gen.ToDot(tree));
-                //Console.Write(tree.GetChild(1).ToStringTree());
+                //Log.WriteLine(string.Format(gen.ToDot(tree)));
+                //Log.WriteLine(string.Format(tree.GetChild(1).ToStringTree()));
 
                 #endregion
                
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Log.WriteLine(string.Format(ex.ToString()));
             }
             
             sw.Stop();
-            Console.WriteLine("AST do arquivo {1} construída em {0} milisegundos", sw.Elapsed.ToString("mm\\:ss\\.ff"), JsFile);
+            Log.WriteLine(string.Format("AST do arquivo {1} construída em {0} milisegundos", sw.Elapsed.ToString("mm\\:ss\\.ff"), JsFile));
 
             return tree;
         }
@@ -133,20 +129,20 @@ namespace ConsoleApplication1
 
             TopTargets = TopTargets == 0 ? funcoesAlvo.Count() : TopTargets;
 
-            Console.WriteLine("Quantidade de Funções para Otmizar (corte): {0}", TopTargets);
-            Console.WriteLine("Alvo(s) da otimização: {0}", names);
+            Log.WriteLine(string.Format("Quantidade de Funções para Otmizar (corte): {0}", TopTargets));
+            Log.WriteLine(string.Format("Alvo(s) da otimização: {0}", names));
             
-            Console.WriteLine("================================================================================");
-            Console.WriteLine("Biblioteca {0}", JsFile);
-            Console.WriteLine("Testes {0}", JsFileTest);
+            Log.WriteLine(string.Format("================================================================================"));
+            Log.WriteLine(string.Format("Biblioteca {0}", JsFile));
+            Log.WriteLine(string.Format("Testes {0}", JsFileTest));
             
-            Console.WriteLine("Qunit {0}", QunitFile);
+            Log.WriteLine(string.Format("Qunit {0}", QunitFile));
 
-            Console.WriteLine("População {0}", PopulationSize);
-            Console.WriteLine("Gerações {0}", Generations);
-            Console.WriteLine("Paralelismo {0}", Parallelism);
-            Console.WriteLine("TimeOut para Fitness {0}", EvaluateTimeOutMinutes);
-            Console.WriteLine("================================================================================");
+            Log.WriteLine(string.Format("População {0}", PopulationSize));
+            Log.WriteLine(string.Format("Gerações {0}", Generations));
+            Log.WriteLine(string.Format("Paralelismo {0}", Parallelism));
+            Log.WriteLine(string.Format("TimeOut para Fitness {0}", EvaluateTimeOutMinutes));
+            Log.WriteLine(string.Format("================================================================================"));
 
             const int countFunctions = 0;
 
@@ -155,8 +151,8 @@ namespace ConsoleApplication1
                 if (countFunctions >= TopTargets)
                     break;
 
-                Console.WriteLine("Executando otimização da função '{0}'", nomeFuncaoTarget);
-                Console.WriteLine("================================================================================");
+                Log.WriteLine(string.Format("Executando otimização da função '{0}'", nomeFuncaoTarget));
+                Log.WriteLine(string.Format("================================================================================"));
 
                 var sw = new Stopwatch();
                 var swEpoch = new Stopwatch();
@@ -167,7 +163,7 @@ namespace ConsoleApplication1
 
                 if (funcaoOtimizar == null)
                 {
-                    Console.WriteLine("Função não encontrada: {0}", nomeFuncaoTarget);
+                    Log.WriteLine(string.Format("Função não encontrada: {0}", nomeFuncaoTarget));
                     break;
                 }
 
@@ -189,7 +185,7 @@ namespace ConsoleApplication1
                 #endregion
 
                 sw.Stop();
-                Console.WriteLine("Setup da população em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff"));
+                Log.WriteLine(string.Format("Setup da população em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff")));
 
                 sw.Reset();
                 sw.Start();
@@ -200,28 +196,28 @@ namespace ConsoleApplication1
                 {
                     swEpoch.Reset();
                     swEpoch.Start();
-                    Console.WriteLine("--------------------------");
-                    Console.WriteLine("Processando geração {0}... ", i + 1);
+                    Log.WriteLine(string.Format("--------------------------"));
+                    Log.WriteLine(string.Format("Processando geração {0}... ", i + 1));
                     population.RunEpoch();
                     swEpoch.Stop();
-                    Console.WriteLine("Best Fit {0}", population.FitnessMin);
-                    //Console.WriteLine("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", ""));
-                    Console.WriteLine("{0} minutos", swEpoch.Elapsed.ToString("mm\\:ss\\.ff"));
-                    //Console.WriteLine("--------------------------");
+                    Log.WriteLine(string.Format("Best Fit {0}", population.FitnessMin));
+                    //Log.WriteLine(string.Format("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", "")));
+                    Log.WriteLine(string.Format("{0} minutos", swEpoch.Elapsed.ToString("mm\\:ss\\.ff")));
+                    //Log.WriteLine(string.Format("--------------------------"));
                 }
 
                 #endregion
 
                 sw.Stop();
-                Console.WriteLine("Processo executado em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff"));
+                Log.WriteLine(string.Format("Processo executado em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff")));
 
                 #region Results
-                Console.WriteLine("============================= ");
-                Console.WriteLine("Max = " + population.FitnessMin);
-                Console.WriteLine("Sum = " + population.FitnessSum);
-                Console.WriteLine("Avg = " + population.FitnessAvg);
-                Console.WriteLine("Best= " + population.BestChromosome.Id);
-                //Console.WriteLine(population.BestChromosome.ToString());
+                Log.WriteLine(string.Format("============================= "));
+                Log.WriteLine(string.Format("Min = " + population.FitnessMin));
+                Log.WriteLine(string.Format("Sum = " + population.FitnessSum));
+                Log.WriteLine(string.Format("Avg = " + population.FitnessAvg));
+                Log.WriteLine(string.Format("Best= " + population.BestChromosome.Id));
+                //Log.WriteLine(string.Format(population.BestChromosome.ToString()));
 
 
                 var nppDir = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Notepad++", null, null);
@@ -259,6 +255,5 @@ namespace ConsoleApplication1
 
             return TargetFunction.Split("|".ToCharArray()); //caso contrário retorna do App.config
         }
-
     } 
 }
