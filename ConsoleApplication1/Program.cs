@@ -238,13 +238,13 @@ namespace ConsoleApplication1
             if (string.IsNullOrEmpty(TargetFunction))
             {
                 var functionsMostUseds = JavascriptAstCodeGenerator.FindTopUsedFunctions(tree);
-             
-                return
-                    functionsMostUseds.Where(f => functions.Count(tree1 => tree1.GetChild(0).Text == f.Key) > 0)
-                                      .Select(x => x.Key);
+                var functionsWithCallsAndLocs = JavascriptAstCodeGenerator.FindTopLocFunctions(functionsMostUseds);
+
+                return functionsWithCallsAndLocs.OrderByDescending(c => c.Value.Key).OrderByDescending(l => l.Value.Value).Select(f=> f.Key).AsEnumerable();
             }
 
             return TargetFunction.Split("|".ToCharArray()); //caso contrário retorna do App.config
         }
+
     } 
 }

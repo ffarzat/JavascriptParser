@@ -1229,9 +1229,52 @@ namespace ConsoleApplication1
 
             return null;
         }
+        
+        /// <summary>
+        /// Makes a list of Top functions (Loc)
+        /// </summary>
+        /// <param name="functionsMostUseds"></param>
+        /// <returns></returns>
+        public static Dictionary<string, KeyValuePair<int, int>> FindTopLocFunctions(Dictionary<string, int> functionsMostUseds)
+        {
+            var locFunctions = new Dictionary<string, KeyValuePair<int, int>>();
+            var realFunctions = functionsMostUseds.Where(f => _functions.Count(tree1 => tree1.GetChild(0).Text == f.Key) > 0);
+
+            foreach (var pair in realFunctions)
+            {
+                string name = pair.Key;
+                int calls = pair.Value;
+                int loc = CountInstructionsOf(_functions.Single(t => t.GetChild(0).Text.Equals(name)).GetChild(2));
+                var locCallPair = new KeyValuePair<int, int>(calls, loc);
+                locFunctions.Add(name, locCallPair);
+            }
+
+            return locFunctions;
+        }
 
         /// <summary>
-        /// Finds all functions CALLS and return its limited by top
+        /// Count instructions of a function by name
+        /// </summary>
+        /// <param name="functionBody"></param>
+        /// <returns></returns>
+        private static int CountInstructionsOf(ITree functionBody)
+        {
+            if (functionBody == null)
+                return 0;
+
+            int instructions = 0;
+
+            for (int i = 0; i < functionBody.ChildCount; i++)
+            {
+                instructions++;
+                instructions += CountInstructionsOf(functionBody.GetChild(i));
+            }
+
+            return instructions;
+        }
+
+        /// <summary>
+        /// Finds all functions CALLS
         /// </summary>
         /// <param name="tree"></param>
         /// <returns></returns>
@@ -1360,5 +1403,7 @@ namespace ConsoleApplication1
         }
 
         #endregion
+
+        
     }
 }
