@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -124,7 +125,7 @@ namespace ConsoleApplication1
         /// <param name="directoryInfo"></param>
         private static void ExecutarRodadas(CommonTree tree, DirectoryInfo directoryInfo)
         {
-            var funcoesAlvo = TargetFunction.Split("|".ToCharArray());
+            var funcoesAlvo = DefinirFuncoesAlvo();
 
             Console.WriteLine("================================================================================");
             Console.WriteLine("Biblioteca {0}", JsFile);
@@ -224,6 +225,21 @@ namespace ConsoleApplication1
             
 
            
+        }
+
+        /// <summary>
+        /// Retorna o conjunto de funções alvo da otimização
+        /// </summary>
+        /// <returns></returns>
+        private static IEnumerable<string> DefinirFuncoesAlvo()
+        {
+            if (string.IsNullOrEmpty(TargetFunction))
+            {
+                //Top 10 mais usadas
+                return null;
+            }
+
+            return TargetFunction.Split("|".ToCharArray()); //caso contrário retorna do App.config
         }
     } 
 }

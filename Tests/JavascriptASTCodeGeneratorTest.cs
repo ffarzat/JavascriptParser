@@ -34,8 +34,10 @@ namespace Tests
             #endregion
         }
 
-        
-        [Ignore]
+        /// <summary>
+        /// Generates code?
+        /// </summary>
+        [Test]
         public void ToCodeTest()
         {
             var codeGenerator = new JavascriptAstCodeGenerator(_tree);
@@ -47,6 +49,24 @@ namespace Tests
             var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "").Replace("\r", "");
 
             Assert.AreEqual(originalText, generatedText);
+        }
+
+        /// <summary>
+        /// Find the top used functions
+        /// </summary>
+        [Test]
+        public void FindFunctionCalls()
+        {
+            var functionsFounded = JavascriptAstCodeGenerator.FindTopUsedFunctions(_tree);
+
+            Assert.AreEqual(functionsFounded.Count , 4);
+            
+            Assert.IsTrue(functionsFounded.ContainsKey("parseInt"));
+            Assert.AreEqual(functionsFounded["parseInt"], 5);
+
+            Assert.IsTrue(functionsFounded.ContainsKey("print"));
+            Assert.AreEqual(functionsFounded["print"], 1);
+
         }
 
         /// <summary>

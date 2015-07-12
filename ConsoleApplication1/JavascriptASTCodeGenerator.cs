@@ -1231,6 +1231,53 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
+        /// Finds all functions CALLS and return its limited by top
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <returns></returns>
+        public static Dictionary<string, int> FindTopUsedFunctions(CommonTree tree)
+        {
+
+            var functionsFounded = new List<string>();
+
+            for (int i = 0; i < tree.ChildCount; i++)
+            {
+                functionsFounded.AddRange(VisitForFunctionCall(tree.GetChild(i)));
+            }
+
+            var topCount = functionsFounded.GroupBy(item => item).OrderByDescending(x=> x.Count()).ToDictionary(x => x.Key, x => x.Count());
+
+            return topCount;
+        }
+
+
+        /// <summary>
+        /// Visits the node and its children to find functions calls
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private static IEnumerable<string> VisitForFunctionCall(ITree node)
+        {
+            var functions = new List<string>();
+
+            #region IsFunction Node?
+            if (node.Type == 116) //function CALL
+            {
+                if (!functions.Contains(node.GetChild(0).Text))
+                    functions.Add(node.GetChild(0).Text);
+            }
+            #endregion
+
+            for (int i = 0; i < node.ChildCount; i++)
+            {
+                functions.AddRange(VisitForFunctionCall(node.GetChild(i)));
+            }
+
+            return functions;
+        }
+
+
+        /// <summary>
         /// Reads the entire tree and keeps the functions for crossover and mutation operations
         /// </summary>
         /// <returns></returns>
@@ -1275,7 +1322,6 @@ namespace ConsoleApplication1
 
             return functions;
         }
-
 
         /// <summary>
         /// Creates a Clone of a Tree
