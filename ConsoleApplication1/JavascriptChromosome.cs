@@ -44,18 +44,13 @@ namespace ConsoleApplication1
         /// </summary>
         public CommonTree Tree
         {
-            get { return _tree; }
+            get { return refresh(_tree); }
         }
 
         /// <summary>
         /// generated code for Chromosome
         /// </summary>
         public string Code { get; set; }
-
-        /// <summary>
-        /// Parser generated file
-        /// </summary>
-        private const string InstructionsFile = "ES3.tokens";
 
         /// <summary>
         /// List of javascript instructions
@@ -106,6 +101,20 @@ namespace ConsoleApplication1
         public override string ToString()
         {
             return Code;
+        }
+
+        /// <summary>
+        /// Replaces the Function Node inside tree (after operators)
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <returns></returns>
+        private CommonTree refresh(CommonTree tree)
+        {
+            var function = JavascriptAstCodeGenerator.FindFunctionTree(tree, _functionName);
+
+            function.ReplaceChildren(2, 2, _function.GetChild(2));
+
+            return tree;
         }
 
         #region IChromosome implementation

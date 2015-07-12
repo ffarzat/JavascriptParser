@@ -198,7 +198,7 @@ namespace ConsoleApplication1
             chromosome.File = fileName;
             try
             {
-                var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Function);
+                var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Tree);
                 generatedJsCode = codeGenerator.DoCodeTransformation();
                 ((JavascriptChromosome) chromosome).Code = generatedJsCode;
 

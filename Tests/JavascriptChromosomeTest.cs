@@ -177,5 +177,23 @@ namespace Tests
 
         }
 
+        [Test]
+        public void DoOperationAndChangeTree()
+        {
+            var javaChromosome = new JavascriptChromosome(_tree, _functionName);
+            IFitnessFunction fitness = new JavascriptFitness(javaChromosome, Environment.CurrentDirectory, _jsFile, _JsQUnitFile);
+            
+            var fitvalue = javaChromosome.Fitness;
+            var originalTree = JavascriptAstCodeGenerator.DeepClone(javaChromosome.Tree);
+            var originalFunction = JavascriptAstCodeGenerator.DeepClone(javaChromosome.Function as CommonTree);
+
+            javaChromosome.Mutate();
+            javaChromosome.Evaluate(fitness);
+            
+            Assert.AreNotEqual(fitvalue, javaChromosome.Fitness);
+            Assert.AreNotEqual(JavascriptAstCodeGenerator.CountInstructionsOf(originalTree), JavascriptAstCodeGenerator.CountInstructionsOf(javaChromosome.Tree));
+            Assert.AreNotEqual(JavascriptAstCodeGenerator.CountInstructionsOf(originalFunction), JavascriptAstCodeGenerator.CountInstructionsOf(javaChromosome.Function));
+        }
+
     }
 }
