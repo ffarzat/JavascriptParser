@@ -303,6 +303,7 @@ namespace ConsoleApplication1
 
             bool sinal = true;
             int count = 0;
+            
             //Try to cross a function node
             while (sinal)
             {
@@ -311,16 +312,26 @@ namespace ConsoleApplication1
                     sinal = false; 
                 }
 
-                int dadPoint = Rand.Next(0, _function.ChildCount); //at line instruction
-                int momPoint = Rand.Next(0, javascriptChromosomePair.Function.ChildCount); //at line instruction
 
-                var functionNodeDad = Function.GetChild(dadPoint);
-                var functionNodeMom = javascriptChromosomePair.Function.GetChild(momPoint);
+                var blockDad = _function.GetChild(2);
+                var blockMom = javascriptChromosomePair.Function.GetChild(2);
+
+                int dadLine = Rand.Next(0, blockDad.ChildCount); //at line instruction
+                int momLine = Rand.Next(0, blockMom.ChildCount); //at line instruction
+
+                int dadPoint = Rand.Next(0, blockDad.GetChild(dadLine).ChildCount); //at instruction Level
+                int momPoint = Rand.Next(0, blockDad.GetChild(momLine).ChildCount); //at instruction Level
+
+
+                var functionNodeDad = blockDad.GetChild(dadLine).GetChild(dadPoint);//function node at Dad
+                var functionNodeMom = blockMom.GetChild(momLine).GetChild(momPoint);//function node at Mom
 
                 if (JavascriptAstCodeGenerator.IsFunction(functionNodeDad) && (JavascriptAstCodeGenerator.IsFunction(functionNodeMom)))
                 {
-                    Function.ReplaceChildren(dadPoint, dadPoint, functionNodeMom);
-                    javascriptChromosomePair.Function.ReplaceChildren(momPoint, momPoint, functionNodeDad);
+                    blockDad.GetChild(dadLine).ReplaceChildren(dadPoint, dadPoint, functionNodeMom);
+
+                    blockMom.GetChild(momLine).ReplaceChildren(momPoint, momPoint, functionNodeDad);
+
                     sinal = false;
                 }
 
