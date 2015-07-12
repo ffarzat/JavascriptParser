@@ -52,14 +52,13 @@ namespace Tests
         public void Mutate()
         {
             var javaChromosome = new JavascriptChromosome(_tree, _functionName);
-            var totalLines = javaChromosome.Function.ChildCount;
+            
             javaChromosome.Mutate();
-            var totalLinesAfter = javaChromosome.Function.ChildCount;
-            Assert.AreEqual(totalLines, totalLinesAfter);
-
+            
             var codeGenerator = new JavascriptAstCodeGenerator(javaChromosome.Tree);
             var generatedJsCode = codeGenerator.DoCodeTransformation();
             File.WriteAllText("generatedJsCode_Mutate.js", generatedJsCode);
+            Assert.AreNotEqual(javaChromosome.Code, _javascriptTextWithoutComments);
         }
 
         //Covers Clone

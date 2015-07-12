@@ -10,16 +10,7 @@ function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
     ltDia = ldDia + lnDias;
 
   }  else  {
-    ltDia = parseInt((ldDia + lnDias) % ndiasmes);
-  if (parseInt(ldMes + (ldDia + lnDias) / ndiasmes) <= 12) {
-    ltMes = parseInt(ldMes + (ldDia + lnDias) / ndiasmes);
-
-  }  else  {
-    ltMes = parseInt((ldMes + (ldDia + lnDias) / ndiasmes) % 12);
-  ltAno = parseInt(ldAno + (ldMes + (ldDia + lnDias) / ndiasmes) / 12);
-
-  }
-
+  ldMes == 1 || ldMes == 3 || ldMes == 5 || ldMes == 7 || ldMes == 8 || ldMes == 10 || ldMes == 12
   }
   var resultado = ltDia + '/' + ltMes + '/' + ltAno;
   escreverNaTela(resultado);

@@ -134,21 +134,7 @@ namespace ConsoleApplication1
         public IChromosome CreateOffspring()
         {
             var newChromosome = this.Clone();
-            
-            int opt = Rand.Next(0, 2);
-
-            switch (opt)
-            {
-                case 0:
-                    newChromosome.Delete();
-                    Log.WriteLine(string.Format("         Criando novo individuo por {0}", "delete"));
-                    break;
-                case 1:
-                    newChromosome.Mutate();
-                    Log.WriteLine(string.Format("         Criando novo individuo por {0}", "mutação"));
-                    break;
-            }
-           
+            newChromosome.Mutate();
             return newChromosome;
         }
 
