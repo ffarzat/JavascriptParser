@@ -83,17 +83,18 @@ namespace Tests
         public void Delete()
         {
             var javaChromosome = new JavascriptChromosome(_tree, _functionName);
-            var totalLines = javaChromosome.Function.ChildCount;
+            
             
             javaChromosome.Delete();
 
             var totalLinesAfter = javaChromosome.Function.ChildCount;
-
-            Assert.AreNotEqual(totalLines, totalLinesAfter);
-
+            
             var codeGenerator = new JavascriptAstCodeGenerator(javaChromosome.Tree);
             var generatedJsCode = codeGenerator.DoCodeTransformation();
+            
             File.WriteAllText("generatedJsCode_Delete.js", generatedJsCode);
+
+            Assert.AreNotEqual(_javascriptTextWithoutComments, generatedJsCode);
 
         }
 

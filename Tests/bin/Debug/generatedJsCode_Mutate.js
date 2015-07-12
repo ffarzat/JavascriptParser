@@ -4,7 +4,7 @@ function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
   var ltDia,ltMes,ltAno;
   ltDia = ldDia;
   ltMes = ldMes;
-  ltAno ADDASS ldAno;
+  ltAno = ldAno;
   ndiasmes = DeterminarQuantidadeDeDias(ldMes, ldAno);
   if (ldDia + lnDias <= ndiasmes) {
     ltDia = ldDia + lnDias;
@@ -21,7 +21,8 @@ function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
   }
 
   }
-  var resultado = ltDia + '/' + ltMes + '/' + ltAno;
+  var   ndiasmes = 31;
+;
   escreverNaTela(resultado);
   return resultado;
 }
