@@ -21,8 +21,7 @@ function AvancaDias(lnDias, ldDia, ldMes, ldAno) {
   }
 
   }
-  var   ndiasmes = 31;
-;
+  var resultado = ltDia + '/' + ltMes + '/' + ltAno;
   escreverNaTela(resultado);
   return resultado;
 }

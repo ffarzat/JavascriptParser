@@ -297,10 +297,18 @@ namespace ConsoleApplication1
         public void Delete()
         {
             Fitness = 0;
+            int tries = 100;
+            int count = 0;
+            bool sinal = true;
 
-            while (DeleteInsideBlock(_function.GetChild(2)))
+            while (sinal)
             {
-                
+                sinal = DeleteInsideBlock(_function.GetChild(2));
+                count++;
+                if (count >= tries)
+                {
+                    sinal = false;
+                }
             }
         }
 
@@ -315,6 +323,10 @@ namespace ConsoleApplication1
             bool sinal = true;
 
             int lineLevelToDelete = Rand.Next(0, block.ChildCount); //at line Level
+
+            if (block.ChildCount == 0)
+                return true;
+
             int instructionLevelToDelete = Rand.Next(0, block.GetChild(lineLevelToDelete).ChildCount); //at instruction Level
 
             var functionToDelete = block.GetChild(lineLevelToDelete).GetChild(instructionLevelToDelete);
