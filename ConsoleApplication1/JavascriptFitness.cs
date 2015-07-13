@@ -195,6 +195,7 @@ namespace ConsoleApplication1
 
             #region gerar o código em um diretório temporário, testar compilação
             string fileName = string.Format("{0}/{1}.js", directoryForIndividual.FullName, chromosome.Id);
+            File.WriteAllText(fileName, generatedJsCode);
             chromosome.File = fileName;
             try
             {
@@ -262,7 +263,7 @@ namespace ConsoleApplication1
 
 
             fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
-            File.WriteAllText(fileName, generatedJsCode);
+            
             #endregion
 
             Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")));
