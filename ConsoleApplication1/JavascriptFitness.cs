@@ -195,13 +195,14 @@ namespace ConsoleApplication1
 
             #region gerar o código em um diretório temporário, testar compilação
             string fileName = string.Format("{0}/{1}.js", directoryForIndividual.FullName, chromosome.Id);
-            File.WriteAllText(fileName, generatedJsCode);
+            
             chromosome.File = fileName;
             try
             {
                 var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Tree);
                 generatedJsCode = codeGenerator.DoCodeTransformation();
                 ((JavascriptChromosome) chromosome).Code = generatedJsCode;
+                File.WriteAllText(fileName, generatedJsCode);
 
                 if (((JavascriptChromosome)chromosome).Code.Equals(_ancestor.ToString()) & !chromosome.Id.Equals(_ancestor.Id))
                 {
@@ -226,7 +227,7 @@ namespace ConsoleApplication1
             //Log.WriteLine(string.Format(chromosome.Id));
             try
             {
-                var _engine = new ScriptEngine();
+                var _engine = new ScriptEngine(); //
                 _engine.Execute(generatedJsCode);
                 LoadQunitAndTests(_engine);
                 
