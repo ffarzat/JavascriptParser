@@ -153,6 +153,9 @@ namespace AForge.Genetic
 
             //Fit Evaluation in as multiThreading
             ExecuteFitEvaluation(true);
+
+
+
 		}
 
         /// <summary>

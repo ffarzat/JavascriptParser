@@ -87,10 +87,8 @@ namespace ConsoleApplication1
         /// <param name="functionName"></param>
         public JavascriptChromosome(CommonTree tree, string functionName)
         {
-            //Cria um clone da árvore (importantissimo)
-            _tree = JavascriptAstCodeGenerator.DeepClone(tree);
-
             Fitness = 0;
+            _tree = JavascriptAstCodeGenerator.DeepClone(tree);
             _functionName = functionName;
             _possibleFunctions = JavascriptAstCodeGenerator.BuildFunctionList(_tree); 
             _function = JavascriptAstCodeGenerator.DeepClone(_possibleFunctions.Single(f => f.GetChild(0).Text == functionName) as CommonTree);
@@ -112,7 +110,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private CommonTree Refresh(CommonTree tree)
         {
-            var function = JavascriptAstCodeGenerator.DeepClone(JavascriptAstCodeGenerator.FindFunctionTree(tree, _functionName) as CommonTree);
+            var function = JavascriptAstCodeGenerator.FindFunctionTree(tree, _functionName);
 
             function.ReplaceChildren(2, 2, _function.GetChild(2));
 
