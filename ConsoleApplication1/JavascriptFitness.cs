@@ -227,11 +227,11 @@ namespace ConsoleApplication1
             //Log.WriteLine(string.Format(chromosome.Id));
             try
             {
-                var _engine = new ScriptEngine(); //
-                _engine.Execute(generatedJsCode);
-                LoadQunitAndTests(_engine);
+                var engine = new ScriptEngine(); //
+                engine.Execute(generatedJsCode);
+                LoadQunitAndTests(engine);
                 
-                _engine.Execute(@"QUnit.start();");
+                engine.Execute(@"QUnit.start();");
 
                 //total = _engine.GetGlobalValue<double>("total");
                 //sucess = _engine.GetGlobalValue<double>("sucess");
@@ -253,16 +253,7 @@ namespace ConsoleApplication1
 
 
             sw.Stop();
-
-            //Log.WriteLine(string.Format("{0} segundos", sw.Elapsed.Seconds));
-
-            //if (total.Equals(sucess)) //passou em todos
-                //fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
-
-            //fitness = total - sucess; //quanto mais testes matar melhor!
-            //fitness = fitness + double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
-
-
+            
             fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
             
             #endregion
