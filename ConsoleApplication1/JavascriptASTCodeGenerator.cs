@@ -1335,17 +1335,19 @@ namespace ConsoleApplication1
         public static List<ITree> BuildFunctionList(CommonTree tree)
         {
 
+            var _tree = DeepClone(tree); //evitar o overflow
+
             if (_functions.Count > 0)
                 return _functions;
 
             var functionsFounded = new List<string>();
 
-            for (int i = 0; i < tree.ChildCount; i++)
+            for (int i = 0; i < _tree.ChildCount; i++)
             {
-                functionsFounded.AddRange(VisitForFunctionName(tree.GetChild(i)));
+                functionsFounded.AddRange(VisitForFunctionName(_tree.GetChild(i)));
             }
 
-            functionsFounded.ForEach(f => _functions.Add(JavascriptAstCodeGenerator.FindFunctionTree(tree, f)));
+            functionsFounded.ForEach(f => _functions.Add(JavascriptAstCodeGenerator.FindFunctionTree(_tree, f)));
 
             return _functions;
         }
