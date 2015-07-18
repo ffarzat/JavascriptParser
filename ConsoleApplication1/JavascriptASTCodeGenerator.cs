@@ -30,6 +30,15 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
+        /// List for all functions body
+        /// </summary>
+        public static List<ITree> Functions
+        {
+            get { return _functions; }
+            set { _functions = value; }
+        }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public JavascriptAstCodeGenerator(ITree tree)
@@ -1238,13 +1247,13 @@ namespace ConsoleApplication1
         public static IEnumerable<string> FindTopLocFunctions(Dictionary<string, int> functionsMostUseds)
         {
             var locFunctions = new Dictionary<string, KeyValuePair<int, int>>();
-            var realFunctions = functionsMostUseds.Where(f => _functions.Count(tree1 => tree1.GetChild(0).Text == f.Key) > 0);
+            var realFunctions = functionsMostUseds.Where(f => Functions.Count(tree1 => tree1.GetChild(0).Text == f.Key) > 0);
 
             foreach (var pair in realFunctions)
             {
                 string name = pair.Key;
                 int calls = pair.Value;
-                int loc = CountInstructionsOf(_functions.Single(t => t.GetChild(0).Text.Equals(name)).GetChild(2));
+                int loc = CountInstructionsOf(Functions.Single(t => t.GetChild(0).Text.Equals(name)).GetChild(2));
                 var locCallPair = new KeyValuePair<int, int>(calls, loc);
                 locFunctions.Add(name, locCallPair);
             }
@@ -1334,8 +1343,8 @@ namespace ConsoleApplication1
         /// <returns></returns>
         public static List<ITree> BuildFunctionList(CommonTree tree)
         {
-            if (_functions.Count > 0)
-                return _functions;
+            if (Functions.Count > 0)
+                return Functions;
 
             var functionsFounded = new List<string>();
 
@@ -1344,9 +1353,9 @@ namespace ConsoleApplication1
                 functionsFounded.AddRange(VisitForFunctionName(tree.GetChild(i)));
             }
 
-            functionsFounded.ForEach(f => _functions.Add(JavascriptAstCodeGenerator.FindFunctionTree(tree, f)));
+            functionsFounded.ForEach(f => Functions.Add(JavascriptAstCodeGenerator.FindFunctionTree(tree, f)));
 
-            return _functions;
+            return Functions;
         }
 
         /// <summary>
@@ -1416,7 +1425,7 @@ namespace ConsoleApplication1
         /// <returns></returns>
         public static ITree GetFunctionTree(string nomeFuncaoTarget)
         {
-            return _functions.First(f => f.GetChild(0).Text.Equals(nomeFuncaoTarget));
+            return Functions.First(f => f.GetChild(0).Text.Equals(nomeFuncaoTarget));
         }
 
         #endregion

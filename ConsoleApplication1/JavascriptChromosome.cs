@@ -90,8 +90,8 @@ namespace ConsoleApplication1
             Fitness = 0;
             _tree = JavascriptAstCodeGenerator.DeepClone(tree);
             _functionName = functionName;
-            _possibleFunctions = JavascriptAstCodeGenerator.BuildFunctionList(_tree); 
-            _function = JavascriptAstCodeGenerator.DeepClone(_possibleFunctions.Single(f => f.GetChild(0).Text == functionName) as CommonTree);
+            _possibleFunctions = JavascriptAstCodeGenerator.Functions;
+            _function = JavascriptAstCodeGenerator.DeepClone(JavascriptAstCodeGenerator.GetFunctionTree(functionName) as CommonTree);
         }
 
         /// <summary>
