@@ -4,10 +4,6 @@
 // andrew.kirillov@gmail.com
 //
 
-
-
-
-
 namespace AForge.Genetic
 {
 	using System;
@@ -65,8 +61,9 @@ namespace AForge.Genetic
 			
 			// remove bad chromosomes
             ordered.RemoveRange(size, chromosomes.Count - size);
-            
-            chromosomes = ordered;
+
+            chromosomes.Clear();
+            chromosomes.AddRange(ordered);
 			
             // shuffle chromosomes
 			if ( shuffle )
