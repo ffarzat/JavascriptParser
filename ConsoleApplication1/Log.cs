@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace ConsoleApplication1
 {
@@ -11,6 +12,10 @@ namespace ConsoleApplication1
     /// </summary>
     public class Log
     {
+        /// <summary>
+        /// NLog Logger
+        /// </summary>
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Write a Line in log
@@ -22,7 +27,7 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
-        /// 
+        /// Writes a line inside log
         /// </summary>
         /// <param name="line"></param>
         /// <param name="type"></param>
@@ -32,16 +37,19 @@ namespace ConsoleApplication1
             {
                 case LogType.Console:
                     WriteLine(line);
+                    _logger.Info(line);
+
                     break;
                 case LogType.Debug:
                     WriteLine(line);
-                    //TODO: gravar arquivo usando o NLog
+                    _logger.Debug(line);
+                    break;
+                case LogType.Trace:
+                    WriteLine(line);
+                    _logger.Trace(line);
                     break;
             }
-
-            
         }
-
     }
 
     /// <summary>
@@ -50,6 +58,7 @@ namespace ConsoleApplication1
     public enum LogType
     {
         Debug,
-        Console
+        Console,
+        Trace
     }
 }
