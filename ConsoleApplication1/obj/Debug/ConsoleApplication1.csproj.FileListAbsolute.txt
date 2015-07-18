@@ -48,3 +48,5 @@ D:\Github\JavascriptParser\ConsoleApplication1\bin\Debug\AForge.Genetic.pdb
 D:\Github\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
 D:\Github\JavascriptParser\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
 D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\testsNoLocation.js
+D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\NLog.dll
+D:\GitHub\JavascriptParser\ConsoleApplication1\bin\Debug\NLog.xml
