@@ -179,6 +179,7 @@ namespace ConsoleApplication1
             {
                 if (count >= tries)
                 {
+                    Log.WriteLine(string.Format("       Desistiu da mutação após {0}", count), LogType.Debug);
                     sinal = false;
                 }
 
@@ -207,7 +208,7 @@ namespace ConsoleApplication1
                 if (JavascriptAstCodeGenerator.IsFunction(functionNodeDad) && (JavascriptAstCodeGenerator.IsFunction(functionNodeMom)))
                 {
                     blockDad.GetChild(dadLine).ReplaceChildren(dadPoint, dadPoint, functionNodeMom);
-
+                    Log.WriteLine(string.Format("       Mutação da instrução {0} pela {1}", functionNodeMom.ToStringTree(), functionNodeDad.ToStringTree()), LogType.Debug);
                     sinal = false;
                 }
 
