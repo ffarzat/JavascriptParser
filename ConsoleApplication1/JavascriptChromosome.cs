@@ -142,7 +142,7 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome CreateOffspring()
         {
-            var newChromosome = this.Clone();
+             var newChromosome = this.Clone();
 
             var opt = Rand.Next(0, 2);
 
