@@ -27,11 +27,7 @@ namespace AForge.Genetic
         /// </summary>
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-
-        [DllImport("ntdll.dll", CharSet = CharSet.Auto)]
-        public static extern uint NtGetCurrentProcessorNumber();
-
-	    private int[] processorsToUse;
+        private int[] processorsToUse;
         public bool Parallelism { get; set; }
         
         /// <summary>
@@ -385,14 +381,14 @@ namespace AForge.Genetic
             if (Parallelism)
             {
                 #region  Parallelism
-                var resultList = taskList.Select(chromosome => new Thread(() => Start(chromosome, fitnessFunction.Clone()))
-                            {
-                                IsBackground = false,
-                                Priority = ThreadPriority.Highest
-                            }).ToList();
+                //var resultList = taskList.Select(chromosome => new Thread(() => Start(chromosome, fitnessFunction.Clone()))
+                //            {
+                //                IsBackground = false,
+                //                Priority = ThreadPriority.Highest
+                //            }).ToList();
 
-                resultList.ForEach(t => t.Start());
-                resultList.ForEach(t => t.Join(span));
+                //resultList.ForEach(t => t.Start());
+                //resultList.ForEach(t => t.Join(span));
                 #endregion
             }
             else
@@ -430,25 +426,25 @@ namespace AForge.Genetic
 	    /// </summary>
 	    /// <param name="chromosome"></param>
 	    /// <param name="fitnessFunction1"></param>
-	    private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1)
-	    {
+        //private void Start(IChromosome chromosome, IFitnessFunction fitnessFunction1)
+        //{
 
-	        try
-	        {
-                using (ProcessorAffinity.BeginAffinity(processorsToUse))
-                {
-                    _logger.Info("     Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
-                    chromosome.Evaluate(fitnessFunction1);
+        //    try
+        //    {
+        //        using (ProcessorAffinity.BeginAffinity(processorsToUse))
+        //        {
+        //            _logger.Info("     Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
+        //            chromosome.Evaluate(fitnessFunction1);
 
-                }
-	        }
-	        catch (Exception ex)
-	        {
-                _logger.Error(ex);
-	            throw;
-	        }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.Error(ex);
+        //        throw;
+        //    }
 
-	    }
+        //}
 
 	    /// <summary>
         /// Finds the best Value

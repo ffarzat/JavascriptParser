@@ -11,7 +11,7 @@ namespace AForge.Genetic
 	/// <summary>
 	/// Chromosome interface
 	/// </summary>
-	public interface IChromosome : IComparable
+	public interface IChromosome : IComparable, IDisposable
 	{
         /// <summary>
         /// Id of Individual inside a population
@@ -67,5 +67,6 @@ namespace AForge.Genetic
 		/// Evaluate chromosome with specified fitness function
 		/// </summary>
 		void Evaluate( IFitnessFunction function );
+
 	}
 }

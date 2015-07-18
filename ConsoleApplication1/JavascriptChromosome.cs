@@ -93,6 +93,15 @@ namespace ConsoleApplication1
         }
 
         /// <summary>
+        /// Destroi object class
+        /// </summary>
+        public void Dispose()
+        {
+            _tree = null;
+            _function = null;
+        }
+
+        /// <summary>
         /// Replaces the Function Node inside tree (after operators)
         /// </summary>
         /// <param name="tree"></param>
@@ -135,13 +144,14 @@ namespace ConsoleApplication1
 
             var opt = new Random().Next(0, 2);
 
-            Log.WriteLine(opt == 1 ? "          " + newChromosome.Id + " Criado por delete" : "          " + newChromosome.Id + " Criado por mutação", LogLevel.Trace);
-
             if(opt == 0)
                 newChromosome.Mutate();
             else
                 newChromosome.Delete();
-            
+
+
+            Log.WriteLine(opt == 1 ? "          " + newChromosome.Id + " Criado por delete" : "          " + newChromosome.Id + " Criado por mutação", LogLevel.Trace);
+
             return newChromosome;
         }
 

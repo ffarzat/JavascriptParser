@@ -58,11 +58,17 @@ namespace AForge.Genetic
 		{
 			// sort chromosomes
 		    var ordered = chromosomes.OrderBy(c => c.Fitness).ToList();
-			
-			// remove bad chromosomes
-            ordered.RemoveRange(size, chromosomes.Count - size);
 
-            chromosomes.Clear();
+            // remove bad chromosomes
+            for (int i = 0; i < chromosomes.Count; i++)
+	        {
+	            chromosomes.ElementAt(i).Dispose();
+                chromosomes.RemoveAt(i);
+	        }
+            
+            // remove bad chromosomes
+            ordered.RemoveRange(size, chromosomes.Count - size);
+            chromosomes.Clear(); //just to have sure
             chromosomes.AddRange(ordered);
 			
             // shuffle chromosomes

@@ -101,7 +101,12 @@ namespace AForge.Genetic
 			return new string( chars );
 		}
 
-		/// <summary>
+	    public void Dispose()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		/// Compare two chromosomes
 		/// </summary>
 		public int CompareTo( object o )

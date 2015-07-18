@@ -85,7 +85,12 @@ namespace AForge.Genetic
 			return GetTree( ).ToString( );
 		}
 
-		/// <summary>
+	    public void Dispose()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		/// Get string representation of the chromosome. Returns the chromosome
 		/// in native linear representation. The method is used for debugging
 		/// mostly.
