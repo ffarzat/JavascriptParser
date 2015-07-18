@@ -302,7 +302,7 @@ namespace ConsoleApplication1
             {
                 if (count >= tries)
                 {
-                    Log.WriteLine(string.Format("       Desistiu do crossover após {0} tentativas", count));
+                    Log.WriteLine(string.Format("       Desistiu do crossover após {0} tentativas", count), LogType.Debug);
                     sinal = false; 
                 }
 
@@ -332,7 +332,7 @@ namespace ConsoleApplication1
                     blockMom.GetChild(momLine).ReplaceChildren(momPoint, momPoint, functionNodeDad);
 
                     sinal = false;
-                    Log.WriteLine(string.Format("       Crossover Mãe: '{0}' - Pai: '{1}'", functionNodeMom.Text, functionNodeDad.Text));
+                    Log.WriteLine(string.Format("       Crossover Mãe: '{0}' - Pai: '{1}'", functionNodeMom.ToStringTree(), functionNodeDad.ToStringTree()), LogType.Debug);
                 }
 
                 count++;

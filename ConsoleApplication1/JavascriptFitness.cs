@@ -82,7 +82,7 @@ namespace ConsoleApplication1
         /// </summary>
         private void LoadQunitAndTests(ScriptEngine engine)
         {
-            engine.SetGlobalFunction("alert", new DAlertDelegate(Log.WriteLine));
+            engine.SetGlobalFunction("alert", new DAlertDelegate(message => Log.WriteLine(message, LogType.Debug)));
             engine.ExecuteFile(_qunitPath);
             #region registra os retornos dos testes
             engine.Execute(@"   var total, sucess, fail, time;
@@ -206,7 +206,7 @@ namespace ConsoleApplication1
 
                 if (((JavascriptChromosome)chromosome).Code.Equals(_ancestor.ToString()) & !chromosome.Id.Equals(_ancestor.Id))
                 {
-                    Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), "Similar ao original"));
+                    Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), "Similar ao original"), LogType.Debug);
                     return fitness;
                 }
 
@@ -242,12 +242,12 @@ namespace ConsoleApplication1
             catch (JavaScriptException ex)
             {
                 //Log.WriteLine(string.Format(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message)));
-                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message));
+                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message), LogType.Debug);
                 return fitness;
             }
             catch (Exception ex)
             {
-                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message));
+                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message), LogType.Debug);
                 return fitness;
             }
 
@@ -267,7 +267,7 @@ namespace ConsoleApplication1
             
             #endregion
 
-            Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")));
+            Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")), LogType.Debug);
             return fitness;
         }
 
