@@ -80,6 +80,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\..\ConsoleApplication1\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -156,6 +159,7 @@
       <SubType>Code</SubType>
     </Compile>
     <None Include="Copyright.txt" />
+    <None Include="packages.config" />
     <None Include="Version.txt" />
   </ItemGroup>
   <ItemGroup>

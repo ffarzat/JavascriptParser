@@ -4,24 +4,29 @@
 // andrew.kirillov@gmail.com
 //
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
+using NLog;
 
 namespace AForge.Genetic
 {
-	using System;
-	using System.Collections;
+	
 
-	/// <summary>
+    /// <summary>
 	/// Population of chromosomes
 	/// </summary>
 	public class Population
 	{
+
+        /// <summary>
+        /// NLog Logger
+        /// </summary>
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
 
         [DllImport("ntdll.dll", CharSet = CharSet.Auto)]
         public static extern uint NtGetCurrentProcessorNumber();
@@ -136,7 +141,7 @@ namespace AForge.Genetic
 	        fitnessMin = ancestor.Fitness; //First Best is the original software
 			population.Add( ancestor );
 
-            Console.WriteLine(" Limite superior de valor de Fitness (software original) {0}", fitnessMin);
+            _logger.Info(" Limite superior de valor de Fitness (software original) {0}", fitnessMin);
 
 			// add more chromosomes to the population
 			for ( int i = 1; i < size; i++ )
@@ -169,7 +174,7 @@ namespace AForge.Genetic
 	        if (processorsStr != null)
                 _processorsCount = int.Parse(processorsStr);
 
-            Console.WriteLine("{0} processadores detectados", _processorsCount);
+            _logger.Info("{0} processadores detectados", _processorsCount);
 
             processorsToUse = new int[100]; 
 
@@ -251,7 +256,7 @@ namespace AForge.Genetic
 				}
 			}
 
-            Console.WriteLine(" {0} crossover(s) : {1} novo(s) individuo(s)", count, count *2);
+            _logger.Info(" {0} crossover(s) : {1} novo(s) individuo(s)", count, count * 2);
 
 		}
 
@@ -279,7 +284,7 @@ namespace AForge.Genetic
 				}
 			}
 
-            Console.WriteLine(" {0} mutation(s) : {1} novo(s) individuo(s)", count, count);
+            _logger.Info(" {0} mutation(s) : {1} novo(s) individuo(s)", count, count);
 		}
 
         /// <summary>
@@ -307,7 +312,7 @@ namespace AForge.Genetic
                 }
             }
 
-            Console.WriteLine(" {0} delete(s) : {1} novo(s) individuo(s)", count, count);
+            _logger.Info(" {0} delete(s) : {1} novo(s) individuo(s)", count, count);
         }
 
 		/// <summary>
@@ -318,7 +323,7 @@ namespace AForge.Genetic
 			// amount of random chromosomes in the new population
 			int randomAmount = (int)( randomSelectionPortion * size );
 
-            Console.WriteLine(" {0} individuos(s) selecionados pelo metodo {1}", (size - randomAmount), selectionMethod.ToString() );
+            _logger.Info(" {0} individuos(s) selecionados pelo metodo {1}", (size - randomAmount), selectionMethod.ToString());
 
 			// do selection
 			selectionMethod.ApplySelection(ref population, size - randomAmount );
@@ -373,7 +378,7 @@ namespace AForge.Genetic
         {
             var sw = new Stopwatch();
             var taskList = population.Where(c => c.Fitness.Equals(0)).ToList();
-            Console.WriteLine(" {2}valiando {0} Chromossomos na geração {1} - {3}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"), DateTime.Now.ToString("HH:mm:ss"));
+            _logger.Info(" {2}valiando {0} Chromossomos na geração {1} - {3}", taskList.Count, GenerationCount, (isFirstTime == true ? "A" : "Rea"), DateTime.Now.ToString("HH:mm:ss"));
             TimeSpan span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
 
             sw.Start();
@@ -404,7 +409,7 @@ namespace AForge.Genetic
                     if (!result.AsyncWaitHandle.WaitOne(span))
                     {
                         chromosome.Fitness = double.MaxValue;
-                        Console.WriteLine("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos) - {2}", chromosome.Id, span.TotalMinutes, DateTime.Now.ToString("HH:mm:ss"));
+                        _logger.Info("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos)", chromosome.Id, span.TotalMinutes);
                     }
                     else
                         action.EndInvoke(result);
@@ -417,7 +422,7 @@ namespace AForge.Genetic
             GC.WaitForPendingFinalizers();
 
             sw.Stop();
-            Console.WriteLine(" Geração avaliada em {0} minutos - {1}", sw.Elapsed.ToString("mm\\:ss\\.ff"), DateTime.Now.ToString("HH:mm:ss"));
+            _logger.Info(" Geração avaliada em {0} minutos ", sw.Elapsed.ToString("mm\\:ss\\.ff"));
         }
 
 	    /// <summary>
@@ -432,14 +437,14 @@ namespace AForge.Genetic
 	        {
                 using (ProcessorAffinity.BeginAffinity(processorsToUse))
                 {
-                    Console.WriteLine("     Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
+                    _logger.Info("     Running on CPU #{0} ({1})", NtGetCurrentProcessorNumber(), chromosome.Id);
                     chromosome.Evaluate(fitnessFunction1);
 
                 }
 	        }
 	        catch (Exception ex)
 	        {
-                Console.WriteLine("{0}", ex);
+                _logger.Error(ex);
 	            throw;
 	        }
 
@@ -466,7 +471,7 @@ namespace AForge.Genetic
 	            {
 	                fitnessMin = fitness;
 	                bestChromosome = c;
-                    Console.WriteLine("============================== Achou melhor novo {0} ==============================", fitnessMin);
+                    _logger.Info("============================== Achou melhor individuo novo! Valor={0} ==============================", fitnessMin);
 	            }
 	        }
 	        fitnessAvg = fitnessSum/size;
@@ -485,19 +490,22 @@ namespace AForge.Genetic
             _generationCount++;
 	    }
 
+        /// <summary>
+        /// Show details
+        /// </summary>
 	    public void Trace( )
 		{
-			System.Diagnostics.Debug.WriteLine( "Max = " + fitnessMin );
-			System.Diagnostics.Debug.WriteLine( "Sum = " + fitnessSum );
-			System.Diagnostics.Debug.WriteLine( "Avg = " + fitnessAvg );
-			System.Diagnostics.Debug.WriteLine( "--------------------------" );
+            _logger.Info("Max = " + fitnessMin);
+            _logger.Info("Sum = " + fitnessSum);
+            _logger.Info("Avg = " + fitnessAvg);
+            _logger.Info("--------------------------");
 			foreach ( IChromosome c in population )
 			{
-				System.Diagnostics.Debug.WriteLine( "genotype = " + c.ToString( ) +
+                _logger.Info("genotype = " + c.ToString() +
 					", phenotype = " + fitnessFunction.Translate( c ) +
 					" , fitness = " + c.Fitness );
 			}
-			System.Diagnostics.Debug.WriteLine( "==========================" );
+            _logger.Info("==========================");
 		}
 	}
 }

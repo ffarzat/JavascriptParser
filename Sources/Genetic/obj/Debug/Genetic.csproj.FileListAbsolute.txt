@@ -12,3 +12,5 @@ D:\Github\JavascriptParser\Sources\Genetic\bin\Debug\AForge.dll
 D:\Github\JavascriptParser\Sources\Genetic\bin\Debug\AForge.pdb
 D:\Github\JavascriptParser\Sources\Genetic\obj\Debug\AForge.Genetic.dll
 D:\Github\JavascriptParser\Sources\Genetic\obj\Debug\AForge.Genetic.pdb
+D:\GitHub\JavascriptParser\Sources\Genetic\bin\Debug\NLog.dll
+D:\GitHub\JavascriptParser\Sources\Genetic\bin\Debug\NLog.xml
