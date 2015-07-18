@@ -231,6 +231,7 @@ namespace ConsoleApplication1
                 count++;
                 if (count >= tries)
                 {
+                    Log.WriteLine(string.Format("       Desistiu do delete após {0} tentativas", count), LogType.Debug);
                     sinal = false;
                 }
             }
@@ -268,6 +269,7 @@ namespace ConsoleApplication1
                     {
                         block.DeleteChild(lineLevelToDelete);
                         sinal = false;
+                        Log.WriteLine(string.Format("       Delete da instrução {0}", functionToDelete.ToStringTree()), LogType.Debug);
                     }
 
                 }
@@ -275,6 +277,7 @@ namespace ConsoleApplication1
                 {
                     block.GetChild(lineLevelToDelete).DeleteChild(instructionLevelToDelete);
                     sinal = false;
+                    Log.WriteLine(string.Format("       Delete da instrução {0}", functionToDelete.ToStringTree()), LogType.Debug);
                 }
             }
 
