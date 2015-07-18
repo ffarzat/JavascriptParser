@@ -47,11 +47,6 @@ namespace ConsoleApplication1
         /// </summary>
         public string Code { get; set; }
 
-        /// <summary>
-        /// List of javascript instructions
-        /// </summary>
-        private List<ITree> _possibleFunctions;
-        
         // random number generator for chromosoms generation
         protected static Random Rand = new Random((int)DateTime.Now.Ticks);
 
@@ -85,7 +80,6 @@ namespace ConsoleApplication1
             Fitness = 0;
             _tree = JavascriptAstCodeGenerator.DeepClone(tree);
             _functionName = functionName;
-            _possibleFunctions = JavascriptAstCodeGenerator.Functions;
             _function = JavascriptAstCodeGenerator.DeepClone(JavascriptAstCodeGenerator.FindFunctionTree(_tree,functionName) as CommonTree);
         }
 
@@ -139,7 +133,9 @@ namespace ConsoleApplication1
         {
              var newChromosome = this.Clone();
 
-            var opt = Rand.Next(0, 2);
+            var opt = new Random().Next(0, 2);
+
+            Log.WriteLine(opt == 1 ? "          " + newChromosome.Id + " Criado por delete" : "          " + newChromosome.Id + " Criado por mutação", LogLevel.Trace);
 
             if(opt == 0)
                 newChromosome.Mutate();
@@ -154,7 +150,7 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome Clone()
         {
-            return new JavascriptChromosome(_tree, _functionName ){ Fitness = 0, Id = Guid.NewGuid(), GenerationId = this.GenerationId};
+            return new JavascriptChromosome(_tree, _functionName ){ Id = Guid.NewGuid(), GenerationId = this.GenerationId};
         }
 
         /// <summary>
@@ -178,10 +174,10 @@ namespace ConsoleApplication1
                     sinal = false;
                 }
 
-                int functionRand = Rand.Next(0, _possibleFunctions.Count); //choose a function from entire body
+                int functionRand = Rand.Next(0, JavascriptAstCodeGenerator.Functions.Count); //choose a function from entire body
 
                 var blockDad = _function.GetChild(2);
-                var blockMom = _possibleFunctions[functionRand].GetChild(2);
+                var blockMom = JavascriptAstCodeGenerator.DeepClone(JavascriptAstCodeGenerator.Functions[functionRand] as CommonTree).GetChild(2);
 
                 if (blockDad.ChildCount == 0 || blockMom.ChildCount == 0)
                     break;
