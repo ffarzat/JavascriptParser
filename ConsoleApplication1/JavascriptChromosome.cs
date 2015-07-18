@@ -91,7 +91,7 @@ namespace ConsoleApplication1
             _tree = JavascriptAstCodeGenerator.DeepClone(tree);
             _functionName = functionName;
             _possibleFunctions = JavascriptAstCodeGenerator.Functions;
-            _function = JavascriptAstCodeGenerator.DeepClone(JavascriptAstCodeGenerator.GetFunctionTree(functionName) as CommonTree);
+            _function = JavascriptAstCodeGenerator.DeepClone(JavascriptAstCodeGenerator.FindFunctionTree(_tree,functionName) as CommonTree);
         }
 
         /// <summary>
