@@ -47,6 +47,8 @@ namespace ConsoleApplication1
             else
                 ExecutarRodadas(tree, _dirinfo);
 
+
+            Environment.Exit(1); //tudo certo!
         }
 
         /// <summary>

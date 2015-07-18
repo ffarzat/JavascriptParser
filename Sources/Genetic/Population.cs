@@ -395,7 +395,8 @@ namespace AForge.Genetic
                 #region single thread
                 foreach (var chromosome in population)
                 {
-                    Action action = () => chromosome.Evaluate(fitnessFunction);
+                    IChromosome chromosome1 = chromosome;
+                    Action action = () => chromosome1.Evaluate(fitnessFunction);
                     IAsyncResult result = action.BeginInvoke(null, null);
 
                     //Atualizo o span
