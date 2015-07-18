@@ -409,8 +409,12 @@ namespace AForge.Genetic
                     else
                         action.EndInvoke(result);
                 }
+
                 #endregion
             }
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
 
             sw.Stop();
             Console.WriteLine(" Geração avaliada em {0} minutos - {1}", sw.Elapsed.ToString("mm\\:ss\\.ff"), DateTime.Now.ToString("HH:mm:ss"));
