@@ -1334,20 +1334,17 @@ namespace ConsoleApplication1
         /// <returns></returns>
         public static List<ITree> BuildFunctionList(CommonTree tree)
         {
-
-            var _tree = DeepClone(tree); //evitar o overflow
-
             if (_functions.Count > 0)
                 return _functions;
 
             var functionsFounded = new List<string>();
 
-            for (int i = 0; i < _tree.ChildCount; i++)
+            for (int i = 0; i < tree.ChildCount; i++)
             {
-                functionsFounded.AddRange(VisitForFunctionName(_tree.GetChild(i)));
+                functionsFounded.AddRange(VisitForFunctionName(tree.GetChild(i)));
             }
 
-            functionsFounded.ForEach(f => _functions.Add(JavascriptAstCodeGenerator.FindFunctionTree(_tree, f)));
+            functionsFounded.ForEach(f => _functions.Add(JavascriptAstCodeGenerator.FindFunctionTree(tree, f)));
 
             return _functions;
         }
@@ -1412,8 +1409,18 @@ namespace ConsoleApplication1
             return cloneNode;
         }
 
+        /// <summary>
+        /// Gets the Node of Function 
+        /// </summary>
+        /// <param name="nomeFuncaoTarget"></param>
+        /// <returns></returns>
+        public static ITree GetFunctionTree(string nomeFuncaoTarget)
+        {
+            return _functions.First(f => f.GetChild(0).Text.Equals(nomeFuncaoTarget));
+        }
+
         #endregion
 
-        
+
     }
 }

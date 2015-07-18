@@ -123,8 +123,9 @@ namespace ConsoleApplication1
         /// <param name="directoryInfo"></param>
         private static void ExecutarRodadas(CommonTree tree, DirectoryInfo directoryInfo)
         {
-            var funcoesAlvo = DefinirFuncoesAlvo(tree);
+            var funcoesAlvo = DefinirFuncoesAlvo(tree).ToList();
             string names = "";
+            
             funcoesAlvo.Take(TopTargets).ToList().ForEach(f => names += "|" + f.ToString(CultureInfo.InvariantCulture));
 
             TopTargets = TopTargets == 0 ? funcoesAlvo.Count() : TopTargets;
@@ -159,7 +160,7 @@ namespace ConsoleApplication1
                 sw.Start();
 
                 #region Encontra as função alvo da otimização, recupera o bloco de instruções
-                var funcaoOtimizar = JavascriptAstCodeGenerator.FindFunctionTree(tree, nomeFuncaoTarget);
+                var funcaoOtimizar = JavascriptAstCodeGenerator.GetFunctionTree(nomeFuncaoTarget);
 
                 if (funcaoOtimizar == null)
                 {
@@ -244,11 +245,13 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private static IEnumerable<string> DefinirFuncoesAlvo(CommonTree tree)
         {
-           var functions = JavascriptAstCodeGenerator.BuildFunctionList(tree); // just to build up a function list // TODO: refactoring to not expose this
+            CommonTree _tree = JavascriptAstCodeGenerator.DeepClone(tree);
+
+            var functions = JavascriptAstCodeGenerator.BuildFunctionList(_tree); // just to build up a function list // TODO: refactoring to not expose this
 
             if (string.IsNullOrEmpty(TargetFunction))
             {
-                var functionsMostUseds = JavascriptAstCodeGenerator.FindTopUsedFunctions(tree);
+                var functionsMostUseds = JavascriptAstCodeGenerator.FindTopUsedFunctions(_tree);
                 var functionsWithCallsAndLocs = JavascriptAstCodeGenerator.FindTopLocFunctions(functionsMostUseds);
                 return functionsWithCallsAndLocs;
             }
