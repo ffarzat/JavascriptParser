@@ -11,7 +11,7 @@ using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 using Microsoft.Win32;
 using Xebic.Parsers.ES3;
-
+using NLog;
 
 namespace ConsoleApplication1
 {
@@ -43,7 +43,7 @@ namespace ConsoleApplication1
             var tree = Setup();
 
             if (tree == null)
-                Log.WriteLine(string.Format("Erro ao processar a AST do arquivo {0}", JsFile), LogType.Debug);
+                Log.WriteLine(string.Format("Erro ao processar a AST do arquivo {0}", JsFile), LogLevel.Error);
             else
                 ExecutarRodadas(tree, _dirinfo);
 
@@ -109,11 +109,11 @@ namespace ConsoleApplication1
             }
             catch (Exception ex)
             {
-                Log.WriteLine(string.Format(ex.ToString()), LogType.Debug);
+                Log.WriteLine(string.Format(ex.ToString()), LogLevel.Trace);
             }
             
             sw.Stop();
-            Log.WriteLine(string.Format("AST do arquivo {1} construída em {0} milisegundos", sw.Elapsed.ToString("mm\\:ss\\.ff"), JsFile), LogType.Debug);
+            Log.WriteLine(string.Format("AST do arquivo {1} construída em {0} milisegundos", sw.Elapsed.ToString("mm\\:ss\\.ff"), JsFile), LogLevel.Trace);
 
             return tree;
         }
@@ -132,20 +132,20 @@ namespace ConsoleApplication1
 
             TopTargets = TopTargets == 0 ? funcoesAlvo.Count() : TopTargets;
 
-            Log.WriteLine(string.Format("Quantidade de Funções para Otmizar (corte): {0}", TopTargets), LogType.Debug);
-            Log.WriteLine(string.Format("Alvo(s) da otimização: {0}", names), LogType.Debug);
+            Log.WriteLine(string.Format("Quantidade de Funções para Otmizar (corte): {0}", TopTargets), LogLevel.Trace);
+            Log.WriteLine(string.Format("Alvo(s) da otimização: {0}", names), LogLevel.Trace);
             
-            Log.WriteLine(string.Format("================================================================================"), LogType.Console);
-            Log.WriteLine(string.Format("Biblioteca {0}", JsFile), LogType.Debug);
-            Log.WriteLine(string.Format("Testes {0}", JsFileTest), LogType.Debug);
+            Log.WriteLine(string.Format("================================================================================"), LogLevel.Trace);
+            Log.WriteLine(string.Format("Biblioteca {0}", JsFile), LogLevel.Trace);
+            Log.WriteLine(string.Format("Testes {0}", JsFileTest), LogLevel.Trace);
             
-            Log.WriteLine(string.Format("Qunit {0}", QunitFile), LogType.Debug);
+            Log.WriteLine(string.Format("Qunit {0}", QunitFile), LogLevel.Trace);
 
-            Log.WriteLine(string.Format("População {0}", PopulationSize), LogType.Debug);
-            Log.WriteLine(string.Format("Gerações {0}", Generations), LogType.Debug);
-            Log.WriteLine(string.Format("Paralelismo {0}", Parallelism), LogType.Debug);
-            Log.WriteLine(string.Format("TimeOut para Fitness {0}", EvaluateTimeOutMinutes), LogType.Debug);
-            Log.WriteLine(string.Format("================================================================================"), LogType.Console);
+            Log.WriteLine(string.Format("População {0}", PopulationSize), LogLevel.Trace);
+            Log.WriteLine(string.Format("Gerações {0}", Generations), LogLevel.Trace);
+            Log.WriteLine(string.Format("Paralelismo {0}", Parallelism), LogLevel.Trace);
+            Log.WriteLine(string.Format("TimeOut para Fitness {0}", EvaluateTimeOutMinutes), LogLevel.Trace);
+            Log.WriteLine(string.Format("================================================================================"), LogLevel.Trace);
 
             const int countFunctions = 0;
 
@@ -154,8 +154,8 @@ namespace ConsoleApplication1
                 if (countFunctions >= TopTargets)
                     break;
 
-                Log.WriteLine(string.Format("Executando otimização da função '{0}'", nomeFuncaoTarget), LogType.Debug);
-                Log.WriteLine(string.Format("================================================================================"), LogType.Console);
+                Log.WriteLine(string.Format("Executando otimização da função '{0}'", nomeFuncaoTarget), LogLevel.Trace);
+                Log.WriteLine(string.Format("================================================================================"), LogLevel.Trace);
 
                 var sw = new Stopwatch();
                 var swEpoch = new Stopwatch();
@@ -166,7 +166,7 @@ namespace ConsoleApplication1
 
                 if (funcaoOtimizar == null)
                 {
-                    Log.WriteLine(string.Format("Função não encontrada: {0}", nomeFuncaoTarget), LogType.Debug);
+                    Log.WriteLine(string.Format("Função não encontrada: {0}", nomeFuncaoTarget), LogLevel.Trace);
                     break;
                 }
 
@@ -188,7 +188,7 @@ namespace ConsoleApplication1
                 #endregion
 
                 sw.Stop();
-                Log.WriteLine(string.Format("Setup da população em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff")), LogType.Debug);
+                Log.WriteLine(string.Format("Setup da população em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff")), LogLevel.Trace);
 
                 sw.Reset();
                 sw.Start();
@@ -199,27 +199,27 @@ namespace ConsoleApplication1
                 {
                     swEpoch.Reset();
                     swEpoch.Start();
-                    Log.WriteLine(string.Format("--------------------------"), LogType.Console);
-                    Log.WriteLine(string.Format("Processando geração {0}... ", i + 1), LogType.Debug);
+                    Log.WriteLine(string.Format("--------------------------"), LogLevel.Trace);
+                    Log.WriteLine(string.Format("Processando geração {0}... ", i + 1), LogLevel.Trace);
                     population.RunEpoch();
                     swEpoch.Stop();
-                    Log.WriteLine(string.Format("Best Fit {0}", population.FitnessMin), LogType.Debug);
+                    Log.WriteLine(string.Format("Best Fit {0}", population.FitnessMin), LogLevel.Trace);
                     //Log.WriteLine(string.Format("Best Fit {0}", population.BestChromosome.ToString().Replace("\r\n", "")));
-                    Log.WriteLine(string.Format("{0} minutos", swEpoch.Elapsed.ToString("mm\\:ss\\.ff")), LogType.Debug);
+                    Log.WriteLine(string.Format("{0} minutos", swEpoch.Elapsed.ToString("mm\\:ss\\.ff")), LogLevel.Trace);
                     //Log.WriteLine(string.Format("--------------------------"));
                 }
 
                 #endregion
 
                 sw.Stop();
-                Log.WriteLine(string.Format("Processo executado em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff")), LogType.Debug);
+                Log.WriteLine(string.Format("Processo executado em {0}", sw.Elapsed.ToString("mm\\:ss\\.ff")), LogLevel.Trace);
 
                 #region Results
-                Log.WriteLine(string.Format("============================= "), LogType.Console);
-                Log.WriteLine(string.Format("Min = " + population.FitnessMin), LogType.Debug);
-                Log.WriteLine(string.Format("Sum = " + population.FitnessSum), LogType.Debug);
-                Log.WriteLine(string.Format("Avg = " + population.FitnessAvg), LogType.Debug);
-                Log.WriteLine(string.Format("Best= " + population.BestChromosome.Id), LogType.Debug);
+                Log.WriteLine(string.Format("============================= "), LogLevel.Trace);
+                Log.WriteLine(string.Format("Min = " + population.FitnessMin), LogLevel.Trace);
+                Log.WriteLine(string.Format("Sum = " + population.FitnessSum), LogLevel.Trace);
+                Log.WriteLine(string.Format("Avg = " + population.FitnessAvg), LogLevel.Trace);
+                Log.WriteLine(string.Format("Best= " + population.BestChromosome.Id), LogLevel.Trace);
                 //Log.WriteLine(string.Format(population.BestChromosome.ToString()));
 
 

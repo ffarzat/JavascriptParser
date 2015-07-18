@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using AForge.Genetic;
 using Jurassic;
-using unvell.ReoScript;
+using NLog;
 
 namespace ConsoleApplication1
 {
@@ -82,7 +82,7 @@ namespace ConsoleApplication1
         /// </summary>
         private void LoadQunitAndTests(ScriptEngine engine)
         {
-            engine.SetGlobalFunction("alert", new DAlertDelegate(message => Log.WriteLine(message, LogType.Debug)));
+            engine.SetGlobalFunction("alert", new DAlertDelegate(message => Log.WriteLine(message, LogLevel.Trace)));
             engine.ExecuteFile(_qunitPath);
             #region registra os retornos dos testes
             engine.Execute(@"   var total, sucess, fail, time;
@@ -206,7 +206,7 @@ namespace ConsoleApplication1
 
                 if (((JavascriptChromosome)chromosome).Code.Equals(_ancestor.ToString()) & !chromosome.Id.Equals(_ancestor.Id))
                 {
-                    Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), "Similar ao original"), LogType.Debug);
+                    Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), "Similar ao original"), LogLevel.Trace);
                     return fitness;
                 }
 
@@ -223,8 +223,6 @@ namespace ConsoleApplication1
             
 
             double total, sucess, fail, time;
-            //Log.WriteLine(string.Format("====================================="));
-            //Log.WriteLine(string.Format(chromosome.Id));
             try
             {
                 var _engine = new ScriptEngine(); //
@@ -242,32 +240,22 @@ namespace ConsoleApplication1
             catch (JavaScriptException ex)
             {
                 //Log.WriteLine(string.Format(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message)));
-                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message), LogType.Debug);
+                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message), LogLevel.Trace);
                 return fitness;
             }
             catch (Exception ex)
             {
-                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message), LogType.Debug);
+                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message), LogLevel.Trace);
                 return fitness;
             }
 
-
             sw.Stop();
-
-            //Log.WriteLine(string.Format("{0} segundos", sw.Elapsed.Seconds));
-
-            //if (total.Equals(sucess)) //passou em todos
-                //fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
-
-            //fitness = total - sucess; //quanto mais testes matar melhor!
-            //fitness = fitness + double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
-
 
             fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
             
             #endregion
 
-            Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")), LogType.Debug);
+            Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")), LogLevel.Trace);
             return fitness;
         }
 

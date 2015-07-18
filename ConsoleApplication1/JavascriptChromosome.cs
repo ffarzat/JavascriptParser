@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AForge.Genetic;
-using Antlr.Runtime;
 using Antlr.Runtime.Tree;
+using NLog;
 
 namespace ConsoleApplication1
 {
@@ -179,7 +174,7 @@ namespace ConsoleApplication1
             {
                 if (count >= tries)
                 {
-                    Log.WriteLine(string.Format("       Desistiu da mutação após {0}", count), LogType.Debug);
+                    Log.WriteLine(string.Format("       Desistiu da mutação após {0}", count), LogLevel.Trace);
                     sinal = false;
                 }
 
@@ -208,7 +203,7 @@ namespace ConsoleApplication1
                 if (JavascriptAstCodeGenerator.IsFunction(functionNodeDad) && (JavascriptAstCodeGenerator.IsFunction(functionNodeMom)))
                 {
                     blockDad.GetChild(dadLine).ReplaceChildren(dadPoint, dadPoint, functionNodeMom);
-                    Log.WriteLine(string.Format("       Mutação da instrução {0} pela {1}", functionNodeMom.ToStringTree(), functionNodeDad.ToStringTree()), LogType.Debug);
+                    Log.WriteLine(string.Format("       Mutação da instrução {0} pela {1}", functionNodeMom.ToStringTree(), functionNodeDad.ToStringTree()), LogLevel.Trace);
                     sinal = false;
                 }
 
@@ -232,7 +227,7 @@ namespace ConsoleApplication1
                 count++;
                 if (count >= tries)
                 {
-                    Log.WriteLine(string.Format("       Desistiu do delete após {0} tentativas", count), LogType.Debug);
+                    Log.WriteLine(string.Format("       Desistiu do delete após {0} tentativas", count), LogLevel.Trace);
                     sinal = false;
                 }
             }
@@ -270,7 +265,7 @@ namespace ConsoleApplication1
                     {
                         block.DeleteChild(lineLevelToDelete);
                         sinal = false;
-                        Log.WriteLine(string.Format("       Delete da instrução {0}", functionToDelete.ToStringTree()), LogType.Debug);
+                        Log.WriteLine(string.Format("       Delete da instrução {0}", functionToDelete.ToStringTree()), LogLevel.Trace);
                     }
 
                 }
@@ -278,7 +273,7 @@ namespace ConsoleApplication1
                 {
                     block.GetChild(lineLevelToDelete).DeleteChild(instructionLevelToDelete);
                     sinal = false;
-                    Log.WriteLine(string.Format("       Delete da instrução {0}", functionToDelete.ToStringTree()), LogType.Debug);
+                    Log.WriteLine(string.Format("       Delete da instrução {0}", functionToDelete.ToStringTree()), LogLevel.Trace);
                 }
             }
 
@@ -306,7 +301,7 @@ namespace ConsoleApplication1
             {
                 if (count >= tries)
                 {
-                    Log.WriteLine(string.Format("       Desistiu do crossover após {0} tentativas", count), LogType.Debug);
+                    Log.WriteLine(string.Format("       Desistiu do crossover após {0} tentativas", count), LogLevel.Trace);
                     sinal = false; 
                 }
 
@@ -336,7 +331,7 @@ namespace ConsoleApplication1
                     blockMom.GetChild(momLine).ReplaceChildren(momPoint, momPoint, functionNodeDad);
 
                     sinal = false;
-                    Log.WriteLine(string.Format("       Crossover Mãe: '{0}' - Pai: '{1}'", functionNodeMom.ToStringTree(), functionNodeDad.ToStringTree()), LogType.Debug);
+                    Log.WriteLine(string.Format("       Crossover Mãe: '{0}' - Pai: '{1}'", functionNodeMom.ToStringTree(), functionNodeDad.ToStringTree()), LogLevel.Trace);
                 }
 
                 count++;

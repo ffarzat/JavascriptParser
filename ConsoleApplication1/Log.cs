@@ -18,47 +18,15 @@ namespace ConsoleApplication1
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Write a Line in log
-        /// </summary>
-        /// <param name="line"></param>
-        private static void WriteLine(string line)
-        {
-            Console.WriteLine(line);
-        }
-
-        /// <summary>
         /// Writes a line inside log
         /// </summary>
         /// <param name="line"></param>
-        /// <param name="type"></param>
-        public static void WriteLine(string line, LogType type)
+        /// <param name="level"></param>
+        public static void WriteLine(string line, LogLevel level)
         {
-            switch (type)
-            {
-                case LogType.Console:
-                    WriteLine(line);
-                    _logger.Info(line);
-
-                    break;
-                case LogType.Debug:
-                    WriteLine(line);
-                    _logger.Debug(line);
-                    break;
-                case LogType.Trace:
-                    WriteLine(line);
-                    _logger.Trace(line);
-                    break;
-            }
+            _logger.Log(level, line);
+            
         }
     }
 
-    /// <summary>
-    /// List of types of Log
-    /// </summary>
-    public enum LogType
-    {
-        Debug,
-        Console,
-        Trace
-    }
 }

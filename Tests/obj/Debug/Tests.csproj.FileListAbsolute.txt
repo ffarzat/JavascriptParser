@@ -30,3 +30,6 @@ D:\Github\JavascriptParser\Tests\obj\Debug\Tests.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\momentNoLocation.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\testsNoLocation.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\global.js
+D:\GitHub\JavascriptParser\Tests\bin\Debug\NLog.config
+D:\GitHub\JavascriptParser\Tests\bin\Debug\NLog.dll
+D:\GitHub\JavascriptParser\Tests\bin\Debug\NLog.xml
