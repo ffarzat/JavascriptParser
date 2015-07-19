@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using AForge.Genetic;
 using Jurassic;
 using NLog;
@@ -169,6 +170,7 @@ namespace ConsoleApplication1
         /// <summary>
         /// Evaluates chromosome
         /// </summary>
+        [HandleProcessCorruptedStateExceptions]
         public double Evaluate(IChromosome chromosome)
         {
 
