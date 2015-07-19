@@ -236,6 +236,7 @@ namespace ConsoleApplication1
                 //fail = _engine.GetGlobalValue<double>("fail");
                 //time = _engine.GetGlobalValue<double>("time");
 
+                _engine = null;
             }
             catch (JavaScriptException ex)
             {
@@ -254,6 +255,7 @@ namespace ConsoleApplication1
             fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
             
             #endregion
+
 
             Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")), LogLevel.Trace);
             return fitness;
