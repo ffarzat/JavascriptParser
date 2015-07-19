@@ -7,3 +7,4 @@ D:\Github\JavascriptParser\Sources\Core\bin\Debug\AForge.dll
 D:\Github\JavascriptParser\Sources\Core\bin\Debug\AForge.pdb
 D:\Github\JavascriptParser\Sources\Core\obj\Debug\AForge.dll
 D:\Github\JavascriptParser\Sources\Core\obj\Debug\AForge.pdb
+D:\GitHub\JavascriptParser\Sources\Core\obj\Debug\Core.csprojResolveAssemblyReference.cache

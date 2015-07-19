@@ -220,7 +220,7 @@ namespace ConsoleApplication1
                 Log.WriteLine(string.Format("Sum = " + population.FitnessSum), LogLevel.Info);
                 Log.WriteLine(string.Format("Avg = " + population.FitnessAvg), LogLevel.Info);
                 Log.WriteLine(string.Format("Best= " + population.BestChromosome.Id), LogLevel.Info);
-                Log.WriteLine(string.Format(population.BestChromosome.ToString()), LogLevel.Trace);
+                Log.WriteLine(population.BestChromosome.ToString(), LogLevel.Trace);
 
 
                 var nppDir = (string)Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\Notepad++", null, null);
