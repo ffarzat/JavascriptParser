@@ -67,7 +67,7 @@ namespace AForge.Genetic
 	        }
             
             // remove bad chromosomes
-            ordered.RemoveRange(size, totalCountForRange);
+            ordered.RemoveRange(size, totalCountForRange -1);
             chromosomes.Clear(); //just to have sure
             chromosomes.AddRange(ordered);
 			
