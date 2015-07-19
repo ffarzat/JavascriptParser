@@ -396,22 +396,19 @@ namespace AForge.Genetic
                 #region single thread
                 foreach (var chromosome in population)
                 {
-                    //IChromosome chromosome1 = chromosome;
-                    //Action action = () => chromosome1.Evaluate(fitnessFunction.Clone());
-                    //IAsyncResult result = action.BeginInvoke(null, null);
+                    IChromosome chromosome1 = chromosome;
+                    Action action = () => chromosome1.Evaluate(fitnessFunction.Clone());
+                    IAsyncResult result = action.BeginInvoke(null, null);
 
-                    ////Atualizo o span
-                    //span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
-                    //if (!result.AsyncWaitHandle.WaitOne(span))
-                    //{
-                    //    chromosome.Fitness = double.MaxValue;
-                    //    _logger.Info("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos)", chromosome.Id, span.TotalMinutes);
-                    //}
-                    //else
-                    //    action.EndInvoke(result);
-
-                    chromosome.Evaluate(fitnessFunction);
-
+                    //Atualizo o span
+                    span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
+                    if (!result.AsyncWaitHandle.WaitOne(span))
+                    {
+                        chromosome.Fitness = double.MaxValue;
+                        _logger.Info("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos)", chromosome.Id, span.TotalMinutes);
+                    }
+                    else
+                        action.EndInvoke(result);
                 }
 
                 #endregion

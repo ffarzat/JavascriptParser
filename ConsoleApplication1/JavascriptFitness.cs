@@ -225,18 +225,18 @@ namespace ConsoleApplication1
             double total, sucess, fail, time;
             try
             {
-                var _engine = new ScriptEngine(); //
-                _engine.Execute(generatedJsCode);
-                LoadQunitAndTests(_engine);
+                var engine = new ScriptEngine(); //
+                engine.Execute(generatedJsCode);
+                LoadQunitAndTests(engine);
                 
-                _engine.Execute(@"QUnit.start();");
+                engine.Execute(@"QUnit.start();");
 
                 //total = _engine.GetGlobalValue<double>("total");
                 //sucess = _engine.GetGlobalValue<double>("sucess");
                 //fail = _engine.GetGlobalValue<double>("fail");
                 //time = _engine.GetGlobalValue<double>("time");
 
-                _engine = null;
+                engine = null;
             }
             catch (JavaScriptException ex)
             {
