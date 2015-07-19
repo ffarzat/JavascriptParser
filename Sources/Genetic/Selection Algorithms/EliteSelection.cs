@@ -58,7 +58,7 @@ namespace AForge.Genetic
 		{
 			// sort chromosomes
 		    var ordered = chromosomes.OrderBy(c => c.Fitness).ToList();
-
+	        var totalCountForRange = chromosomes.Count;
             // remove bad chromosomes
             for (int i = size; i < chromosomes.Count; i++)
 	        {
@@ -67,7 +67,7 @@ namespace AForge.Genetic
 	        }
             
             // remove bad chromosomes
-            ordered.RemoveRange(size, chromosomes.Count);
+            ordered.RemoveRange(size, totalCountForRange);
             chromosomes.Clear(); //just to have sure
             chromosomes.AddRange(ordered);
 			
