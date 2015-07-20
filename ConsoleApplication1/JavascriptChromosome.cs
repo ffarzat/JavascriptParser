@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using AForge.Genetic;
 using Antlr.Runtime.Tree;
@@ -354,6 +355,7 @@ namespace ConsoleApplication1
         /// <summary>
         /// Evaluate chromosome with specified fitness function
         /// </summary>
+        [HandleProcessCorruptedStateExceptions]
         public void Evaluate(IFitnessFunction function)
         {
             try
