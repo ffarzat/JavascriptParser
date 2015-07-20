@@ -269,7 +269,7 @@ namespace ConsoleApplication1
             #endregion
 
 
-            Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")), LogLevel.Trace);
+            Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")), LogLevel.Info);
             return fitness;
         }
 
