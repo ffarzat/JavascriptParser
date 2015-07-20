@@ -183,8 +183,8 @@ namespace ConsoleApplication1
         public double Evaluate(IChromosome chromosome)
         {
 
-            if (!chromosome.Fitness.Equals(0)) //alredy evaluated
-                return chromosome.Fitness;
+            //if (!chromosome.Fitness.Equals(0)) //alredy evaluated
+            //    return chromosome.Fitness;
 
             DirectoryInfo directoryForIndividual = null;
             double fitness = double.MaxValue;
