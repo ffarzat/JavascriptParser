@@ -195,7 +195,7 @@ namespace ConsoleApplication1
 
                 var blockDad = _function.GetChild(2);
                 var blockMom = JavascriptAstCodeGenerator.DeepClone(JavascriptAstCodeGenerator.Functions[functionRand] as CommonTree).GetChild(2);
-
+                
                 if (blockDad.ChildCount == 0 || blockMom.ChildCount == 0)
                     break;
 
@@ -215,9 +215,16 @@ namespace ConsoleApplication1
 
                 if (JavascriptAstCodeGenerator.IsFunction(functionNodeDad) && (JavascriptAstCodeGenerator.IsFunction(functionNodeMom)))
                 {
-                    blockDad.GetChild(dadLine).ReplaceChildren(dadPoint, dadPoint, functionNodeMom);
-                    Log.WriteLine(string.Format("       Mutação da instrução {0} pela {1}", functionNodeMom.ToStringTree(), functionNodeDad.ToStringTree()), LogLevel.Trace);
-                    sinal = false;
+                    if (!functionNodeMom.GetChild(0).Text.Equals(_functionName))
+                    {
+                        blockDad.GetChild(dadLine).ReplaceChildren(dadPoint, dadPoint, functionNodeMom);
+                        Log.WriteLine(string.Format("       Mutação da instrução {0} pela {1}", functionNodeMom.ToStringTree(), functionNodeDad.ToStringTree()), LogLevel.Trace);
+                        sinal = false;    
+                    }
+                    else
+                    {
+                        Log.WriteLine(string.Format("           OverFlow Detected {0}", functionNodeMom.ToStringTree()), LogLevel.Trace);
+                    }
                 }
 
                 count++;
