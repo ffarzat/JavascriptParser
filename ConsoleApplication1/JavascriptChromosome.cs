@@ -167,7 +167,7 @@ namespace ConsoleApplication1
         /// </summary>
         public IChromosome Clone()
         {
-            return new JavascriptChromosome(_tree, _functionName ){ Id = Guid.NewGuid(), GenerationId = this.GenerationId};
+            return new JavascriptChromosome(_tree, _functionName ){ Id = Guid.NewGuid(), GenerationId = this.GenerationId, Fitness = 0};
         }
 
         /// <summary>
