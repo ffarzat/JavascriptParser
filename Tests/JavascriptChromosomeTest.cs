@@ -6,7 +6,6 @@ using Antlr.Runtime.Tree;
 using ConsoleApplication1;
 using NUnit.Framework;
 using Xebic.Parsers.ES3;
-using unvell.ReoScript;
 
 namespace Tests
 {
@@ -124,58 +123,6 @@ namespace Tests
 
         }
 
-        //Compile the Js code
-        [Test]
-        public void ToCompileCodeTest()
-        {
-            ScriptRunningMachine scriptRunning = new ScriptRunningMachine();
-
-            var codeGenerator = new JavascriptAstCodeGenerator(_tree);
-            var generatedJsCode = codeGenerator.DoCodeTransformation();
-
-            var result = scriptRunning.Compile(generatedJsCode);
-            Assert.AreEqual(0, result.CompilingErrors.Count);
-        }
-
-        //Compile the Js code if erros
-        [Test]
-        public void ToCompileCodeTestFail()
-        {
-            ScriptRunningMachine scriptRunning = new ScriptRunningMachine();
-
-            var codeGenerator = new JavascriptAstCodeGenerator(_tree);
-            var generatedJsCode = codeGenerator.DoCodeTransformation();
-
-            Assert.Throws<ReoScriptCompilingException>(() => scriptRunning.Compile(generatedJsCode + "EROROROROROROR"));
-        }
-
-
-        //Execs the Js
-        [Test]
-        public void ToExecCodeTest()
-        {
-            ScriptRunningMachine scriptRunning = new ScriptRunningMachine();
-            var codeGenerator = new JavascriptAstCodeGenerator(_tree);
-            var generatedJsCode = codeGenerator.DoCodeTransformation();
-
-            scriptRunning.AllowDirectAccess = true;
-            scriptRunning.Load(_jsFile);
-            scriptRunning["print"] = new NativeFunctionObject("print", (ctx, owner, args) =>
-            {
-                Console.WriteLine(args[0]);
-                return null;
-            });
-            scriptRunning.Run(new FileInfo(_jsFileTest));
-
-            Assert.AreEqual("3/5/2015", scriptRunning["stringData1"]);
-            Assert.AreEqual("4/5/2015", scriptRunning["stringData2"]);
-            Assert.AreEqual("5/5/2015", scriptRunning["stringData3"]);
-            Assert.AreEqual("6/5/2015", scriptRunning["stringData4"]);
-            Assert.AreEqual("7/5/2015", scriptRunning["stringData5"]);
-            
-
-
-        }
 
         [Test]
         public void DoOperationAndChangeTree()
