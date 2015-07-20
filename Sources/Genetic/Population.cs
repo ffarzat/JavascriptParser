@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.ExceptionServices;
 using NLog;
 
 namespace AForge.Genetic
@@ -369,7 +368,6 @@ namespace AForge.Genetic
         /// <summary>
         /// Start and synchronize Fits Evaluations 
         /// </summary>
-        [HandleProcessCorruptedStateExceptions]
 	    private void ExecuteFitEvaluation(bool isFirstTime)
         {
             var sw = new Stopwatch();
@@ -396,29 +394,19 @@ namespace AForge.Genetic
                 #region single thread
                 foreach (var chromosome in population)
                 {
-                    try
-                    {
-                        IChromosome chromosome1 = chromosome;
-                        Action action = () => chromosome1.Evaluate(fitnessFunction.Clone());
-                        IAsyncResult result = action.BeginInvoke(null, null);
+                    IChromosome chromosome1 = chromosome;
+                    Action action = () => chromosome1.Evaluate(fitnessFunction.Clone());
+                    IAsyncResult result = action.BeginInvoke(null, null);
 
-                        //Atualizo o span
-                        span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
-                        if (!result.AsyncWaitHandle.WaitOne(span))
-                        {
-                            chromosome.Fitness = double.MaxValue;
-                            _logger.Info("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos)", chromosome.Id, span.TotalMinutes);
-                        }
-                        else
-                            action.EndInvoke(result);
-                    }
-                    catch (Exception ex)
+                    //Atualizo o span
+                    span = DateTime.Now.AddMinutes(TimeOut) - DateTime.Now;
+                    if (!result.AsyncWaitHandle.WaitOne(span))
                     {
                         chromosome.Fitness = double.MaxValue;
-                        _logger.Info("     Avaliar Fitness do individuo {0} falhou ({1})", chromosome.Id, ex);
-                        throw;
+                        _logger.Info("     Avaliar Fitness do individuo {0} falhou por timeout ({1} minutos)", chromosome.Id, span.TotalMinutes);
                     }
-                    
+                    else
+                        action.EndInvoke(result);
                 }
 
                 #endregion

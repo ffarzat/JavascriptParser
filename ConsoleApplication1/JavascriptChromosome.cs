@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using AForge.Genetic;
 using Antlr.Runtime.Tree;
 using NLog;
@@ -12,6 +13,11 @@ namespace ConsoleApplication1
     /// </summary>
     public class JavascriptChromosome : IChromosome
     {
+        /// <summary>
+        /// NLog Logger
+        /// </summary>
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Keeps the name of a function to Optmize
         /// </summary>
@@ -350,7 +356,16 @@ namespace ConsoleApplication1
         /// </summary>
         public void Evaluate(IFitnessFunction function)
         {
-            Fitness = function.Evaluate(this);
+            try
+            {
+                Fitness = function.Evaluate(this);
+            }
+            catch (ThreadAbortException e)
+            {
+                ///OverFlow Exception!
+                _logger.Info("     Avaliar Fitness do individuo {0} falhou ({1})", Id, e);
+            }
+            
         }
 
         #endregion
