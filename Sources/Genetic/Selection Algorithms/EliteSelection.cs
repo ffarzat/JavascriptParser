@@ -60,13 +60,6 @@ namespace AForge.Genetic
 		    var ordered = chromosomes.OrderBy(c => c.Fitness).ToList();
             
             // remove bad chromosomes
-            for (int i = size; i < chromosomes.Count; i++)
-	        {
-	            chromosomes.ElementAt(i).Dispose();
-                chromosomes.RemoveAt(i);
-	        }
-            
-            // remove bad chromosomes
             ordered.RemoveRange(size, ordered.Count - size);
             chromosomes.Clear(); //just to have sure
             chromosomes.AddRange(ordered);
