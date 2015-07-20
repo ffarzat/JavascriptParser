@@ -22,11 +22,6 @@ namespace ConsoleApplication1
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Simple Singleton
-        /// </summary>
-        private static ScriptEngine _engine = new ScriptEngine();
-
-        /// <summary>
         /// Ancestor Js
         /// </summary>
         private JavascriptChromosome _ancestor;
@@ -238,19 +233,16 @@ namespace ConsoleApplication1
             double total, sucess, fail, time;
             try
             {
-                lock (_engine)
-                {
-                    Cleanup(_engine);
-                    _engine.Execute(generatedJsCode);
-                    LoadQunitAndTests(_engine);
+                var _engine = new ScriptEngine();
+                _engine.Execute(generatedJsCode);
+                LoadQunitAndTests(_engine);
+                _engine.Execute(@"QUnit.start();");
 
-                    _engine.Execute(@"QUnit.start();");
-
-                    //total = _engine.GetGlobalValue<double>("total");
-                    //sucess = _engine.GetGlobalValue<double>("sucess");
-                    //fail = _engine.GetGlobalValue<double>("fail");
-                    //time = _engine.GetGlobalValue<double>("time");
-                }
+                //total = _engine.GetGlobalValue<double>("total");
+                //sucess = _engine.GetGlobalValue<double>("sucess");
+                //fail = _engine.GetGlobalValue<double>("fail");
+                //time = _engine.GetGlobalValue<double>("time");
+                
             }
             catch (JavaScriptException ex)
             {
