@@ -14,6 +14,17 @@ namespace ConsoleApplication1
     /// </summary>
     public class JavascriptFitness : IFitnessFunction
     {
+
+        /// <summary>
+        /// NLog Logger
+        /// </summary>
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Simple Singleton
+        /// </summary>
+        private static ScriptEngine _engine = new ScriptEngine();
+
         /// <summary>
         /// Ancestor Js
         /// </summary>
@@ -225,18 +236,19 @@ namespace ConsoleApplication1
             double total, sucess, fail, time;
             try
             {
-                var engine = new ScriptEngine(); //
-                engine.Execute(generatedJsCode);
-                LoadQunitAndTests(engine);
-                
-                engine.Execute(@"QUnit.start();");
+                lock (_engine)
+                {
+                    Cleanup(_engine);
+                    _engine.Execute(generatedJsCode);
+                    LoadQunitAndTests(_engine);
 
-                //total = _engine.GetGlobalValue<double>("total");
-                //sucess = _engine.GetGlobalValue<double>("sucess");
-                //fail = _engine.GetGlobalValue<double>("fail");
-                //time = _engine.GetGlobalValue<double>("time");
+                    _engine.Execute(@"QUnit.start();");
 
-                engine = null;
+                    //total = _engine.GetGlobalValue<double>("total");
+                    //sucess = _engine.GetGlobalValue<double>("sucess");
+                    //fail = _engine.GetGlobalValue<double>("fail");
+                    //time = _engine.GetGlobalValue<double>("time");
+                }
             }
             catch (JavaScriptException ex)
             {
@@ -259,6 +271,19 @@ namespace ConsoleApplication1
 
             Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")), LogLevel.Trace);
             return fitness;
+        }
+
+        /// <summary>
+        /// Cleans the engine for a new excetuion
+        /// </summary>
+        /// <param name="engine"></param>
+        private void Cleanup(ScriptEngine engine)
+        {
+            _logger.Trace("Limpando {0}", "moment");
+            engine.Global.Delete("moment", false);
+
+            _logger.Trace("Limpando {0}", "mQUnitoment");
+            engine.Global.Delete("QUnit", false);
         }
 
         /// <summary>
