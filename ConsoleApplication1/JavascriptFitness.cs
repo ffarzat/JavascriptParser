@@ -279,10 +279,10 @@ namespace ConsoleApplication1
         /// <param name="engine"></param>
         private void Cleanup(ScriptEngine engine)
         {
-            _logger.Trace("Limpando {0}", "moment");
+            _logger.Trace("     Limpando {0}", "moment");
             engine.Global.Delete("moment", false);
 
-            _logger.Trace("Limpando {0}", "mQUnitoment");
+            _logger.Trace("     Limpando {0}", "QUnit");
             engine.Global.Delete("QUnit", false);
         }
 
