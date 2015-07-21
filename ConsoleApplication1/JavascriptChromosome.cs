@@ -215,7 +215,7 @@ namespace ConsoleApplication1
 
                 if (JavascriptAstCodeGenerator.IsFunction(functionNodeDad) && (JavascriptAstCodeGenerator.IsFunction(functionNodeMom)))
                 {
-                    var name = functionNodeMom.GetChild(0) != null ? "" : functionNodeMom.GetChild(0).Text;
+                    var name = functionNodeMom.GetChild(0) != null ? functionNodeMom.GetChild(0).Text : "" ;
 
                     if (!name.Equals(_functionName))
                     {
