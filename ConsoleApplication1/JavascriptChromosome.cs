@@ -215,7 +215,9 @@ namespace ConsoleApplication1
 
                 if (JavascriptAstCodeGenerator.IsFunction(functionNodeDad) && (JavascriptAstCodeGenerator.IsFunction(functionNodeMom)))
                 {
-                    if (!functionNodeMom.GetChild(0).Text.Equals(_functionName))
+                    var name = functionNodeMom.GetChild(0) != null ? "" : functionNodeMom.GetChild(0).Text;
+
+                    if (!name.Equals(_functionName))
                     {
                         blockDad.GetChild(dadLine).ReplaceChildren(dadPoint, dadPoint, functionNodeMom);
                         Log.WriteLine(string.Format("       Mutação da instrução {0} pela {1}", functionNodeMom.ToStringTree(), functionNodeDad.ToStringTree()), LogLevel.Trace);
