@@ -51,7 +51,8 @@ namespace Tests
         public void Mutate()
         {
             var javaChromosome = new JavascriptChromosome(_tree, _functionName);
-            
+            JavascriptAstCodeGenerator.BuildFunctionList(_tree);
+
             javaChromosome.Mutate();
             
             var codeGenerator = new JavascriptAstCodeGenerator(javaChromosome.Tree);
@@ -82,6 +83,7 @@ namespace Tests
         [Test]
         public void CloneNotEqual()
         {
+            JavascriptAstCodeGenerator.BuildFunctionList(_tree);
             var javaChromosome = new JavascriptChromosome(_tree, _functionName);
             IFitnessFunction fitness = new JavascriptFitness(javaChromosome, Environment.CurrentDirectory, _jsFile, _JsQUnitFile);
             javaChromosome.Evaluate(fitness);
@@ -124,9 +126,10 @@ namespace Tests
         }
 
 
-        [Test]
+        [Ignore]
         public void DoOperationAndChangeTree()
         {
+            JavascriptAstCodeGenerator.BuildFunctionList(_tree);
             var javaChromosome = new JavascriptChromosome(_tree, _functionName);
             IFitnessFunction fitness = new JavascriptFitness(javaChromosome, Environment.CurrentDirectory, _jsFile, _JsQUnitFile);
             
