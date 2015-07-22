@@ -215,9 +215,8 @@ namespace ConsoleApplication1
 
                 if (JavascriptAstCodeGenerator.IsFunction(functionNodeDad) && (JavascriptAstCodeGenerator.IsFunction(functionNodeMom)))
                 {
-                    var name = functionNodeMom.GetChild(0) != null ? functionNodeMom.GetChild(0).Text : "" ;
-
-                    if (!name.Equals(_functionName))
+                   
+                    if (IsRecursiveInstruction(functionNodeMom))
                     {
                         blockDad.GetChild(dadLine).ReplaceChildren(dadPoint, dadPoint, functionNodeMom);
                         Log.WriteLine(string.Format("       Mutação da instrução {0} pela {1}", functionNodeMom.ToStringTree(), functionNodeDad.ToStringTree()), LogLevel.Trace);
@@ -231,6 +230,24 @@ namespace ConsoleApplication1
 
                 count++;
             }
+        }
+
+        /// <summary>
+        /// Handle recursive ways (damm it!)
+        /// </summary>
+        /// <param name="functionNodeMom"></param>
+        /// <returns></returns>
+        private bool IsRecursiveInstruction(ITree functionNodeMom)
+        {
+            var name = functionNodeMom.GetChild(0) != null ? functionNodeMom.GetChild(0).Text : "" ;
+            var returnValue = false;
+
+            returnValue = name.Equals(_functionName);
+
+            if (!returnValue)
+                returnValue = functionNodeMom.GetChild(1) !=  null && functionNodeMom.GetChild(1).Text.Contains("clone");
+
+            return returnValue;
         }
 
         /// <summary>
