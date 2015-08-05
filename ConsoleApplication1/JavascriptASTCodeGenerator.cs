@@ -973,7 +973,12 @@ namespace ConsoleApplication1
                                                     conditionCode, block1Code, block2Code);
             }
             else
-                instructionCode = String.Format("if ({0}) {{\r\n  {1}\r\n  }}", conditionCode, block1Code);
+            {
+                if (block1.ChildCount == 1)
+                    String.Format("if ({0}) {1};\r\n  }}", conditionCode, block1Code);
+                else
+                    instructionCode = String.Format("if ({0}) {{\r\n  {1}\r\n  }}", conditionCode, block1Code);
+            }
 
             return instructionCode;
         }
