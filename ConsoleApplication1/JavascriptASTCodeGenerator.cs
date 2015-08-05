@@ -1064,7 +1064,7 @@ namespace ConsoleApplication1
 
             instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
-            if (instruction.Parent != null && instruction.Parent.IsNil)
+            if ((instruction.Parent != null && (instruction.Parent.IsNil  || instruction.Parent.Text.Equals("for"))))
                 instructionCode += ";";
 
             return instructionCode;
