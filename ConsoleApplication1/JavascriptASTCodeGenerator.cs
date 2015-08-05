@@ -975,7 +975,7 @@ namespace ConsoleApplication1
             else
             {
                 if (block1.ChildCount == 1)
-                    String.Format("if ({0}) {1};\r\n  }}", conditionCode, block1Code);
+                    instructionCode = String.Format("if ({0}) {1};\r\n", conditionCode, block1Code);
                 else
                     instructionCode = String.Format("if ({0}) {{\r\n  {1}\r\n  }}", conditionCode, block1Code);
             }
