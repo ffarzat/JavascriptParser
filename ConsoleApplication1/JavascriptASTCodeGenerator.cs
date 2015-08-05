@@ -1095,6 +1095,10 @@ namespace ConsoleApplication1
                 string blockCode = HandleBlockInstruction(block);
 
                 instructionCode = String.Format("function ({0}) {{{1}}}", argsNames, blockCode);
+
+                if (instruction.Parent != null && instruction.Parent.Text == "=")
+                    instructionCode += ";";
+
                 #endregion
 
             }
