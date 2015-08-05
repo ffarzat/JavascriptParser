@@ -494,7 +494,7 @@ namespace Tests
             File.WriteAllText("underscoreGeneratedCode.js", generatedJsCode);
 
             var originalText = momentTextWithoutComments.Replace(" ", "").Replace("\n", "").Replace("\t", "").Replace("\r", "");
-            var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "").Replace("\r", "");
+            var generatedText = generatedJsCode.Replace(" ", "").Replace("\n", "").Replace("\t", "").Replace("\r", "");
 
             Assert.AreEqual(originalText, generatedText);
         }
