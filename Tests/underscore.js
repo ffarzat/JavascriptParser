@@ -98,7 +98,7 @@
             l = keys.length;
         for (var i = 0; i < l; i++) {
           var key = keys[i];
-          if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
+          if (!undefinedOnly || obj[key] === void 0) {obj[key] = source[key];}
         }
       }
       return obj;
@@ -107,8 +107,8 @@
 
 
   var baseCreate = function(prototype) {
-    if (!_.isObject(prototype)) return {};
-    if (nativeCreate) return nativeCreate(prototype);
+    if (!_.isObject(prototype)) {return {};}
+    if (nativeCreate) {return nativeCreate(prototype);}
     Ctor.prototype = prototype;
     var result = new Ctor;
     Ctor.prototype = null;
@@ -194,14 +194,14 @@
     } else {
       key = _.findKey(obj, predicate, context);
     }
-    if (key !== void 0 && key !== -1) return obj[key];
+  if (key !== void 0 && key !== -1) {return obj[key];}
   };
 
   _.filter = _.select = function(obj, predicate, context) {
     var results = [];
     predicate = cb(predicate, context);
     _.each(obj, function(value, index, list) {
-      if (predicate(value, index, list)) results.push(value);
+      if (predicate(value, index, list)) {results.push(value);}
     });
     return results;
   };
@@ -217,7 +217,7 @@
         length = (keys || obj).length;
     for (var index = 0; index < length; index++) {
       var currentKey = keys ? keys[index] : index;
-      if (!predicate(obj[currentKey], currentKey, obj)) return false;
+      if (!predicate(obj[currentKey], currentKey, obj)) {return false;}
     }
     return true;
   };
@@ -228,14 +228,14 @@
         length = (keys || obj).length;
     for (var index = 0; index < length; index++) {
       var currentKey = keys ? keys[index] : index;
-      if (predicate(obj[currentKey], currentKey, obj)) return true;
+      if (predicate(obj[currentKey], currentKey, obj)) {return true;}
     }
     return false;
   };
 
   _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
-    if (!isArrayLike(obj)) obj = _.values(obj);
-    if (typeof fromIndex != 'number' || guard) fromIndex = 0;
+    if (!isArrayLike(obj)) {obj = _.values(obj);}
+    if (typeof fromIndex != 'number' || guard) {fromIndex = 0;}
     return _.indexOf(obj, item, fromIndex) >= 0;
   };
 
@@ -316,7 +316,7 @@
     var shuffled = Array(length);
     for (var index = 0, rand; index < length; index++) {
       rand = _.random(0, index);
-      if (rand !== index) shuffled[index] = shuffled[rand];
+      if (rand !== index) {shuffled[index] = shuffled[rand];}
       shuffled[rand] = set[index];
     }
     return shuffled;
@@ -325,7 +325,7 @@
 
   _.sample = function(obj, n, guard) {
     if (n == null || guard) {
-      if (!isArrayLike(obj)) obj = _.values(obj);
+      if (!isArrayLike(obj)) {obj = _.values(obj);}
       return obj[_.random(obj.length - 1)];
     }
     return _.shuffle(obj).slice(0, Math.max(0, n));
@@ -343,8 +343,8 @@
       var a = left.criteria;
       var b = right.criteria;
       if (a !== b) {
-        if (a > b || a === void 0) return 1;
-        if (a < b || b === void 0) return -1;
+        if (a > b || a === void 0) {return 1;}
+        if (a < b || b === void 0) {return -1;}
       }
       return left.index - right.index;
     }), 'value');
@@ -364,7 +364,7 @@
 
 
   _.groupBy = group(function(result, value, key) {
-    if (_.has(result, key)) result[key].push(value); else result[key] = [value];
+    if (_.has(result, key)) {result[key].push(value)}; else result[key] = [value];
   });
 
 

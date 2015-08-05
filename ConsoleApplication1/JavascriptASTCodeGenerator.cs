@@ -594,7 +594,8 @@ namespace ConsoleApplication1
 
             for (int i = 0; i < instruction.ChildCount; i++)
             {
-                instructionCode += HandleChild(instruction.GetChild(i).GetChild(0));
+                instructionCode += HandleChild(instruction.GetChild(i));
+
                 if (i < instruction.ChildCount - 1)
                     instructionCode += "; ";
             }
