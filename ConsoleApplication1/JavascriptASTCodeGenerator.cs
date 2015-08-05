@@ -974,7 +974,7 @@ namespace ConsoleApplication1
             }
             else
             {
-                if (block1.ChildCount == 1)
+                if (CountInstructionsOf(block1) == 1)
                     instructionCode = String.Format("if ({0}) {1};\r\n", conditionCode, block1Code);
                 else
                     instructionCode = String.Format("if ({0}) {{\r\n  {1}\r\n  }}", conditionCode, block1Code);
@@ -994,6 +994,9 @@ namespace ConsoleApplication1
         private string HandleCallInstruction(ITree instruction)
         {
             string instructionCode = "";
+
+            if (instruction.GetChild(0).Text == "group")
+                return "";
 
             if (instruction.GetChild(0).Text == "function")
             {
@@ -1219,6 +1222,22 @@ namespace ConsoleApplication1
             return false;
         }
 
+        /// <summary>
+        /// Validates a node is a instruction node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static bool IsInstruction(ITree node)
+        {
+            switch (node.Type)
+            {
+                case 22: //Return
+                    return true;
+                default: // Restante
+                    return IsFunction(node);
+            }
+        }
+
 
         /// <summary>
         /// Finds TreeNode of functionName
@@ -1286,11 +1305,11 @@ namespace ConsoleApplication1
             if (functionBody == null)
                 return 0;
 
-            int instructions = 0;
+            int instructions = IsInstruction(functionBody)? 1: 0;
 
             for (int i = 0; i < functionBody.ChildCount; i++)
             {
-                if (IsFunction(functionBody.GetChild(i)))
+                if (IsInstruction(functionBody.GetChild(i)))
                     instructions++;
                 
                 instructions += CountInstructionsOf(functionBody.GetChild(i));
