@@ -133,6 +133,9 @@ namespace ConsoleApplication1
                 case 28: 
                     instructionCode = HandleVarInstruction(instruction);
                     break;
+                case 29:
+                    instructionCode = HandleVarInstruction(instruction);
+                    break;
                 case 30:
                     instructionCode = HandleWhileInstruction(instruction);
                     break;

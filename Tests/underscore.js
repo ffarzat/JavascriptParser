@@ -27,9 +27,15 @@
 
 
   var _ = function(obj) {
-    if (obj instanceof _) return obj;
-    if (!(this instanceof _)) return new _(obj);
-    this._wrapped = obj;
+    if (obj instanceof _) { 
+		return obj;
+	}
+    
+	if (!(this instanceof _)) {
+		return new _(obj);
+    }
+    
+	this._wrapped = obj;
   };
 
 
@@ -47,7 +53,7 @@
 
 
   var optimizeCb = function(func, context, argCount) {
-    if (context === void 0) return func;
+    if (context === void 0) {return func;}
     switch (argCount == null ? 3 : argCount) {
       case 1: return function(value) {
         return func.call(context, value);
@@ -69,9 +75,12 @@
 
 
   var cb = function(value, context, argCount) {
-    if (value == null) return _.identity;
-    if (_.isFunction(value)) return optimizeCb(value, context, argCount);
-    if (_.isObject(value)) return _.matcher(value);
+    if (value == null) {return _.identity;}
+    
+	if (_.isFunction(value)) {return optimizeCb(value, context, argCount);}
+    
+	if (_.isObject(value)) {return _.matcher(value);}
+	
     return _.property(value);
   };
   _.iteratee = function(value, context) {
@@ -82,7 +91,7 @@
   var createAssigner = function(keysFunc, undefinedOnly) {
     return function(obj) {
       var length = arguments.length;
-      if (length < 2 || obj == null) return obj;
+      if (length < 2 || obj == null) {return obj;}
       for (var index = 1; index < length; index++) {
         var source = arguments[index],
             keys = keysFunc(source),
@@ -925,7 +934,7 @@
 
 
   _.clone = function(obj) {
-    if (!_.isObject(obj)) return obj;
+    if (!_.isObject(obj)) {return obj;}
     return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
   };
 

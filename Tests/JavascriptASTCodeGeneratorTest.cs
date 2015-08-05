@@ -467,6 +467,38 @@ namespace Tests
             Assert.AreNotSame(clone, anotherClone);
             Assert.AreNotSame(anotherClone, cloneofClone);
         }
+
+
+        /// <summary>
+        /// Underscore Code regenaration //versão 1.8.3 em 04/08/2015
+        /// </summary>
+        [Test]
+        public void ToUnderScoreCodeTest()
+        {
+
+            var momentTextWithoutComments = File.ReadAllText("underscore.js"); //underscore sem comentários
+
+            #region Build the AST from Js
+            var stream = new ANTLRStringStream(momentTextWithoutComments);
+            var lexer = new ES3Lexer(stream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new ES3Parser(tokenStream);
+            ES3Parser.program_return programReturn = parser.program();
+            var tree = programReturn.Tree as CommonTree;
+            #endregion
+
+            var codeGenerator = new JavascriptAstCodeGenerator(tree);
+
+            var generatedJsCode = codeGenerator.DoCodeTransformation();
+
+            File.WriteAllText("underscoreGeneratedCode.js", generatedJsCode);
+
+            var originalText = momentTextWithoutComments.Replace(" ", "").Replace("\n", "").Replace("\t", "").Replace("\r", "");
+            var generatedText = generatedJsCode.Replace(" ", "").Replace("\r\n", "").Replace("\r", "");
+
+            Assert.AreEqual(originalText, generatedText);
+        }
+
     }
 
 }
