@@ -273,6 +273,8 @@ namespace ConsoleApplication1
                     break;
             }
 
+            instructionCode = instructionCode.Replace(";;", ";");
+
             return instructionCode;
         }
 
@@ -973,6 +975,9 @@ namespace ConsoleApplication1
             block1Code = HandleChild(block1);
             block2Code = HandleChild(block2);
 
+            //if (block1Code == "value = fallback")
+            //    return "";
+
 
             if (block2Code != "")
             {
@@ -985,7 +990,7 @@ namespace ConsoleApplication1
             }
             else
             {
-                if (CountInstructionsOf(block1) == 1)
+                if (CountInstructionsOf(block1) == 0)
                     instructionCode = String.Format("if ({0}) {1};\r\n", conditionCode, block1Code);
                 else
                     instructionCode = String.Format("if ({0}) {{\r\n  {1}\r\n  }}", conditionCode, block1Code);
@@ -1053,7 +1058,8 @@ namespace ConsoleApplication1
             }
 
 
-            
+            if ((instruction.Parent != null && ((instruction.Parent.Text == "var" && instruction.Parent.Parent != null && instruction.Parent.Parent.IsNil) || (instruction.Parent.Parent!= null && instruction.Parent.Parent.Text == "var" && instruction.Parent.Parent.Parent.IsNil))))
+                instructionCode += ";";
 
             return instructionCode;
         }
@@ -1138,6 +1144,12 @@ namespace ConsoleApplication1
                 #endregion
             }
 
+            if (instruction.Parent != null)
+                if (instruction.Parent.Text.Equals("="))
+                    if (instruction.Parent.Parent != null)
+                        if (instruction.Parent.Parent.Text != null)
+                            if (instruction.Parent.Parent.Text.Equals("var"))
+                                instructionCode += ";";
 
             return instructionCode;
         }
