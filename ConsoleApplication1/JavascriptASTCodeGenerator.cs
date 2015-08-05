@@ -1177,7 +1177,10 @@ namespace ConsoleApplication1
 
                 instructionCode = vars;
             }
-            
+
+            if (instruction.Parent.IsNil)
+                instructionCode += ";";
+
             return instructionCode;
         }
 
