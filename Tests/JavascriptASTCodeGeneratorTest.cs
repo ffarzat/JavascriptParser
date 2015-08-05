@@ -475,7 +475,7 @@ namespace Tests
         [Test]
         public void ToUnderScoreCodeTest()
         {
-
+            
             var momentTextWithoutComments = File.ReadAllText("underscore.js"); //underscore sem comentários
 
             #region Build the AST from Js

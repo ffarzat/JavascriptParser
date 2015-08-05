@@ -612,8 +612,14 @@ namespace ConsoleApplication1
         {
             var forstepsCode = HandleChild(instruction.GetChild(0));
             var blockCode = HandleChild(instruction.GetChild(1));
+            string code = "";
 
-            return string.Format("for ({0}) {{{1}}}", forstepsCode, blockCode);
+            if (CountInstructionsOf(instruction.GetChild(1)) == 1)
+                code = string.Format("for ({0}) {1}", forstepsCode, blockCode);
+            else
+                code = string.Format("for ({0}) {{{1}}}", forstepsCode, blockCode);
+
+            return code;
         }
 
         /// <summary>
@@ -1058,6 +1064,9 @@ namespace ConsoleApplication1
 
             instructionCode = String.Format("{0} {2} {1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)), instruction.Text);
 
+            if (instruction.Parent != null && instruction.Parent.IsNil)
+                instructionCode += ";";
+
             return instructionCode;
         }
 
@@ -1095,9 +1104,6 @@ namespace ConsoleApplication1
                 string blockCode = HandleBlockInstruction(block);
 
                 instructionCode = String.Format("function ({0}) {{{1}}}", argsNames, blockCode);
-
-                if (instruction.Parent != null && instruction.Parent.Text == "=")
-                    instructionCode += ";";
 
                 #endregion
 
@@ -1309,7 +1315,7 @@ namespace ConsoleApplication1
             if (functionBody == null)
                 return 0;
 
-            int instructions = IsInstruction(functionBody)? 1: 0;
+            int instructions = 0; // IsInstruction(functionBody) ? 1 : 0;
 
             for (int i = 0; i < functionBody.ChildCount; i++)
             {
