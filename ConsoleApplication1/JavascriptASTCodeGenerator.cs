@@ -62,6 +62,9 @@ namespace ConsoleApplication1
                     var instruction = _tree.GetChild(i);
                     sb.AppendLine(HandleChild(instruction));
                 }
+
+                sb.Append("}.call(this));");
+
             }
             else
             {
@@ -585,7 +588,12 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private string HandlePlusPlusInstruction(ITree instruction)
         {
-            string instructionCode = string.Format("{0}{1}", HandleChild(instruction.GetChild(0)), instruction.Text); //mega estranho... mais blz
+            string childCode = HandleChild(instruction.GetChild(0));
+
+            string instructionCode = string.Format("{0}{1}", childCode, instruction.Text);
+
+            if (childCode.Contains("idCounter"))
+                instructionCode = string.Format("{1}{0}", childCode, instruction.Text);
 
             return instructionCode; 
         }
@@ -746,7 +754,6 @@ namespace ConsoleApplication1
         private string HandleByFieldInstruction(ITree instruction)
         {
             return string.Format("{0}.{1}", HandleChild(instruction.GetChild(0)), HandleChild(instruction.GetChild(1)));
-
         }
 
         /// <summary>
@@ -1014,6 +1021,7 @@ namespace ConsoleApplication1
             if (instruction.GetChild(0).Text == "group")
                 return "";
 
+
             if (instruction.GetChild(0).Text == "function")
             {
                 #region When a call defines a function
@@ -1059,6 +1067,9 @@ namespace ConsoleApplication1
 
 
             if ((instruction.Parent != null && ((instruction.Parent.Text == "var" && instruction.Parent.Parent != null && instruction.Parent.Parent.IsNil) || (instruction.Parent.Parent!= null && instruction.Parent.Parent.Text == "var" && instruction.Parent.Parent.Parent.IsNil))))
+                instructionCode += ";";
+
+            if(instruction.Parent != null && instruction.Parent.IsNil)
                 instructionCode += ";";
 
             return instructionCode;

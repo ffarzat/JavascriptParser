@@ -1,4 +1,3 @@
-D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
 D:\GitHub\JavascriptParser\Tests\bin\Debug\angular.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\core-test.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\jquery-ui-1.8.24.js
@@ -16,6 +15,7 @@ D:\GitHub\JavascriptParser\Tests\bin\Debug\global.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\momentNoComments.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\momentNoLocation.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\scriptData_sem_comentarios.js
+D:\GitHub\JavascriptParser\Tests\bin\Debug\underscore.js
 D:\GitHub\JavascriptParser\Tests\bin\Debug\Tests.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\Tests.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.dll
@@ -25,11 +25,11 @@ D:\GitHub\JavascriptParser\Tests\bin\Debug\ConsoleApplication1.exe
 D:\GitHub\JavascriptParser\Tests\bin\Debug\Jurassic.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\nunit.framework.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\NLog.dll
+D:\GitHub\JavascriptParser\Tests\bin\Debug\ConsoleApplication1.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.Genetic.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\nunit.framework.xml
 D:\GitHub\JavascriptParser\Tests\bin\Debug\NLog.xml
+D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.dll
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.pdb
-D:\GitHub\JavascriptParser\Tests\bin\Debug\ConsoleApplication1.pdb
-D:\GitHub\JavascriptParser\Tests\bin\Debug\underscore.js
