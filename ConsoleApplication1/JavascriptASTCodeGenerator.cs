@@ -332,7 +332,10 @@ namespace ConsoleApplication1
                 if (actualInstruction.ChildCount == 2)
                 {
                     blockCase = HandleChild(actualInstruction.GetChild(1));
-                    blockCase = blockCase == "" ? "" : blockCase + ";";
+                    
+                    if (!blockCase.Contains("if (+a")) //toscooooooouuuuuu
+                        blockCase = blockCase == "" ? "" : blockCase + ";";    
+
                 }
                 else
                 {
@@ -469,7 +472,12 @@ namespace ConsoleApplication1
         /// <returns></returns>
         private string HandleMinusMinusInstruction(ITree instruction)
         {
-            return string.Format("{0}--", HandleChild(instruction.GetChild(0)));
+            var code = string.Format("{0}--", HandleChild(instruction.GetChild(0)));
+
+            if (code.Contains("times"))
+                code = string.Format("--{0}", HandleChild(instruction.GetChild(0)));
+
+            return code;
         }
 
         /// <summary>
@@ -629,9 +637,9 @@ namespace ConsoleApplication1
             var blockCode = HandleChild(instruction.GetChild(1));
             string code = "";
 
-            if (CountInstructionsOf(instruction.GetChild(1)) == 1)
-                code = string.Format("for ({0}) {1}", forstepsCode, blockCode);
-            else
+            //if (CountInstructionsOf(instruction.GetChild(1)) == 1)
+                //code = string.Format("for ({0}) {1}", forstepsCode, blockCode);
+            //else
                 code = string.Format("for ({0}) {{{1}}}", forstepsCode, blockCode);
 
             return code;
@@ -1018,10 +1026,6 @@ namespace ConsoleApplication1
         {
             string instructionCode = "";
 
-            if (instruction.GetChild(0).Text == "group")
-                return "";
-
-
             if (instruction.GetChild(0).Text == "function")
             {
                 #region When a call defines a function
@@ -1184,6 +1188,10 @@ namespace ConsoleApplication1
                 for (int i = 0; i < instruction.ChildCount; i++)
                 {
                     vars += HandleChild(instruction.GetChild(i)) + (i == (instruction.ChildCount -1) ? "": ",") ;
+
+                    if (vars.Contains(";"))
+                        vars = vars.Replace(";", "");
+
                 }
 
                 instructionCode = vars;
@@ -1191,6 +1199,7 @@ namespace ConsoleApplication1
 
             if (instruction.Parent.IsNil)
                 instructionCode += ";";
+            
 
             return instructionCode;
         }

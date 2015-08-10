@@ -33,3 +33,4 @@ D:\GitHub\JavascriptParser\Tests\bin\Debug\NLog.xml
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.dll
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.pdb
+D:\Github\JavascriptParser\Tests\bin\Debug\underscoreTests.Js

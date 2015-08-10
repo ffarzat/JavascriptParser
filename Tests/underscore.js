@@ -37,8 +37,8 @@
 
  
   var _ = function(obj) {
-    if (obj instanceof _) return obj;
-    if (!(this instanceof _)) return new _(obj);
+    if (obj instanceof _) {return obj;}
+    if (!(this instanceof _)) { return new _(obj);}
     this._wrapped = obj;
   };
 
@@ -86,8 +86,8 @@
  
   var cb = function(value, context, argCount) {
     if (value == null) return _.identity;
-    if (_.isFunction(value)) return optimizeCb(value, context, argCount);
-    if (_.isObject(value)) return _.matcher(value);
+    if (_.isFunction(value)) {return optimizeCb(value, context, argCount);}
+    if (_.isObject(value)) {return _.matcher(value);}
     return _.property(value);
   };
   _.iteratee = function(value, context) {
@@ -98,7 +98,7 @@
   var createAssigner = function(keysFunc, undefinedOnly) {
     return function(obj) {
       var length = arguments.length;
-      if (length < 2 || obj == null) return obj;
+      if (length < 2 || obj == null) {return obj;}
       for (var index = 1; index < length; index++) {
         var source = arguments[index],
             keys = keysFunc(source),
@@ -115,7 +115,7 @@
  
   var baseCreate = function(prototype) {
     if (!_.isObject(prototype)) return {};
-    if (nativeCreate) return nativeCreate(prototype);
+    if (nativeCreate) {return nativeCreate(prototype);}
     Ctor.prototype = prototype;
     var result = new Ctor;
     Ctor.prototype = null;
@@ -263,7 +263,7 @@
  
  
   _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
-    if (!isArrayLike(obj)) obj = _.values(obj);
+    if (!isArrayLike(obj)) {obj = _.values(obj);}
     if (typeof fromIndex != 'number' || guard) fromIndex = 0;
     return _.indexOf(obj, item, fromIndex) >= 0;
   };
@@ -364,7 +364,7 @@
  
   _.sample = function(obj, n, guard) {
     if (n == null || guard) {
-      if (!isArrayLike(obj)) obj = _.values(obj);
+      if (!isArrayLike(obj)) {obj = _.values(obj);}
       return obj[_.random(obj.length - 1)];
     }
     return _.shuffle(obj).slice(0, Math.max(0, n));
@@ -406,7 +406,7 @@
  
  
   _.groupBy = group(function(result, value, key) {
-    if (_.has(result, key)) result[key].push(value); else result[key] = [value];
+    if (_.has(result, key)) {result[key].push(value);} else {result[key] = [value];}
   });
 
  
@@ -419,14 +419,14 @@
  
  
   _.countBy = group(function(result, value, key) {
-    if (_.has(result, key)) result[key]++; else result[key] = 1;
+    if (_.has(result, key)) {result[key]++;} else {result[key] = 1;}
   });
 
  
   _.toArray = function(obj) {
     if (!obj) return [];
-    if (_.isArray(obj)) return slice.call(obj);
-    if (isArrayLike(obj)) return _.map(obj, _.identity);
+    if (_.isArray(obj)) {return slice.call(obj);}
+    if (isArrayLike(obj)) {return _.map(obj, _.identity);}
     return _.values(obj);
   };
 
@@ -454,7 +454,7 @@
  
  
   _.first = _.head = _.take = function(array, n, guard) {
-    if (array == null) return void 0;
+    if (array == null) {return void 0;}
     if (n == null || guard) return array[0];
     return _.initial(array, array.length - n);
   };
@@ -469,8 +469,8 @@
  
  
   _.last = function(array, n, guard) {
-    if (array == null) return void 0;
-    if (n == null || guard) return array[array.length - 1];
+    if (array == null) {return void 0;}
+    if (n == null || guard) { return array[array.length - 1];}
     return _.rest(array, Math.max(0, array.length - n));
   };
 
@@ -493,7 +493,7 @@
       var value = input[i];
       if (isArrayLike(value) && (_.isArray(value) || _.isArguments(value))) {
  
-        if (!shallow) value = flatten(value, shallow, strict);
+        if (!shallow) {value = flatten(value, shallow, strict);}
         var j = 0, len = value.length;
         output.length += len;
         while (j < len) {
@@ -525,7 +525,7 @@
       iteratee = isSorted;
       isSorted = false;
     }
-    if (iteratee != null) iteratee = cb(iteratee, context);
+    if (iteratee != null) {iteratee = cb(iteratee, context);}
     var result = [];
     var seen = [];
     for (var i = 0, length = getLength(array); i < length; i++) {
@@ -635,7 +635,7 @@
     var low = 0, high = getLength(array);
     while (low < high) {
  
-      if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
+      if (iteratee(array[mid]) < value) {low = mid + 1;} else {high = mid;}
     }
     return low;
   };
@@ -698,7 +698,7 @@
  
  
   var executeBound = function(sourceFunc, boundFunc, context, callingContext, args) {
-    if (!(callingContext instanceof boundFunc)) return sourceFunc.apply(context, args);
+    if (!(callingContext instanceof boundFunc)) {return sourceFunc.apply(context, args);}
     var self = baseCreate(sourceFunc.prototype);
     var result = sourceFunc.apply(self, args);
     if (_.isObject(result)) return result;
@@ -709,8 +709,8 @@
  
  
   _.bind = function(func, context) {
-    if (nativeBind && func.bind === nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
-    if (!_.isFunction(func)) throw new TypeError('Bind must be called on a function');
+    if (nativeBind && func.bind === nativeBind) {return nativeBind.apply(func, slice.call(arguments, 1));}
+    if (!_.isFunction(func)) {throw new TypeError('Bind must be called on a function');}
     var args = slice.call(arguments, 2);
     var bound = function() {
       return executeBound(func, bound, context, this, args.concat(slice.call(arguments)));
@@ -729,7 +729,7 @@
       for (var i = 0; i < length; i++) {
         args[i] = boundArgs[i] === _ ? arguments[position++] : boundArgs[i];
       }
-      while (position < arguments.length) args.push(arguments[position++]);
+      while (position < arguments.length) {args.push(arguments[position++]);}
       return executeBound(func, bound, this, this, args);
     };
     return bound;
@@ -740,7 +740,7 @@
  
   _.bindAll = function(obj) {
     var i, length = arguments.length, key;
-    if (length <= 1) throw new Error('bindAll must be passed function names');
+    if (length <= 1) {throw new Error('bindAll must be passed function names');}
     for (i = 1; i < length; i++) {
       key = arguments[i];
       obj[key] = _.bind(obj[key], obj);
@@ -753,7 +753,7 @@
     var memoize = function(key) {
       var cache = memoize.cache;
       var address = '' + (hasher ? hasher.apply(this, arguments) : key);
-      if (!_.has(cache, address)) cache[address] = func.apply(this, arguments);
+      if (!_.has(cache, address)) {cache[address] = func.apply(this, arguments);}
       return cache[address];
     };
     memoize.cache = {};
@@ -787,7 +787,7 @@
       previous = options.leading === false ? 0 : _.now();
       timeout = null;
       result = func.apply(context, args);
-      if (!timeout) context = args = null;
+      if (!timeout) {context = args = null;}
     };
     return function() {
       var now = _.now();
@@ -802,7 +802,7 @@
         }
         previous = now;
         result = func.apply(context, args);
-        if (!timeout) context = args = null;
+        if (!timeout) {context = args = null;}
       } else if (!timeout && options.trailing !== false) {
         timeout = setTimeout(later, remaining);
       }
@@ -826,7 +826,7 @@
         timeout = null;
         if (!immediate) {
           result = func.apply(context, args);
-          if (!timeout) context = args = null;
+          if (!timeout) {context = args = null;}
         }
       }
     };
@@ -836,7 +836,7 @@
       args = arguments;
       timestamp = _.now();
       var callNow = immediate && !timeout;
-      if (!timeout) timeout = setTimeout(later, wait);
+      if (!timeout) {timeout = setTimeout(later, wait);}
       if (callNow) {
         result = func.apply(context, args);
         context = args = null;
@@ -868,7 +868,7 @@
     return function() {
       var i = start;
       var result = args[start].apply(this, arguments);
-      while (i--) result = args[i].call(this, result);
+      while (i--) {result = args[i].call(this, result);}
       return result;
     };
   };
@@ -927,11 +927,11 @@
  
   _.keys = function(obj) {
     if (!_.isObject(obj)) return [];
-    if (nativeKeys) return nativeKeys(obj);
+    if (nativeKeys) {return nativeKeys(obj);}
     var keys = [];
-    for (var key in obj) if (_.has(obj, key)) keys.push(key);
+    for (var key in obj) {if (_.has(obj, key)) {keys.push(key);}}
  
-    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    if (hasEnumBug) {collectNonEnumProps(obj, keys);}
     return keys;
   };
 
@@ -939,7 +939,7 @@
   _.allKeys = function(obj) {
     if (!_.isObject(obj)) return [];
     var keys = [];
-    for (var key in obj) keys.push(key);
+    for (var key in obj) {keys.push(key);}
  
     if (hasEnumBug) collectNonEnumProps(obj, keys);
     return keys;
@@ -1081,7 +1081,7 @@
  
   _.isMatch = function(object, attrs) {
     var keys = _.keys(attrs), length = keys.length;
-    if (object == null) return !length;
+    if (object == null) {return !length;}
     var obj = Object(object);
     for (var i = 0; i < length; i++) {
       var key = keys[i];
@@ -1097,13 +1097,13 @@
  
  
  
-    if (a == null || b == null) return a === b;
+    if (a == null || b == null) {return a === b;}
  
-    if (a instanceof _) a = a._wrapped;
-    if (b instanceof _) b = b._wrapped;
+    if (a instanceof _) {a = a._wrapped;}
+    if (b instanceof _) {b = b._wrapped;}
  
     var className = toString.call(a);
-    if (className !== toString.call(b)) return false;
+    if (className !== toString.call(b)) {return false;}
     switch (className) {
  
       case '[object RegExp]':
@@ -1115,7 +1115,7 @@
       case '[object Number]':
  
  
-        if (+a !== +a) return +b !== +b;
+        if (+a !== +a) {return +b !== +b;}
  
  
       case '[object Date]':
@@ -1150,7 +1150,7 @@
     while (length--) {
  
  
-      if (aStack[length] === a) return bStack[length] === b;
+      if (aStack[length] === a) {return bStack[length] === b;}
     }
 
  
@@ -1193,7 +1193,7 @@
  
   _.isEmpty = function(obj) {
     if (obj == null) return true;
-    if (isArrayLike(obj) && (_.isArray(obj) || _.isString(obj) || _.isArguments(obj))) return obj.length === 0;
+    if (isArrayLike(obj) && (_.isArray(obj) || _.isString(obj) || _.isArguments(obj))) {return obj.length === 0;}
     return _.keys(obj).length === 0;
   };
 
@@ -1235,7 +1235,6 @@
     _.isFunction = function(obj) {
       return typeof obj == 'function' || false;
     };
-  }
 
  
   _.isFinite = function(obj) {
@@ -1314,7 +1313,7 @@
   _.times = function(n, iteratee, context) {
     var accum = Array(Math.max(0, n));
     iteratee = optimizeCb(iteratee, context, 1);
-    for (var i = 0; i < n; i++) accum[i] = iteratee(i);
+    for (var i = 0; i < n; i++){accum[i] = iteratee(i);}
     return accum;
   };
 
