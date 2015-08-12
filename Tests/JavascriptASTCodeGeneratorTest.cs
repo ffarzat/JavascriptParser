@@ -699,7 +699,5 @@ namespace Tests
             Assert.AreEqual(total, sucesso);
 
         }
-
     }
-
 }

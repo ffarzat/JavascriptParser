@@ -1160,7 +1160,7 @@ namespace ConsoleApplication1
             }
 
             if (instruction.Parent != null)
-                if (instruction.Parent.Text.Equals("="))
+                if (instruction.Parent.Text != null && instruction.Parent.Text.Equals("="))
                     if (instruction.Parent.Parent != null)
                         if (instruction.Parent.Parent.Text != null)
                             if (instruction.Parent.Parent.Text.Equals("var"))

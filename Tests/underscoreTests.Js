@@ -94,9 +94,6 @@
     list = [[1], [2], [3], [[4]]];
     deepEqual(_.flatten(list, true), [1, 2, 3, [4]], 'can shallowly flatten arrays containing only other arrays');
 
-	alert('Aqui Fabio');
-	alert(_.flatten);
-
     equal(_.flatten([_.range(10), _.range(10), 5, 1, 3], true).length, 23);
     equal(_.flatten([_.range(10), _.range(10), 5, 1, 3]).length, 23);
     equal(_.flatten([new Array(1000000), _.range(56000), 5, 1, 3]).length, 1056003, 'Flatten can handle massive collections');
@@ -1808,12 +1805,14 @@
     strictEqual(myObj.value, 'a', 'object is not modified if second argument used as key');
   });
 
+  /*
   asyncTest('delay', 2, function() {
     var delayed = false;
     _.delay(function(){ delayed = true; }, 100);
     setTimeout(function(){ ok(!delayed, "didn't delay the function quite yet"); }, 50);
     setTimeout(function(){ ok(delayed, 'delayed the function'); start(); }, 150);
   });
+  */
 
   asyncTest('defer', 1, function() {
     var deferred = false;
