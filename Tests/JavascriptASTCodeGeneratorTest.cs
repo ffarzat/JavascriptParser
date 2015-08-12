@@ -557,8 +557,9 @@ namespace Tests
             sw.Start();
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
+            engine.SetGlobalFunction("esperar", new DEsperar(Esperar));
             engine.SetGlobalValue("global", engine.Global);
-            engine.SetGlobalFunction("setTimeout", new DSetTimeout(SetTimeout));
+            engine.Execute("setTimeout = function (funcToCall, millis) { alert('esperar ' + millis + ' para executar ' + funcToCall ); esperar(millis);  funcToCall(); };");
 
             sw.Stop();
             Console.WriteLine("{0} - {1}", "Engine criada e configurada", sw.Elapsed.ToString("mm\\:ss\\.ff"));
@@ -580,7 +581,6 @@ namespace Tests
             engine.ExecuteFile(jsTestFile);
             sw.Stop();
             Console.WriteLine("{0} - {1}", jsTestFile, sw.Elapsed.ToString("mm\\:ss\\.ff"));
-
 
             try
             {
@@ -702,12 +702,12 @@ namespace Tests
 
         }
 
-        private void SetTimeout(string functocall, int miliseconds)
+        private void Esperar( int miliseconds)
         {
             System.Threading.Thread.Sleep(miliseconds);
         }
 
-        private delegate void DSetTimeout(string funcTocall, int miliseconds);
+        private delegate void DEsperar(int miliseconds);
 
     }
 }

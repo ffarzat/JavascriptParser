@@ -1805,14 +1805,14 @@
     strictEqual(myObj.value, 'a', 'object is not modified if second argument used as key');
   });
 
-  /*
+  
   asyncTest('delay', 2, function() {
     var delayed = false;
     _.delay(function(){ delayed = true; }, 100);
     setTimeout(function(){ ok(!delayed, "didn't delay the function quite yet"); }, 50);
     setTimeout(function(){ ok(delayed, 'delayed the function'); start(); }, 150);
   });
-  */
+  
 
   asyncTest('defer', 1, function() {
     var deferred = false;
