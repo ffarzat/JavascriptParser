@@ -556,7 +556,7 @@ namespace Tests
             sw.Start();
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
-
+            engine.SetGlobalValue("global", engine.Global);
             sw.Stop();
             Console.WriteLine("{0} - {1}", "Engine criada e configurada", sw.Elapsed.ToString("mm\\:ss\\.ff"));
 
