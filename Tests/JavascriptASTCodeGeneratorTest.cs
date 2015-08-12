@@ -559,7 +559,7 @@ namespace Tests
             engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
             engine.SetGlobalFunction("esperar", new DEsperar(Esperar));
             engine.SetGlobalValue("global", engine.Global);
-            engine.Execute("setTimeout = function (funcToCall, millis) { alert('esperar ' + millis + ' para executar ' + funcToCall ); esperar(millis);  funcToCall(); };");
+            engine.Execute("setTimeout = function (funcToCall, millis) { esperar(millis);  funcToCall(); };");
 
             sw.Stop();
             Console.WriteLine("{0} - {1}", "Engine criada e configurada", sw.Elapsed.ToString("mm\\:ss\\.ff"));
