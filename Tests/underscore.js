@@ -1,9 +1,7 @@
- 
- 
- 
- 
-
-(function() {
+(function (global, factory) {
+    factory();
+	
+}(this, function() {
 
  
  
@@ -1542,5 +1540,7 @@
     define('underscore', [], function() {
       return _;
     });
+	
+
   }
-}());
+}));

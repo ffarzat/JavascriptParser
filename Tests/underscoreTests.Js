@@ -94,6 +94,9 @@
     list = [[1], [2], [3], [[4]]];
     deepEqual(_.flatten(list, true), [1, 2, 3, [4]], 'can shallowly flatten arrays containing only other arrays');
 
+	alert('Aqui Fabio');
+	alert(_.flatten);
+
     equal(_.flatten([_.range(10), _.range(10), 5, 1, 3], true).length, 23);
     equal(_.flatten([_.range(10), _.range(10), 5, 1, 3]).length, 23);
     equal(_.flatten([new Array(1000000), _.range(56000), 5, 1, 3]).length, 1056003, 'Flatten can handle massive collections');

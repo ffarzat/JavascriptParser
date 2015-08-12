@@ -63,7 +63,7 @@ namespace ConsoleApplication1
                     sb.AppendLine(HandleChild(instruction));
                 }
 
-                sb.Append("}.call(this));");
+                //sb.Append("}.call(this));");
 
             }
             else

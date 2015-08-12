@@ -501,6 +501,7 @@ namespace Tests
             try
             {
                 var engine = new Jurassic.ScriptEngine();
+                engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
                 engine.ExecuteFile("underscoreGeneratedCode.js");
             }
             catch (JavaScriptException jex)
