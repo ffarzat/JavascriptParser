@@ -558,6 +558,8 @@ namespace Tests
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalFunction("alert", new DAlertDelegate(Console.WriteLine));
             engine.SetGlobalValue("global", engine.Global);
+            engine.SetGlobalFunction("setTimeout", new DSetTimeout(SetTimeout));
+
             sw.Stop();
             Console.WriteLine("{0} - {1}", "Engine criada e configurada", sw.Elapsed.ToString("mm\\:ss\\.ff"));
 
@@ -699,5 +701,13 @@ namespace Tests
             Assert.AreEqual(total, sucesso);
 
         }
+
+        private void SetTimeout(string functocall, int miliseconds)
+        {
+            System.Threading.Thread.Sleep(miliseconds);
+        }
+
+        private delegate void DSetTimeout(string funcTocall, int miliseconds);
+
     }
 }
