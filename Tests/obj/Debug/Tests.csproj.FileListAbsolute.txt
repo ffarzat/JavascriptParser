@@ -22,7 +22,6 @@ D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.Genetic.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\Antlr3.Runtime.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\ConsoleApplication1.exe
-D:\GitHub\JavascriptParser\Tests\bin\Debug\Jurassic.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\nunit.framework.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\NLog.dll
 D:\GitHub\JavascriptParser\Tests\bin\Debug\AForge.pdb

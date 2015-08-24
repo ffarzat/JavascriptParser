@@ -5,7 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using AForge.Genetic;
-using Jurassic;
+using Microsoft.ClearScript;
+using Microsoft.ClearScript.V8;
 using NLog;
 
 namespace ConsoleApplication1
@@ -89,8 +90,8 @@ namespace ConsoleApplication1
         /// </summary>
         private void LoadQunitAndTests(ScriptEngine engine)
         {
-            engine.SetGlobalFunction("alert", new DAlertDelegate(message => Log.WriteLine(message, LogLevel.Trace)));
-            engine.ExecuteFile(_qunitPath);
+            //engine.SetGlobalFunction("alert", new DAlertDelegate(message => Log.WriteLine(message, LogLevel.Trace)));
+            engine.Execute(File.ReadAllText(_qunitPath));
             #region registra os retornos dos testes
             engine.Execute(@"   var total, sucess, fail, time;
                                     QUnit.done(function( details ) {
@@ -149,7 +150,7 @@ namespace ConsoleApplication1
                         ");
             #endregion
 
-            engine.ExecuteFile(_scriptTestPtah);
+            engine.Execute(File.ReadAllText(_scriptTestPtah));
 
             engine.Execute(@"QUnit.load();");
         }
@@ -230,25 +231,19 @@ namespace ConsoleApplication1
             #region Executar os testes no novo Js (medindo tempo)
             
 
-            double total, sucess, fail, time;
+            //double total, sucess, fail, time;
             try
             {
-                var _engine = new ScriptEngine();
-                _engine.Execute(generatedJsCode);
-                LoadQunitAndTests(_engine);
-                _engine.Execute(@"QUnit.start();");
+                var engine = new V8ScriptEngine();
+                engine.Execute(generatedJsCode);
+                LoadQunitAndTests(engine);
+                engine.Execute(@"QUnit.start();");
 
                 //total = _engine.GetGlobalValue<double>("total");
                 //sucess = _engine.GetGlobalValue<double>("sucess");
                 //fail = _engine.GetGlobalValue<double>("fail");
                 //time = _engine.GetGlobalValue<double>("time");
                 
-            }
-            catch (JavaScriptException ex)
-            {
-                //Log.WriteLine(string.Format(string.Format("Script error in \'{0}\', line: {1}\n{2}", ex.SourcePath, ex.LineNumber, ex.Message)));
-                Log.WriteLine(string.Format("     {0} -> {1} (em {2} ) [{3}]", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), ex.Message), LogLevel.Error);
-                return fitness;
             }
             catch (Exception ex)
             {
@@ -265,19 +260,6 @@ namespace ConsoleApplication1
 
             Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")), LogLevel.Info);
             return fitness;
-        }
-
-        /// <summary>
-        /// Cleans the engine for a new excetuion
-        /// </summary>
-        /// <param name="engine"></param>
-        private void Cleanup(ScriptEngine engine)
-        {
-            _logger.Trace("     Limpando {0}", "moment");
-            engine.Global.Delete("moment", false);
-
-            _logger.Trace("     Limpando {0}", "QUnit");
-            engine.Global.Delete("QUnit", false);
         }
 
         /// <summary>
