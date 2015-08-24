@@ -233,6 +233,11 @@ namespace ConsoleApplication1
                 if (File.Exists(nppExePath))
                     Process.Start(nppExePath, sb.ToString());
 
+                //Atualiza o melhor para as próximas funções. 
+                tree = ((JavascriptChromosome) population.BestChromosome).Tree;
+
+                //Salva
+                File.WriteAllText(nomeFuncaoTarget + ".js", ((JavascriptChromosome)population.BestChromosome).Code);
                 #endregion
             }
         }

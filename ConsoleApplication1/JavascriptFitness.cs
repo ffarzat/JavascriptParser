@@ -262,7 +262,7 @@ namespace ConsoleApplication1
 
             fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
             //se passar nos testes salvo o bendito
-            File.WriteAllText(fileName, generatedJsCode);
+            //File.WriteAllText(fileName, generatedJsCode);
 
             #endregion
 
