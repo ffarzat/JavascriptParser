@@ -32,3 +32,4 @@ D:\GitHub\JavascriptParser\Tests\bin\Debug\NLog.xml
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.dll
 D:\GitHub\JavascriptParser\Tests\obj\Debug\Tests.pdb
 D:\GitHub\JavascriptParser\Tests\bin\Debug\ConsoleApplication1.pdb
+D:\Github\JavascriptParser\Tests\bin\Debug\ClearScript.dll
