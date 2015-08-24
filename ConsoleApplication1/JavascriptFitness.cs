@@ -54,6 +54,11 @@ namespace ConsoleApplication1
         private delegate void DAlertDelegate(string message);
 
         /// <summary>
+        /// Total de Testes em que o individuo passou
+        /// </summary>
+        public int Total { get; set; }
+
+        /// <summary>
         /// Do the setup for a future execution
         /// </summary>
         public JavascriptFitness(string pathToExecution, string scriptTestPtah)
@@ -91,6 +96,7 @@ namespace ConsoleApplication1
         private void LoadQunitAndTests(ScriptEngine engine)
         {
             //engine.SetGlobalFunction("alert", new DAlertDelegate(message => Log.WriteLine(message, LogLevel.Trace)));
+            engine.AddHostObject("helper", this);
             engine.Execute(File.ReadAllText(_qunitPath));
             #region registra os retornos dos testes
             engine.Execute(@"   var total, sucess, fail, time;
@@ -105,6 +111,7 @@ namespace ConsoleApplication1
                                     sucess = details.passed;
                                     fail = details.failed;
                                     time = details.runtime;
+                                    helper.Total = total;
 
                                 });
 
@@ -260,7 +267,7 @@ namespace ConsoleApplication1
             #endregion
 
 
-            Log.WriteLine(string.Format("     {0} -> {1} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff")), LogLevel.Info);
+            Log.WriteLine(string.Format("     {0} -> {1}|{3} (em {2} )", chromosome.Id, fitness, sw.Elapsed.ToString("mm\\:ss\\.ff"), Total), LogLevel.Info);
             return fitness;
         }
 
