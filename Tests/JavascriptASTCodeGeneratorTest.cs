@@ -136,9 +136,9 @@ namespace Tests
         [Test]
         public void RunTestsFromMomentJs()
         {
-            string jsTestFile = File.ReadAllText("tests.js");
+            string jsTestFile = File.ReadAllText("core-test.js");
             string qunitFile = File.ReadAllText("qunit-1.18.0.js");
-            string fileMomentPath = File.ReadAllText("moment.js");
+            string fileMomentPath = File.ReadAllText("global.js");
 
             var engine = new V8ScriptEngine();
 
@@ -173,10 +173,9 @@ namespace Tests
                 engine.Execute(@"   QUnit.load();
                                     QUnit.start();
                 ");
-            
 
+            Assert.AreEqual(Total, 57982);
             Assert.AreEqual(Total, Sucesso);
-
         }
 
 
@@ -287,6 +286,7 @@ namespace Tests
             
             Console.WriteLine("{0} - {1}", "Tempo total", swTotal.Elapsed.ToString("mm\\:ss\\.ff"));
             Assert.AreEqual(Total, Sucesso);
+            Assert.Greater(Total, 1);
 
         }
 

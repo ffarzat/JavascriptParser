@@ -211,7 +211,7 @@ namespace ConsoleApplication1
                 var codeGenerator = new JavascriptAstCodeGenerator(((JavascriptChromosome)chromosome).Tree);
                 generatedJsCode = codeGenerator.DoCodeTransformation();
                 ((JavascriptChromosome) chromosome).Code = generatedJsCode;
-                File.WriteAllText(fileName, generatedJsCode);
+                
 
                 if (((JavascriptChromosome)chromosome).Code.Equals(_ancestor.ToString()) & !chromosome.Id.Equals(_ancestor.Id))
                 {
@@ -254,7 +254,9 @@ namespace ConsoleApplication1
             sw.Stop();
 
             fitness = double.Parse(sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
-            
+            //se passar nos testes salvo o bendito
+            File.WriteAllText(fileName, generatedJsCode);
+
             #endregion
 
 
