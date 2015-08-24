@@ -103,6 +103,9 @@
     <Content Include="qunit-1.18.0.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Qunit.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="scriptData.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
