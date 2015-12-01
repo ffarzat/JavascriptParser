@@ -3,8 +3,8 @@ C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Core\bin\Debug\AForge.p
 C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Core\obj\Debug\Core.csprojResolveAssemblyReference.cache
 C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Core\obj\Debug\AForge.dll
 C:\Users\Fabio\Downloads\genetic_src\genetic_src\Sources\Core\obj\Debug\AForge.pdb
-D:\GitHub\JavascriptParser\Sources\Core\bin\Debug\AForge.dll
-D:\GitHub\JavascriptParser\Sources\Core\bin\Debug\AForge.pdb
-D:\GitHub\JavascriptParser\Sources\Core\obj\Debug\AForge.dll
-D:\GitHub\JavascriptParser\Sources\Core\obj\Debug\AForge.pdb
+D:\Github\JavascriptParser\Sources\Core\bin\Debug\AForge.dll
+D:\Github\JavascriptParser\Sources\Core\bin\Debug\AForge.pdb
 D:\Github\JavascriptParser\Sources\Core\obj\Debug\Core.csprojResolveAssemblyReference.cache
+D:\Github\JavascriptParser\Sources\Core\obj\Debug\AForge.dll
+D:\Github\JavascriptParser\Sources\Core\obj\Debug\AForge.pdb

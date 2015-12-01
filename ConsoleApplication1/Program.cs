@@ -149,6 +149,8 @@ namespace ConsoleApplication1
 
             const int countFunctions = 0;
 
+            CommonTree localtree = tree; 
+
             foreach (var nomeFuncaoTarget in funcoesAlvo)
             {
                 if (countFunctions >= TopTargets)
@@ -174,7 +176,7 @@ namespace ConsoleApplication1
 
                 #region Monta o primeiro individuo
 
-                var ancestral = new JavascriptChromosome(tree, nomeFuncaoTarget);
+                var ancestral = new JavascriptChromosome(localtree, nomeFuncaoTarget);
 
                 #endregion
 
@@ -234,7 +236,7 @@ namespace ConsoleApplication1
                     Process.Start(nppExePath, sb.ToString());
 
                 //Atualiza o melhor para as próximas funções. 
-                tree = ((JavascriptChromosome) population.BestChromosome).Tree;
+                localtree = ((JavascriptChromosome)population.BestChromosome).Tree;
 
                 //Salva
                 File.WriteAllText(nomeFuncaoTarget + ".js", ((JavascriptChromosome)population.BestChromosome).Code);
